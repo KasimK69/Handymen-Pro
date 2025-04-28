@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Shield, Clock, Award, Tools, Smile, MessageSquare } from 'lucide-react';
+import { Shield, Clock, Award, Wrench, Smile, MessageSquare } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
 interface Feature {
@@ -33,7 +33,7 @@ const features: Feature[] = [
     id: 'tools',
     title: 'Professional Equipment',
     description: 'We use only the best professional-grade tools and quality materials for lasting results.',
-    icon: <Tools className="h-10 w-10 text-brand-red" />,
+    icon: <Wrench className="h-10 w-10 text-brand-red" />,
   },
   {
     id: 'satisfaction',
