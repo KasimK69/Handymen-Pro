@@ -26,7 +26,7 @@ const servicesData = {
       },
       {
         question: 'Do you provide free estimates for plumbing work?',
-        answer: 'Yes, we provide free estimates for all plumbing projects. We'll assess the situation, discuss your options, and provide a detailed quote before beginning any work.'
+        answer: 'Yes, we provide free estimates for all plumbing projects. We\'ll assess the situation, discuss your options, and provide a detailed quote before beginning any work.'
       },
       {
         question: 'Are your plumbers licensed and insured?',
