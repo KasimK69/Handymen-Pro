@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Banknote, CreditCard, Landmark, TruckDelivery } from 'lucide-react';
+import { Banknote, CreditCard, Landmark, Truck } from 'lucide-react';
 import { 
   RadioGroup,
   RadioGroupItem
@@ -26,7 +26,7 @@ const PaymentMethods = ({ value, onChange }: PaymentMethodProps) => {
             htmlFor="cash-on-delivery"
             className="flex items-center cursor-pointer"
           >
-            <TruckDelivery className="h-5 w-5 mr-2 text-gray-600" />
+            <Truck className="h-5 w-5 mr-2 text-gray-600" />
             <div>
               <div className="font-medium">Cash on Delivery</div>
               <div className="text-sm text-gray-500">Pay when our technician visits your location</div>
