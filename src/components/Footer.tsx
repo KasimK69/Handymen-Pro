@@ -18,7 +18,7 @@ const Footer = () => {
               </span>
             </Link>
             <p className="mb-6 text-gray-300 leading-relaxed">
-              Professional handyman services tailored to your needs. Quality workmanship guaranteed with over 15 years of industry experience.
+              Professional handyman services tailored to your needs in Rawalpindi and Islamabad. Quality workmanship guaranteed with over 15 years of industry experience.
             </p>
             <div className="flex space-x-4">
               <SocialLink icon={<Facebook className="w-5 h-5" />} href="#" />
@@ -60,7 +60,7 @@ const Footer = () => {
             <ul className="space-y-4">
               <li className="flex items-start">
                 <Phone className="w-5 h-5 mr-3 text-brand-red shrink-0" />
-                <span>+1 (555) 123-4567</span>
+                <a href="tel:+923125242182" className="hover:text-brand-red transition-colors">+92 312 5242182</a>
               </li>
               <li className="flex items-start">
                 <Mail className="w-5 h-5 mr-3 text-brand-red shrink-0" />
@@ -68,13 +68,16 @@ const Footer = () => {
               </li>
               <li className="flex items-start">
                 <MapPin className="w-5 h-5 mr-3 text-brand-red shrink-0" />
-                <span>123 Service Street, Islamabad, Pakistan</span>
+                <span>Bahria Town, Phase 8, Rawalpindi, Pakistan</span>
               </li>
               <li className="flex items-start">
                 <Clock className="w-5 h-5 mr-3 text-brand-red shrink-0" />
                 <span>Mon-Fri: 8am-6pm<br />Sat: 9am-4pm</span>
               </li>
             </ul>
+            <div className="mt-4 pt-4 border-t border-gray-700">
+              <p className="text-sm text-gray-300">Service Areas: Rawalpindi and Islamabad Only</p>
+            </div>
           </div>
         </div>
 
@@ -83,7 +86,7 @@ const Footer = () => {
 
         {/* Copyright */}
         <div className="flex flex-col md:flex-row justify-between items-center text-gray-400 text-sm">
-          <p>© {currentYear} ProHandyman. All rights reserved.</p>
+          <p>© {currentYear} Handyman Pro Services. All rights reserved.</p>
           <div className="flex mt-4 md:mt-0">
             <Link to="/privacy-policy" className="mr-6 hover:text-white transition-colors">
               Privacy Policy

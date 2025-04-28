@@ -18,10 +18,10 @@ const Hero = () => {
           {/* Content */}
           <div className="text-white animate-fade-in">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-              Professional Handyman Services for Your Home
+              Professional Handyman Services in Rawalpindi & Islamabad
             </h1>
             <p className="text-lg md:text-xl opacity-90 mb-8 leading-relaxed max-w-xl">
-              From simple repairs to complete renovations, we deliver quality craftsmanship and reliable service for all your home improvement needs.
+              From simple repairs to complete renovations, we deliver quality craftsmanship and reliable service for all your home improvement needs in Bahria Town and surrounding areas.
             </p>
             
             {/* Features */}
@@ -41,6 +41,15 @@ const Hero = () => {
                 <Link to="/services">Explore Services</Link>
               </Button>
             </div>
+            
+            {/* Contact Info */}
+            <div className="mt-8 flex items-center text-white/80">
+              <a href="tel:+923125242182" className="hover:text-white transition-colors">
+                +92 312 5242182
+              </a>
+              <span className="mx-2">•</span>
+              <span>Bahria Town, Phase 8, Rawalpindi</span>
+            </div>
           </div>
           
           {/* Image */}
@@ -48,7 +57,7 @@ const Hero = () => {
             <div className="relative rounded-lg overflow-hidden shadow-2xl">
               <img 
                 src="https://images.unsplash.com/photo-1591955506264-3f5a6834570a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
-                alt="Professional handyman service" 
+                alt="Professional handyman service in Rawalpindi" 
                 className="w-full h-auto rounded-lg object-cover"
                 loading="eager"
               />
@@ -61,8 +70,8 @@ const Hero = () => {
                     <div className="text-sm text-gray-600 dark:text-gray-400">Years Experience</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-brand-red">500+</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">Happy Clients</div>
+                    <div className="text-3xl font-bold text-brand-red">5000+</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Jobs Completed</div>
                   </div>
                 </div>
               </div>

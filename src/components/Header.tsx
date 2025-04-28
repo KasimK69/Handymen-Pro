@@ -42,6 +42,14 @@ const Header = () => {
           </span>
         </Link>
 
+        {/* Contact Info - Desktop */}
+        <div className="hidden md:flex items-center">
+          <a href="tel:+923125242182" className="mr-8 flex items-center text-gray-700 dark:text-gray-200 hover:text-brand-red transition-colors">
+            <Phone className="h-4 w-4 mr-2" />
+            <span>+92 312 5242182</span>
+          </a>
+        </div>
+
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-1">
           <NavLink to="/">Home</NavLink>
@@ -59,6 +67,9 @@ const Header = () => {
 
         {/* Mobile Menu Button */}
         <div className="flex items-center md:hidden">
+          <a href="tel:+923125242182" className="mr-4 p-2 rounded-full bg-brand-red/10 text-brand-red">
+            <Phone className="h-5 w-5" />
+          </a>
           <Button 
             variant="ghost" 
             size="icon"
@@ -113,9 +124,17 @@ const Header = () => {
             </Link>
           </nav>
           <div className="mt-auto pt-8">
-            <div className="flex items-center">
-              <Phone className="h-5 w-5 text-brand-red mr-2" />
-              <span className="font-medium">+1 (555) 123-4567</span>
+            <div className="flex flex-col">
+              <div className="flex items-center mb-2">
+                <Phone className="h-5 w-5 text-brand-red mr-2" />
+                <a href="tel:+923125242182" className="font-medium">+92 312 5242182</a>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Bahria Town, Phase 8, Rawalpindi
+              </p>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                Serving Rawalpindi & Islamabad
+              </p>
             </div>
           </div>
         </div>

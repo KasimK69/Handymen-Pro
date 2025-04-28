@@ -1,6 +1,7 @@
 
 import React from 'react';
 import Hero from '@/components/home/Hero';
+import SmartAdport from '@/components/home/SmartAdport';
 import Services from '@/components/home/Services';
 import Features from '@/components/home/Features';
 import Testimonials from '@/components/home/Testimonials';
@@ -10,6 +11,7 @@ const Home = () => {
   return (
     <>
       <Hero />
+      <SmartAdport />
       <Services />
       <Features />
       <Testimonials />
