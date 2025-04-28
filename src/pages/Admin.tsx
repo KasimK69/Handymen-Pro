@@ -1,9 +1,33 @@
 
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useAdminAuth } from '@/context/AdminAuthContext';
+import { Loader2 } from 'lucide-react';
 
 const Admin = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+  const { login, isLoading, isAuthenticated } = useAdminAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // If already authenticated, redirect to dashboard
+    if (isAuthenticated) {
+      navigate('/admin/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const success = await login(email, password);
+    if (success) {
+      navigate('/admin/dashboard');
+    }
+  };
+
   return (
     <section className="bg-gray-50 dark:bg-gray-900 min-h-screen py-24">
       <div className="container mx-auto">
@@ -13,16 +37,19 @@ const Admin = () => {
             Please log in to access the admin dashboard.
           </p>
           
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="email" className="block text-sm font-medium mb-2">
                 Email
               </label>
-              <input
+              <Input
                 id="email"
                 type="email"
-                className="w-full p-3 border rounded-md"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="admin@example.com"
+                disabled={isLoading}
+                required
               />
             </div>
             
@@ -30,11 +57,14 @@ const Admin = () => {
               <label htmlFor="password" className="block text-sm font-medium mb-2">
                 Password
               </label>
-              <input
+              <Input
                 id="password"
                 type="password"
-                className="w-full p-3 border rounded-md"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
+                disabled={isLoading}
+                required
               />
             </div>
             
@@ -44,6 +74,8 @@ const Admin = () => {
                   id="remember"
                   type="checkbox"
                   className="h-4 w-4 mr-2"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
                 />
                 <label htmlFor="remember" className="text-sm">
                   Remember me
@@ -54,14 +86,27 @@ const Admin = () => {
               </a>
             </div>
             
-            <Button className="w-full bg-brand-blue hover:bg-brand-blue/90">
-              Sign In
+            <Button 
+              type="submit" 
+              className="w-full bg-brand-blue hover:bg-brand-blue/90"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Signing In...
+                </>
+              ) : (
+                'Sign In'
+              )}
             </Button>
           </form>
           
-          <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
-            Need help? <Link to="/contact" className="text-brand-red hover:underline">Contact support</Link>
-          </p>
+          <div className="mt-6">
+            <p className="text-center text-sm text-gray-600 dark:text-gray-400">
+              Demo credentials: admin@example.com / admin123
+            </p>
+          </div>
         </div>
       </div>
     </section>

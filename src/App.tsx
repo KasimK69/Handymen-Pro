@@ -20,6 +20,13 @@ import AcSale from "./pages/AcSale";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
+// Admin pages
+import { AdminAuthProvider } from "./context/AdminAuthContext";
+import AdminLayout from "./components/admin/AdminLayout";
+import ProtectedRoute from "./components/admin/ProtectedRoute";
+import Dashboard from "./pages/admin/Dashboard";
+import ServicesAdmin from "./pages/admin/Services";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -28,25 +35,55 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Header />
-        <main className="min-h-screen pt-16">
+        <AdminAuthProvider>
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/services/:slug" element={<ServiceDetail />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/booking" element={<Booking />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:slug" element={<BlogPost />} />
-            <Route path="/ac-sale" element={<AcSale />} />
+            {/* Public Routes with Header and Footer */}
+            <Route
+              path="/"
+              element={
+                <>
+                  <Header />
+                  <main className="min-h-screen pt-16">
+                    <Routes>
+                      <Route index element={<Home />} />
+                      <Route path="about" element={<About />} />
+                      <Route path="services" element={<Services />} />
+                      <Route path="services/:slug" element={<ServiceDetail />} />
+                      <Route path="contact" element={<Contact />} />
+                      <Route path="booking" element={<Booking />} />
+                      <Route path="blog" element={<Blog />} />
+                      <Route path="blog/:slug" element={<BlogPost />} />
+                      <Route path="ac-sale" element={<AcSale />} />
+                    </Routes>
+                  </main>
+                  <Footer />
+                  <WhatsAppButton />
+                  <ScrollToTop />
+                </>
+              }
+            />
+
+            {/* Admin Login (no layout) */}
             <Route path="/admin" element={<Admin />} />
+
+            {/* Admin Routes with Admin Layout */}
+            <Route 
+              path="/admin" 
+              element={
+                <ProtectedRoute>
+                  <AdminLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="services" element={<ServicesAdmin />} />
+              {/* Additional admin routes will be added here */}
+            </Route>
+
+            {/* 404 Route */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </main>
-        <Footer />
-        <WhatsAppButton />
-        <ScrollToTop />
+        </AdminAuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
