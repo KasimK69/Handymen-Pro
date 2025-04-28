@@ -1,0 +1,84 @@
+
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { CheckCircle } from 'lucide-react';
+
+const Hero = () => {
+  return (
+    <section className="relative bg-brand-blue pt-32 pb-20 overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-y-0 right-0 w-1/2 bg-brand-red" />
+        <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-brand-red" />
+      </div>
+      
+      <div className="container mx-auto relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          {/* Content */}
+          <div className="text-white animate-fade-in">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+              Professional Handyman Services for Your Home
+            </h1>
+            <p className="text-lg md:text-xl opacity-90 mb-8 leading-relaxed max-w-xl">
+              From simple repairs to complete renovations, we deliver quality craftsmanship and reliable service for all your home improvement needs.
+            </p>
+            
+            {/* Features */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
+              <FeatureItem>Same Day Service</FeatureItem>
+              <FeatureItem>Licensed & Insured</FeatureItem>
+              <FeatureItem>100% Satisfaction</FeatureItem>
+              <FeatureItem>Free Estimates</FeatureItem>
+            </div>
+            
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button size="lg" className="bg-brand-red hover:bg-brand-red/90 text-white" asChild>
+                <Link to="/booking">Book a Service</Link>
+              </Button>
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10" asChild>
+                <Link to="/services">Explore Services</Link>
+              </Button>
+            </div>
+          </div>
+          
+          {/* Image */}
+          <div className="relative animate-fade-in-slow">
+            <div className="relative rounded-lg overflow-hidden shadow-2xl">
+              <img 
+                src="https://images.unsplash.com/photo-1591955506264-3f5a6834570a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
+                alt="Professional handyman service" 
+                className="w-full h-auto rounded-lg object-cover"
+                loading="eager"
+              />
+              
+              {/* Stats Overlay */}
+              <div className="absolute -bottom-6 -right-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+                <div className="flex gap-8">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-brand-red">15+</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Years Experience</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-brand-red">500+</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Happy Clients</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const FeatureItem = ({ children }: { children: React.ReactNode }) => (
+  <div className="flex items-center">
+    <CheckCircle className="w-5 h-5 text-brand-red mr-2 shrink-0" />
+    <span>{children}</span>
+  </div>
+);
+
+export default Hero;
