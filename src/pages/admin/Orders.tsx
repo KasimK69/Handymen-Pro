@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   ShoppingCart, 
@@ -13,7 +12,8 @@ import {
   User,
   Calendar,
   Clock,
-  Package
+  Package,
+  CreditCard
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
