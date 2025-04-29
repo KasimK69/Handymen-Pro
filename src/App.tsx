@@ -89,7 +89,6 @@ const App = () => (
                 <Route path="products" element={<ProductsAdmin />} />
                 <Route path="orders" element={<OrdersAdmin />} />
                 <Route path="blog" element={<BlogAdmin />} />
-                {/* Additional admin routes will be added here */}
               </Route>
 
               {/* 404 Route */}
