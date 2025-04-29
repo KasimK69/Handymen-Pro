@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -783,4 +784,127 @@ const ProductCard = ({
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           loading="lazy"
         />
-        <div className="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:
+        <div className="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+      </div>
+      <CardContent className="p-6">
+        <div className="flex items-center mb-2">
+          {[...Array(5)].map((_, i) => (
+            <Star 
+              key={i} 
+              className={`h-4 w-4 ${i < Math.floor(product.rating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
+            />
+          ))}
+          <span className="ml-2 text-sm text-gray-600">{product.rating}</span>
+        </div>
+        <h3 className="text-xl font-bold mb-2">{product.name}</h3>
+        <div className="mb-4">
+          <span className="text-xl font-bold text-brand-blue">
+            {product.discounted 
+              ? formatPrice(product.price * (1 - (product.discountPercentage || 0) / 100))
+              : formatPrice(product.price)}
+          </span>
+          {product.discounted && (
+            <span className="text-sm text-gray-500 line-through ml-2">
+              {formatPrice(product.price)}
+            </span>
+          )}
+        </div>
+
+        <div className="flex items-center mb-3 text-sm text-gray-600">
+          <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded-full mr-2">
+            {product.condition === 'new' ? 'New' : 'Used'}
+          </span>
+        </div>
+
+        <div className="space-y-2 mb-4">
+          {product.features.slice(0, 3).map((feature, index) => (
+            <div key={index} className="flex items-start">
+              <BadgeCheck className="w-4 h-4 text-brand-blue mt-1 mr-2 shrink-0" />
+              <span className="text-sm text-gray-600 dark:text-gray-400">{feature}</span>
+            </div>
+          ))}
+          {product.features.length > 3 && (
+            <div className="text-sm text-gray-600 dark:text-gray-400 pl-6">
+              +{product.features.length - 3} more features
+            </div>
+          )}
+        </div>
+        
+        <Button 
+          className="w-full bg-brand-blue hover:bg-brand-blue/90" 
+          onClick={onAddToCart}
+        >
+          <ShoppingCart className="mr-2 h-4 w-4" />
+          Add to Cart
+        </Button>
+      </CardContent>
+    </Card>
+  );
+};
+
+const WantedCard = ({ 
+  request, 
+  formatPrice 
+}: { 
+  request: ACUnit; 
+  formatPrice: (price: number) => string;
+}) => {
+  return (
+    <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-all duration-300 h-full">
+      <div className="bg-brand-blue text-white p-3 text-sm font-semibold">
+        Buying Request
+      </div>
+      <CardContent className="p-6">
+        <h3 className="text-xl font-bold mb-3">{request.name}</h3>
+        <div className="mb-4">
+          <span className="text-lg font-bold text-brand-red">
+            Budget: {formatPrice(request.price)}
+          </span>
+        </div>
+        
+        <div className="space-y-2 mb-6">
+          {request.features.map((feature, index) => (
+            <div key={index} className="flex items-start">
+              <BadgeCheck className="w-4 h-4 text-brand-blue mt-1 mr-2 shrink-0" />
+              <span className="text-sm text-gray-600 dark:text-gray-400">{feature}</span>
+            </div>
+          ))}
+        </div>
+        
+        <Button 
+          className="w-full bg-brand-blue hover:bg-brand-blue/90"
+        >
+          <Phone className="mr-2 h-4 w-4" />
+          Contact Buyer
+        </Button>
+      </CardContent>
+    </Card>
+  );
+};
+
+const TestimonialCard = ({
+  quote,
+  author,
+  role
+}: {
+  quote: string;
+  author: string;
+  role: string;
+}) => (
+  <Card className="h-full">
+    <CardContent className="p-6 flex flex-col h-full">
+      <div className="mb-4 text-brand-blue">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 opacity-50">
+          <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+        </svg>
+      </div>
+      <p className="text-gray-600 dark:text-gray-400 flex-grow">{quote}</p>
+      <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <p className="font-semibold">{author}</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">{role}</p>
+      </div>
+    </CardContent>
+  </Card>
+);
+
+export default AcBuyAndSale;
