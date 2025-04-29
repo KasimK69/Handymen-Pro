@@ -22,7 +22,7 @@ import {
 
 const AdminSidebar = () => {
   return (
-    <Sidebar defaultOpen={true} className="fixed inset-y-0 left-0 z-50 w-64">
+    <Sidebar className="fixed inset-y-0 left-0 z-50 w-64">
       <SidebarContent>
         <div className="px-4 py-8">
           <h2 className="text-2xl font-bold text-center">AC Service Admin</h2>
