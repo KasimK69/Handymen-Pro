@@ -43,35 +43,8 @@ const App = () => (
       <CartProvider>
         <BrowserRouter>
           <AdminAuthProvider>
+            <ScrollToTop />
             <Routes>
-              {/* Public Routes with Header and Footer */}
-              <Route
-                path="/"
-                element={
-                  <>
-                    <Header />
-                    <main className="min-h-screen pt-16">
-                      <Routes>
-                        <Route index element={<Home />} />
-                        <Route path="about" element={<About />} />
-                        <Route path="services" element={<Services />} />
-                        <Route path="services/:slug" element={<ServiceDetail />} />
-                        <Route path="contact" element={<Contact />} />
-                        <Route path="booking" element={<Booking />} />
-                        <Route path="blog" element={<Blog />} />
-                        <Route path="blog/:slug" element={<BlogPost />} />
-                        <Route path="ac-buy-and-sale" element={<AcBuyAndSale />} />
-                        <Route path="cart" element={<Cart />} />
-                        <Route path="checkout" element={<Checkout />} />
-                      </Routes>
-                    </main>
-                    <Footer />
-                    <WhatsAppButton />
-                    <ScrollToTop />
-                  </>
-                }
-              />
-
               {/* Admin Login (no layout) */}
               <Route path="/admin" element={<Admin />} />
 
@@ -90,6 +63,34 @@ const App = () => (
                 <Route path="orders" element={<OrdersAdmin />} />
                 <Route path="blog" element={<BlogAdmin />} />
               </Route>
+
+              {/* Public Routes with Header and Footer */}
+              <Route
+                path="/"
+                element={
+                  <>
+                    <Header />
+                    <main className="min-h-screen pt-16">
+                      <Routes>
+                        <Route index element={<Home />} />
+                        <Route path="about" element={<About />} />
+                        <Route path="services" element={<Services />} />
+                        <Route path="services/:slug" element={<ServiceDetail />} />
+                        <Route path="contact" element={<Contact />} />
+                        <Route path="booking" element={<Booking />} />
+                        <Route path="blog" element={<Blog />} />
+                        <Route path="blog/:slug" element={<BlogPost />} />
+                        <Route path="ac-buy-and-sale" element={<AcBuyAndSale />} />
+                        <Route path="ac-sale" element={<AcBuyAndSale />} /> {/* Added alias route */}
+                        <Route path="cart" element={<Cart />} />
+                        <Route path="checkout" element={<Checkout />} />
+                      </Routes>
+                    </main>
+                    <Footer />
+                    <WhatsAppButton />
+                  </>
+                }
+              />
 
               {/* 404 Route */}
               <Route path="*" element={<NotFound />} />

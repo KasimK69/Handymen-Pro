@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -151,32 +150,21 @@ const acUnitsWanted: ACUnit[] = [
 
 // Main Component
 const AcBuyAndSale = () => {
-  const { addToCart } = useCart();
-  const [selectedTab, setSelectedTab] = useState<'for-sale' | 'wanted'>('for-sale');
   const [selectedUnit, setSelectedUnit] = useState<ACUnit | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [selectedTab, setSelectedTab] = useState<'for-sale' | 'wanted'>('for-sale');
   const [isSellingFormOpen, setIsSellingFormOpen] = useState(false);
-  const [sellingFormData, setSellingFormData] = useState({
-    name: '',
-    price: '',
-    description: '',
-    contact: '',
-    condition: 'used',
-    model: '',
-    brand: '',
-    images: ['', '', ''],
-    location: '',
-  });
-  
+  const { addToCart } = useCart();
+
   const formatPrice = (price: number) => {
     return `PKR ${price.toLocaleString()}`;
   };
 
-  const handleAddToCart = (product: ACUnit) => {
-    addToCart(product);
+  const handleAddToCart = (unit: ACUnit) => {
+    addToCart(unit);
     toast({
       title: "Added to cart",
-      description: `${product.name} has been added to your cart.`,
+      description: `${unit.name} has been added to your cart.`,
     });
   };
 
@@ -203,87 +191,41 @@ const AcBuyAndSale = () => {
     );
   };
 
-  const handleSellingFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setSellingFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleImageUrlChange = (index: number, value: string) => {
-    const newImages = [...sellingFormData.images];
-    newImages[index] = value;
-    setSellingFormData(prev => ({ ...prev, images: newImages }));
-  };
-
-  const handleSubmitSelling = (e: React.FormEvent) => {
+  const handleSubmitSellingForm = (e: React.FormEvent) => {
     e.preventDefault();
     toast({
-      title: "AC Listing Submitted",
-      description: "Thank you! Your AC listing has been submitted for review. Our team will contact you shortly.",
+      title: "Form submitted",
+      description: "We've received your AC selling request. Our team will contact you shortly.",
     });
     setIsSellingFormOpen(false);
-    setSellingFormData({
-      name: '',
-      price: '',
-      description: '',
-      contact: '',
-      condition: 'used',
-      model: '',
-      brand: '',
-      images: ['', '', ''],
-      location: '',
-    });
   };
 
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-brand-blue to-blue-700 text-white py-20">
+      <section className="bg-brand-blue text-white py-24 md:py-32">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">AC Buy & Sale</h1>
-              <p className="text-lg opacity-90 mb-6">
-                Find top-quality air conditioners for your home or office, or sell your used AC units to interested buyers. 
-                All transactions are secure and convenient.
+              <h1 className="text-4xl md:text-5xl font-bold mb-6">AC Buy & Sale Marketplace</h1>
+              <p className="text-xl opacity-90 leading-relaxed mb-8">
+                Find quality air conditioners at competitive prices or sell your used AC units. All transactions are backed by our quality assurance and expert technical assessment.
               </p>
-              
-              <div className="flex flex-wrap gap-4 mt-8">
-                <Button 
-                  size="lg" 
-                  className="bg-brand-red hover:bg-brand-red/90 text-white"
-                  onClick={() => setSelectedTab('for-sale')}
-                >
-                  Browse ACs For Sale
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button size="lg" className="bg-brand-red hover:bg-brand-red/90" onClick={() => setSelectedTab('for-sale')}>
+                  Buy AC Units
                 </Button>
-                <Button 
-                  size="lg" 
-                  variant="outline" 
-                  className="border-white text-white hover:bg-white/10"
-                  onClick={() => setSelectedTab('wanted')}
-                >
-                  View Buying Requests
-                </Button>
-                <Button 
-                  size="lg" 
-                  variant="secondary"
-                  onClick={() => setIsSellingFormOpen(true)}
-                >
+                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10" onClick={() => setIsSellingFormOpen(true)}>
                   Sell Your AC
                 </Button>
               </div>
             </div>
             <div className="hidden lg:block">
-              <div className="relative">
-                <img 
-                  src="https://images.unsplash.com/photo-1581275326027-70a6b944649a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80" 
-                  alt="Air Conditioner" 
-                  className="rounded-lg shadow-2xl"
-                />
-                <div className="absolute -bottom-6 -right-6 bg-white p-4 rounded-lg shadow-lg">
-                  <div className="text-brand-blue font-bold text-xl">Premium Quality</div>
-                  <div className="text-gray-600">Guaranteed Satisfaction</div>
-                </div>
-              </div>
+              <img 
+                src="https://images.unsplash.com/photo-1581275326027-70a6b944649a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80" 
+                alt="Modern AC Unit"
+                className="rounded-lg shadow-2xl"
+              />
             </div>
           </div>
         </div>
@@ -292,26 +234,26 @@ const AcBuyAndSale = () => {
       {/* Features */}
       <section className="py-16 bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <FeatureCard 
               icon={<BadgeCheck className="h-8 w-8 text-brand-red" />} 
-              title="Quality Assured" 
-              description="All our AC units are thoroughly tested for quality and performance before listing."
+              title="Quality Assurance" 
+              description="All AC units are thoroughly inspected and tested by our certified technicians."
             />
             <FeatureCard 
               icon={<Truck className="h-8 w-8 text-brand-red" />} 
-              title="Fast Delivery" 
-              description="Free delivery within 24-48 hours in Rawalpindi and Islamabad areas."
+              title="Free Delivery" 
+              description="Free delivery on all AC units within Islamabad and Rawalpindi."
             />
             <FeatureCard 
               icon={<ShieldCheck className="h-8 w-8 text-brand-red" />} 
-              title="Warranty Coverage" 
-              description="All new units come with manufacturer warranty plus our service guarantee."
+              title="Warranty Included" 
+              description="All units come with warranty and our service guarantee."
             />
             <FeatureCard 
               icon={<Clock className="h-8 w-8 text-brand-red" />} 
               title="Expert Installation" 
-              description="Professional installation by certified technicians included with every purchase."
+              description="Professional installation by our certified technicians."
             />
           </div>
         </div>
@@ -379,177 +321,109 @@ const AcBuyAndSale = () => {
 
       {/* Sell Your AC Form Modal */}
       {isSellingFormOpen && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-2xl font-bold">Sell Your AC Unit</h3>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
+                <h2 className="text-2xl font-bold">Sell Your AC Unit</h2>
+                <button 
+                  className="text-gray-500 hover:text-gray-700"
                   onClick={() => setIsSellingFormOpen(false)}
                 >
-                  <X className="h-5 w-5" />
-                </Button>
+                  <X className="h-6 w-6" />
+                </button>
               </div>
               
-              <form onSubmit={handleSubmitSelling} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <form onSubmit={handleSubmitSellingForm}>
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <Label htmlFor="name">Your Name</Label>
+                      <Input id="name" placeholder="Full Name" required />
+                    </div>
+                    <div>
+                      <Label htmlFor="phone">Phone Number</Label>
+                      <Input id="phone" placeholder="e.g. 0300-1234567" required />
+                    </div>
+                  </div>
+                  
                   <div>
-                    <Label htmlFor="name">AC Name/Title</Label>
-                    <Input 
-                      id="name" 
-                      name="name" 
-                      value={sellingFormData.name} 
-                      onChange={handleSellingFormChange} 
-                      placeholder="e.g., Haier Inverter AC 1.5 Ton"
+                    <Label htmlFor="email">Email Address</Label>
+                    <Input id="email" type="email" placeholder="your@email.com" />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="ac-model">AC Model/Brand</Label>
+                    <Input id="ac-model" placeholder="e.g. Gree 1.5 Ton Inverter" required />
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <Label htmlFor="condition">Condition</Label>
+                      <select 
+                        id="condition" 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        required
+                      >
+                        <option value="">Select Condition</option>
+                        <option value="like-new">Like New</option>
+                        <option value="excellent">Excellent</option>
+                        <option value="good">Good</option>
+                        <option value="fair">Fair</option>
+                      </select>
+                    </div>
+                    <div>
+                      <Label htmlFor="age">Age (Years)</Label>
+                      <Input id="age" type="number" min="0" placeholder="e.g. 2" required />
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="asking-price">Asking Price (PKR)</Label>
+                    <Input id="asking-price" type="number" min="0" placeholder="e.g. 50000" required />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="description">Description</Label>
+                    <Textarea 
+                      id="description" 
+                      placeholder="Please provide details about your AC unit, including any issues or special features."
+                      rows={4}
                       required
                     />
                   </div>
+                  
                   <div>
-                    <Label htmlFor="price">Asking Price (PKR)</Label>
-                    <Input 
-                      id="price" 
-                      name="price" 
-                      type="number"
-                      value={sellingFormData.price} 
-                      onChange={handleSellingFormChange} 
-                      placeholder="e.g., 50000"
-                      required
-                    />
+                    <Label className="mb-2 block">Upload Images</Label>
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                      <Camera className="mx-auto h-12 w-12 text-gray-400 mb-2" />
+                      <p className="text-sm text-gray-500 mb-2">Upload photos of your AC unit</p>
+                      <Button type="button" variant="outline" size="sm">
+                        <Upload className="h-4 w-4 mr-2" />
+                        Select Files
+                      </Button>
+                    </div>
                   </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <Label htmlFor="brand">Brand</Label>
-                    <Input 
-                      id="brand" 
-                      name="brand" 
-                      value={sellingFormData.brand} 
-                      onChange={handleSellingFormChange} 
-                      placeholder="e.g., Haier, Gree, etc."
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="model">Model</Label>
-                    <Input 
-                      id="model" 
-                      name="model" 
-                      value={sellingFormData.model} 
-                      onChange={handleSellingFormChange} 
-                      placeholder="e.g., HSU-12LTC/012"
-                    />
-                  </div>
-                </div>
-                
-                <div>
-                  <Label htmlFor="description">Description</Label>
-                  <Textarea 
-                    id="description" 
-                    name="description" 
-                    value={sellingFormData.description} 
-                    onChange={handleSellingFormChange} 
-                    placeholder="Provide details about the condition, age, features, etc."
-                    className="min-h-[100px]"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <Label className="block mb-2">AC Condition</Label>
+                  
                   <div className="flex items-center space-x-2">
-                    <Switch 
-                      id="condition" 
-                      checked={sellingFormData.condition === 'new'}
-                      onCheckedChange={(checked) => 
-                        setSellingFormData(prev => ({ ...prev, condition: checked ? 'new' : 'used' }))
-                      }
-                    />
-                    <Label htmlFor="condition">
-                      {sellingFormData.condition === 'new' ? 'New' : 'Used'}
+                    <Switch id="terms" required />
+                    <Label htmlFor="terms" className="text-sm">
+                      I agree to the terms and conditions and confirm that the information provided is accurate.
                     </Label>
                   </div>
-                </div>
-                
-                <div>
-                  <Label htmlFor="location">Location</Label>
-                  <Input 
-                    id="location" 
-                    name="location" 
-                    value={sellingFormData.location} 
-                    onChange={handleSellingFormChange} 
-                    placeholder="e.g., Rawalpindi, F-8 Islamabad, etc."
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="contact">Contact Number</Label>
-                  <Input 
-                    id="contact" 
-                    name="contact" 
-                    value={sellingFormData.contact} 
-                    onChange={handleSellingFormChange} 
-                    placeholder="e.g., 0300-1234567"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <Label className="mb-2 block">Upload Images (Up to 3)</Label>
-                  <div className="space-y-4">
-                    {sellingFormData.images.map((image, index) => (
-                      <div key={index} className="flex gap-4 items-center">
-                        <Input 
-                          value={image} 
-                          onChange={(e) => handleImageUrlChange(index, e.target.value)} 
-                          placeholder={`Image URL ${index + 1}`}
-                        />
-                        {image && (
-                          <div className="h-12 w-12 rounded overflow-hidden flex-shrink-0">
-                            <img 
-                              src={image} 
-                              alt={`Preview ${index + 1}`} 
-                              className="h-full w-full object-cover"
-                              onError={(e) => {
-                                (e.target as HTMLImageElement).src = 'https://via.placeholder.com/100?text=Error';
-                              }}
-                            />
-                          </div>
-                        )}
-                        {!image && (
-                          <div className="h-12 w-12 border rounded flex items-center justify-center bg-gray-100 text-gray-400 flex-shrink-0">
-                            <Camera className="h-6 w-6" />
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                  
+                  <div className="flex justify-end gap-4">
+                    <Button 
+                      type="button" 
+                      variant="outline"
+                      onClick={() => setIsSellingFormOpen(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button type="submit" className="bg-brand-blue hover:bg-brand-blue/90">
+                      Submit Request
+                    </Button>
                   </div>
-                </div>
-                
-                <div className="flex items-start gap-2 bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md">
-                  <div className="mt-1 text-blue-500">
-                    <ShieldCheck className="h-6 w-6" />
-                  </div>
-                  <div className="text-sm text-blue-700 dark:text-blue-300">
-                    <p className="font-semibold">Submission Process:</p>
-                    <p>Our team will review your submission and contact you to verify the details. Once approved, your listing will appear on our website. We may request additional information or photos if needed.</p>
-                  </div>
-                </div>
-                
-                <div className="flex justify-end gap-4">
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    onClick={() => setIsSellingFormOpen(false)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button type="submit" className="bg-brand-red hover:bg-brand-red/90">
-                    Submit Listing
-                  </Button>
                 </div>
               </form>
             </div>
@@ -559,16 +433,17 @@ const AcBuyAndSale = () => {
 
       {/* Image Gallery Modal */}
       {selectedUnit && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-75 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
           <div className="bg-white dark:bg-gray-800 rounded-lg max-w-4xl w-full overflow-hidden">
-            <div className="relative h-[50vh]">
+            <div className="relative">
               <img 
                 src={selectedUnit.images[currentImageIndex]} 
                 alt={selectedUnit.name} 
-                className="w-full h-full object-contain"
+                className="w-full h-auto object-contain" 
+                style={{ maxHeight: "70vh" }}
               />
               <button 
-                className="absolute top-4 right-4 bg-white dark:bg-gray-800 p-2 rounded-full shadow-lg"
+                className="absolute top-4 right-4 bg-white dark:bg-gray-800 p-2 rounded-full text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700"
                 onClick={closeGallery}
               >
                 <X className="h-6 w-6" />
@@ -576,43 +451,35 @@ const AcBuyAndSale = () => {
               {selectedUnit.images.length > 1 && (
                 <>
                   <button 
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white dark:bg-gray-800 p-2 rounded-full shadow-lg"
+                    className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white dark:bg-gray-800 p-2 rounded-full text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700"
                     onClick={prevImage}
                   >
                     <ChevronLeft className="h-6 w-6" />
                   </button>
                   <button 
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white dark:bg-gray-800 p-2 rounded-full shadow-lg"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white dark:bg-gray-800 p-2 rounded-full text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700"
                     onClick={nextImage}
                   >
                     <ChevronRight className="h-6 w-6" />
                   </button>
                 </>
               )}
-              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
-                {selectedUnit.images.map((_, index) => (
-                  <button
-                    key={index}
-                    className={`w-2.5 h-2.5 rounded-full ${
-                      index === currentImageIndex ? 'bg-brand-red' : 'bg-gray-300 dark:bg-gray-600'
-                    }`}
-                    onClick={() => setCurrentImageIndex(index)}
-                  />
-                ))}
-              </div>
             </div>
             <div className="p-6">
-              <div className="flex justify-between mb-4">
+              <div className="flex justify-between items-start mb-4">
                 <div>
                   <h3 className="text-2xl font-bold">{selectedUnit.name}</h3>
                   <div className="flex items-center mt-1">
-                    {[...Array(5)].map((_, i) => (
+                    {Array.from({ length: 5 }).map((_, i) => (
                       <Star 
                         key={i} 
                         className={`h-4 w-4 ${i < Math.floor(selectedUnit.rating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
                       />
                     ))}
-                    <span className="ml-2 text-sm text-gray-600">{selectedUnit.rating > 0 ? selectedUnit.rating : 'N/A'}</span>
+                    <span className="ml-2 text-sm text-gray-600">{selectedUnit.rating}</span>
+                    <span className="ml-4 text-sm px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                      {selectedUnit.condition === 'new' ? 'New' : 'Used'}
+                    </span>
                   </div>
                 </div>
                 <div className="text-right">
@@ -629,51 +496,32 @@ const AcBuyAndSale = () => {
                 </div>
               </div>
               
-              <Separator className="my-4" />
-              
               <div className="space-y-4">
-                <div>
-                  <h4 className="font-semibold text-lg mb-2">Features:</h4>
-                  <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    {selectedUnit.features.map((feature, index) => (
-                      <li key={index} className="flex items-start">
-                        <BadgeCheck className="w-5 h-5 text-brand-blue mt-0.5 mr-2 shrink-0" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <h4 className="font-bold">Features:</h4>
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  {selectedUnit.features.map((feature, index) => (
+                    <li key={index} className="flex items-start">
+                      <BadgeCheck className="w-5 h-5 text-brand-blue mt-0.5 mr-2 shrink-0" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
               
               <div className="flex gap-4 mt-6">
-                {selectedUnit.category === 'for-sale' ? (
-                  <Button 
-                    className="bg-brand-red hover:bg-brand-red/90"
-                    onClick={() => {
-                      handleAddToCart(selectedUnit);
-                      closeGallery();
-                    }}
-                  >
-                    <ShoppingCart className="mr-2 h-4 w-4" />
-                    Add to Cart
-                  </Button>
-                ) : (
-                  <Button 
-                    className="bg-brand-blue hover:bg-brand-blue/90"
-                    onClick={() => {
-                      toast({
-                        title: "Interest Registered",
-                        description: "Thank you for your interest. Our team will contact you shortly.",
-                      });
-                      closeGallery();
-                    }}
-                  >
-                    <Phone className="mr-2 h-4 w-4" />
-                    Contact Buyer
-                  </Button>
-                )}
+                <Button 
+                  className="bg-brand-red hover:bg-brand-red/90"
+                  onClick={() => {
+                    handleAddToCart(selectedUnit);
+                    closeGallery();
+                  }}
+                >
+                  <ShoppingCart className="mr-2 h-4 w-4" />
+                  Add to Cart
+                </Button>
                 <Button 
                   variant="outline" 
+                  className="border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white"
                   onClick={closeGallery}
                 >
                   Continue Shopping
@@ -687,49 +535,61 @@ const AcBuyAndSale = () => {
       {/* Testimonials section */}
       <section className="py-16 bg-gray-50 dark:bg-gray-900">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-10">What Our Customers Say</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">What Our Customers Say</h2>
+          
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <TestimonialCard 
-              quote="I bought a used inverter AC from them and couldn't be happier. It works like new and the price was extremely reasonable."
-              author="Asim Khan"
-              role="Rawalpindi"
+              quote="I sold my 2-year-old AC unit through this service and got a fair price. The process was smooth and the team was very professional."
+              author="Ahmed Khan"
+              role="Seller from Rawalpindi"
             />
             <TestimonialCard 
-              quote="Their team was very professional during installation. The AC I purchased is energy efficient and keeping my home cool even in peak summer."
-              author="Sania Ahmed"
-              role="Islamabad"
+              quote="Bought a used inverter AC at half the market price. It works perfectly and came with a 6-month warranty. Highly recommended!"
+              author="Fatima Ali"
+              role="Buyer from Islamabad"
             />
             <TestimonialCard 
-              quote="I was able to sell my old AC unit quickly through their platform. The process was smooth and I got a fair price."
-              author="Fahad Mehmood"
-              role="Rawalpindi"
+              quote="The technical assessment they provide before listing used ACs gives buyers confidence. I've both bought and sold through them."
+              author="Muhammad Usman"
+              role="Regular Customer"
             />
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-brand-blue text-white">
+      <section className="py-20 bg-brand-blue text-white">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Experience Superior Comfort?</h2>
-          <p className="text-lg opacity-90 mb-8 max-w-3xl mx-auto">
-            Whether you're looking to buy a new AC, sell your current one, or find a specific model, 
-            we're here to help you with all your air conditioning needs.
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Buy or Sell Your AC?</h2>
+          <p className="text-xl opacity-90 mb-8 max-w-2xl mx-auto">
+            Whether you're looking to upgrade your cooling system or sell your current unit, we're here to help you get the best deal.
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Button 
-              size="lg" 
-              className="bg-brand-red hover:bg-brand-red/90"
-            >
-              <Link to="/cart">View Cart</Link>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Button size="lg" className="bg-brand-red hover:bg-brand-red/90">
+              Browse AC Units
             </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="border-white text-white hover:bg-white/10"
-            >
-              <Link to="/contact">Contact Us</Link>
+            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10" onClick={() => setIsSellingFormOpen(true)}>
+              Sell Your AC
             </Button>
+          </div>
+          
+          <div className="mt-12 flex flex-wrap justify-center gap-6">
+            <div className="flex items-center gap-2">
+              <BadgeCheck className="h-5 w-5 text-brand-red" />
+              <span>Quality Assured</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="h-5 w-5 text-brand-red" />
+              <span>Warranty Included</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Truck className="h-5 w-5 text-brand-red" />
+              <span>Free Delivery</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Banknote className="h-5 w-5 text-brand-red" />
+              <span>Best Price Guarantee</span>
+            </div>
           </div>
         </div>
       </section>
@@ -769,53 +629,56 @@ const ProductCard = ({
 }) => {
   return (
     <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-all duration-300 group">
-      {product.discounted && (
-        <div className="absolute top-4 right-4 bg-brand-red text-white text-xs font-bold px-3 py-1 rounded-full z-10">
-          {product.discountPercentage}% OFF
+      <div className="relative">
+        {product.discounted && (
+          <div className="absolute top-4 right-4 bg-brand-red text-white text-xs font-bold px-3 py-1 rounded-full z-10">
+            {product.discountPercentage}% OFF
+          </div>
+        )}
+        
+        <div 
+          className="h-56 overflow-hidden cursor-pointer" 
+          onClick={onImageClick}
+        >
+          <img 
+            src={product.images[0]} 
+            alt={product.name} 
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            loading="lazy"
+          />
         </div>
-      )}
-      <div 
-        className="relative h-56 overflow-hidden cursor-pointer" 
-        onClick={onImageClick}
-      >
-        <img 
-          src={product.images[0]} 
-          alt={product.name} 
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-          loading="lazy"
-        />
-        <div className="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
       </div>
+      
       <CardContent className="p-6">
-        <div className="flex items-center mb-2">
-          {[...Array(5)].map((_, i) => (
+        <div className="flex items-center mb-2 gap-2">
+          {Array.from({ length: 5 }).map((_, i) => (
             <Star 
               key={i} 
               className={`h-4 w-4 ${i < Math.floor(product.rating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
             />
           ))}
-          <span className="ml-2 text-sm text-gray-600">{product.rating}</span>
+          <span className="text-sm text-gray-600">{product.rating}</span>
+          
+          <span className="ml-auto text-sm px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+            {product.condition === 'new' ? 'New' : 'Used'}
+          </span>
         </div>
+        
         <h3 className="text-xl font-bold mb-2">{product.name}</h3>
+        
         <div className="mb-4">
-          <span className="text-xl font-bold text-brand-blue">
+          <span className="text-2xl font-bold text-brand-blue">
             {product.discounted 
               ? formatPrice(product.price * (1 - (product.discountPercentage || 0) / 100))
               : formatPrice(product.price)}
           </span>
           {product.discounted && (
-            <span className="text-sm text-gray-500 line-through ml-2">
+            <span className="text-lg text-gray-500 line-through ml-2">
               {formatPrice(product.price)}
             </span>
           )}
         </div>
-
-        <div className="flex items-center mb-3 text-sm text-gray-600">
-          <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded-full mr-2">
-            {product.condition === 'new' ? 'New' : 'Used'}
-          </span>
-        </div>
-
+        
         <div className="space-y-2 mb-4">
           {product.features.slice(0, 3).map((feature, index) => (
             <div key={index} className="flex items-start">
@@ -830,10 +693,7 @@ const ProductCard = ({
           )}
         </div>
         
-        <Button 
-          className="w-full bg-brand-blue hover:bg-brand-blue/90" 
-          onClick={onAddToCart}
-        >
+        <Button className="w-full bg-brand-blue hover:bg-brand-blue/90" onClick={onAddToCart}>
           <ShoppingCart className="mr-2 h-4 w-4" />
           Add to Cart
         </Button>
@@ -844,25 +704,24 @@ const ProductCard = ({
 
 const WantedCard = ({ 
   request, 
-  formatPrice 
+  formatPrice
 }: { 
-  request: ACUnit; 
+  request: ACUnit;
   formatPrice: (price: number) => string;
 }) => {
   return (
-    <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-all duration-300 h-full">
-      <div className="bg-brand-blue text-white p-3 text-sm font-semibold">
-        Buying Request
+    <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-all duration-300">
+      <div className="h-40 bg-gradient-to-r from-blue-500 to-blue-600 p-6 flex items-center justify-center relative">
+        <div className="absolute top-4 left-4 bg-white text-brand-blue text-xs font-bold px-3 py-1 rounded-full">
+          Wanted
+        </div>
+        <div className="text-white text-center">
+          <h3 className="text-xl font-bold">{request.name}</h3>
+          <p className="text-white/80 mt-2">{formatPrice(request.price)}</p>
+        </div>
       </div>
       <CardContent className="p-6">
-        <h3 className="text-xl font-bold mb-3">{request.name}</h3>
-        <div className="mb-4">
-          <span className="text-lg font-bold text-brand-red">
-            Budget: {formatPrice(request.price)}
-          </span>
-        </div>
-        
-        <div className="space-y-2 mb-6">
+        <div className="space-y-2 mb-4">
           {request.features.map((feature, index) => (
             <div key={index} className="flex items-start">
               <BadgeCheck className="w-4 h-4 text-brand-blue mt-1 mr-2 shrink-0" />
@@ -871,9 +730,7 @@ const WantedCard = ({
           ))}
         </div>
         
-        <Button 
-          className="w-full bg-brand-blue hover:bg-brand-blue/90"
-        >
+        <Button className="w-full bg-brand-blue hover:bg-brand-blue/90">
           <Phone className="mr-2 h-4 w-4" />
           Contact Buyer
         </Button>
@@ -891,20 +748,18 @@ const TestimonialCard = ({
   author: string;
   role: string;
 }) => (
-  <Card className="h-full">
-    <CardContent className="p-6 flex flex-col h-full">
-      <div className="mb-4 text-brand-blue">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 opacity-50">
-          <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-        </svg>
-      </div>
-      <p className="text-gray-600 dark:text-gray-400 flex-grow">{quote}</p>
-      <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-        <p className="font-semibold">{author}</p>
-        <p className="text-sm text-gray-500 dark:text-gray-400">{role}</p>
-      </div>
-    </CardContent>
-  </Card>
+  <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+    <div className="mb-4 text-brand-blue">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M11.192 15.757c0-.88-.23-1.618-.69-2.217-.326-.412-.768-.683-1.327-.812-.55-.128-1.07-.137-1.54-.028-.16-.95.1-1.942.41-2.98.82-2.77 2.93-5.73 2.93-5.73s-3.02 1.392-4.81 3.34c-1.84 1.99-2.27 4.3-1.29 6.92.92 2.48 3.29 3.17 4.75 2.49 1.17-.54 1.56-1.94 1.56-2.98zm11.08 0c0-.88-.23-1.618-.69-2.217-.326-.42-.768-.683-1.327-.812-.55-.128-1.07-.137-1.54-.028-.16-.95.1-1.942.41-2.98.82-2.77 2.93-5.73 2.93-5.73s-3.02 1.392-4.81 3.34c-1.84 1.99-2.27 4.3-1.29 6.92.92 2.48 3.29 3.17 4.75 2.49 1.17-.54 1.56-1.94 1.56-2.98z" />
+      </svg>
+    </div>
+    <p className="text-gray-700 dark:text-gray-300 mb-6">{quote}</p>
+    <div>
+      <p className="font-bold">{author}</p>
+      <p className="text-sm text-gray-500">{role}</p>
+    </div>
+  </div>
 );
 
 export default AcBuyAndSale;
