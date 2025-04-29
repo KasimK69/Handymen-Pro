@@ -11,6 +11,7 @@ export interface CartItem {
   quantity: number;
   discounted?: boolean;
   discountPercentage?: number;
+  condition?: 'new' | 'used'; // Added condition property
 }
 
 interface CartContextType {
@@ -92,7 +93,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
           images: item.images,
           quantity: 1,
           discounted: item.discounted,
-          discountPercentage: item.discountPercentage
+          discountPercentage: item.discountPercentage,
+          condition: item.condition // Include condition in new items
         };
         return [...prevCart, newItem];
       }

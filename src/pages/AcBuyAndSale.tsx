@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -20,7 +19,8 @@ import {
   CreditCard,
   Camera,
   Upload,
-  Phone
+  Phone,
+  User
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { useCart } from '@/context/CartContext';
@@ -783,148 +783,4 @@ const ProductCard = ({
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           loading="lazy"
         />
-        <div className="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-          <div className="bg-white dark:bg-gray-800 text-brand-blue dark:text-white px-4 py-2 rounded-full transform -translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-            View Details
-          </div>
-        </div>
-        <div className="absolute bottom-4 right-4 bg-white dark:bg-gray-800 text-xs px-2 py-1 rounded-full shadow-md">
-          {product.condition === 'new' ? (
-            <span className="text-green-600 font-semibold">New</span>
-          ) : (
-            <span className="text-amber-600 font-semibold">Used</span>
-          )}
-        </div>
-      </div>
-      <CardContent className="p-6">
-        <div className="flex items-center mb-2">
-          {product.rating > 0 && (
-            <>
-              {[...Array(5)].map((_, i) => (
-                <Star 
-                  key={i} 
-                  className={`h-4 w-4 ${i < Math.floor(product.rating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
-                />
-              ))}
-              <span className="ml-2 text-sm text-gray-600">{product.rating}</span>
-            </>
-          )}
-        </div>
-        <h3 className="text-xl font-bold mb-2 line-clamp-2">{product.name}</h3>
-        <div className="mb-4">
-          <span className="text-2xl font-bold text-brand-blue">
-            {product.discounted 
-              ? formatPrice(product.price * (1 - (product.discountPercentage || 0) / 100))
-              : formatPrice(product.price)}
-          </span>
-          {product.discounted && (
-            <span className="text-sm text-gray-500 line-through ml-2">
-              {formatPrice(product.price)}
-            </span>
-          )}
-        </div>
-        <div className="space-y-2 mb-4">
-          {product.features.slice(0, 3).map((feature, index) => (
-            <div key={index} className="flex items-start">
-              <BadgeCheck className="w-4 h-4 text-brand-blue mt-1 mr-2 shrink-0" />
-              <span className="text-sm text-gray-600 dark:text-gray-400 line-clamp-1">{feature}</span>
-            </div>
-          ))}
-          {product.features.length > 3 && (
-            <div className="text-sm text-gray-600 dark:text-gray-400 pl-6">
-              +{product.features.length - 3} more features
-            </div>
-          )}
-        </div>
-        <Button 
-          className="w-full bg-brand-red hover:bg-brand-red/90 transition-colors" 
-          onClick={onAddToCart}
-        >
-          <ShoppingCart className="mr-2 h-4 w-4" />
-          Add to Cart
-        </Button>
-      </CardContent>
-    </Card>
-  );
-};
-
-const WantedCard = ({ 
-  request, 
-  formatPrice 
-}: { 
-  request: ACUnit; 
-  formatPrice: (price: number) => string;
-}) => {
-  return (
-    <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-all duration-300 group">
-      <div className="absolute top-4 left-4 bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full z-10">
-        WANTED
-      </div>
-      <div className="relative h-56 overflow-hidden bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center">
-        <div className="text-center p-6">
-          <div className="bg-white dark:bg-gray-800 rounded-full w-16 h-16 mx-auto flex items-center justify-center mb-4">
-            <ShoppingCart className="h-8 w-8 text-purple-600" />
-          </div>
-          <h3 className="font-bold text-xl mb-2">{request.name.replace('Looking for: ', '')}</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Max Budget: {formatPrice(request.price)}
-          </p>
-        </div>
-      </div>
-      <CardContent className="p-6">
-        <h3 className="text-xl font-bold mb-4">Buyer Requirements:</h3>
-        <div className="space-y-2 mb-4">
-          {request.features.map((feature, index) => (
-            <div key={index} className="flex items-start">
-              <BadgeCheck className="w-4 h-4 text-purple-600 mt-1 mr-2 shrink-0" />
-              <span className="text-sm text-gray-600 dark:text-gray-400">{feature}</span>
-            </div>
-          ))}
-        </div>
-        <Button 
-          className="w-full bg-purple-600 hover:bg-purple-700 transition-colors"
-          onClick={() => {
-            toast({
-              title: "Inquiry Sent",
-              description: "Thank you for your interest. Our team will contact you shortly.",
-            });
-          }}
-        >
-          I Have This AC
-        </Button>
-      </CardContent>
-    </Card>
-  );
-};
-
-const TestimonialCard = ({ 
-  quote, 
-  author, 
-  role 
-}: { 
-  quote: string; 
-  author: string; 
-  role: string;
-}) => {
-  return (
-    <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md relative">
-      <div className="text-gray-400 dark:text-gray-500 text-4xl font-serif absolute top-4 left-6">"</div>
-      <div className="pt-6">
-        <p className="text-gray-700 dark:text-gray-300 mb-4 italic">
-          {quote}
-        </p>
-        <div className="flex items-center">
-          <div className="bg-gray-200 dark:bg-gray-700 rounded-full w-10 h-10 flex items-center justify-center mr-3">
-            <User className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-          </div>
-          <div>
-            <p className="font-semibold">{author}</p>
-            <p className="text-sm text-gray-600 dark:text-gray-400">{role}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default AcBuyAndSale;
+        <div className="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:
