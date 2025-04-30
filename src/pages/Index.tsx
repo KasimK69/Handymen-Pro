@@ -6,6 +6,7 @@ import Services from '@/components/home/Services';
 import Features from '@/components/home/Features';
 import Testimonials from '@/components/home/Testimonials';
 import CTA from '@/components/home/CTA';
+import AIChatAgent from '@/components/AIChatAgent';
 
 const Home = () => {
   return (
@@ -16,6 +17,7 @@ const Home = () => {
       <Features />
       <Testimonials />
       <CTA />
+      <AIChatAgent />
     </>
   );
 };
