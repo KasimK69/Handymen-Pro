@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -32,6 +31,8 @@ import ServicesAdmin from "./pages/admin/Services";
 import ProductsAdmin from "./pages/admin/Products";
 import OrdersAdmin from "./pages/admin/Orders";
 import BlogAdmin from "./pages/admin/Blog";
+import Testimonials from "./pages/admin/Testimonials";
+import SmartAdport from "./pages/admin/SmartAdport";
 
 const queryClient = new QueryClient();
 
@@ -62,6 +63,8 @@ const App = () => (
                 <Route path="products" element={<ProductsAdmin />} />
                 <Route path="orders" element={<OrdersAdmin />} />
                 <Route path="blog" element={<BlogAdmin />} />
+                <Route path="testimonials" element={<Testimonials />} />
+                <Route path="smart-adport" element={<SmartAdport />} />
               </Route>
 
               {/* Public Routes with Header and Footer */}
