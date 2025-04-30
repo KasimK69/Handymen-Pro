@@ -71,20 +71,150 @@ const App = () => (
                   <>
                     <Header />
                     <main className="min-h-screen pt-16">
-                      <Routes>
-                        <Route index element={<Home />} />
-                        <Route path="about" element={<About />} />
-                        <Route path="services" element={<Services />} />
-                        <Route path="services/:slug" element={<ServiceDetail />} />
-                        <Route path="contact" element={<Contact />} />
-                        <Route path="booking" element={<Booking />} />
-                        <Route path="blog" element={<Blog />} />
-                        <Route path="blog/:slug" element={<BlogPost />} />
-                        <Route path="ac-buy-and-sale" element={<AcBuyAndSale />} />
-                        <Route path="ac-sale" element={<AcBuyAndSale />} /> {/* Added alias route */}
-                        <Route path="cart" element={<Cart />} />
-                        <Route path="checkout" element={<Checkout />} />
-                      </Routes>
+                      <Home />
+                    </main>
+                    <Footer />
+                    <WhatsAppButton />
+                  </>
+                }
+              />
+              <Route
+                path="/about"
+                element={
+                  <>
+                    <Header />
+                    <main className="min-h-screen pt-16">
+                      <About />
+                    </main>
+                    <Footer />
+                    <WhatsAppButton />
+                  </>
+                }
+              />
+              <Route
+                path="/services"
+                element={
+                  <>
+                    <Header />
+                    <main className="min-h-screen pt-16">
+                      <Services />
+                    </main>
+                    <Footer />
+                    <WhatsAppButton />
+                  </>
+                }
+              />
+              <Route
+                path="/services/:slug"
+                element={
+                  <>
+                    <Header />
+                    <main className="min-h-screen pt-16">
+                      <ServiceDetail />
+                    </main>
+                    <Footer />
+                    <WhatsAppButton />
+                  </>
+                }
+              />
+              <Route
+                path="/contact"
+                element={
+                  <>
+                    <Header />
+                    <main className="min-h-screen pt-16">
+                      <Contact />
+                    </main>
+                    <Footer />
+                    <WhatsAppButton />
+                  </>
+                }
+              />
+              <Route
+                path="/booking"
+                element={
+                  <>
+                    <Header />
+                    <main className="min-h-screen pt-16">
+                      <Booking />
+                    </main>
+                    <Footer />
+                    <WhatsAppButton />
+                  </>
+                }
+              />
+              <Route
+                path="/blog"
+                element={
+                  <>
+                    <Header />
+                    <main className="min-h-screen pt-16">
+                      <Blog />
+                    </main>
+                    <Footer />
+                    <WhatsAppButton />
+                  </>
+                }
+              />
+              <Route
+                path="/blog/:slug"
+                element={
+                  <>
+                    <Header />
+                    <main className="min-h-screen pt-16">
+                      <BlogPost />
+                    </main>
+                    <Footer />
+                    <WhatsAppButton />
+                  </>
+                }
+              />
+              <Route
+                path="/ac-buy-and-sale"
+                element={
+                  <>
+                    <Header />
+                    <main className="min-h-screen pt-16">
+                      <AcBuyAndSale />
+                    </main>
+                    <Footer />
+                    <WhatsAppButton />
+                  </>
+                }
+              />
+              <Route
+                path="/ac-sale"
+                element={
+                  <>
+                    <Header />
+                    <main className="min-h-screen pt-16">
+                      <AcBuyAndSale />
+                    </main>
+                    <Footer />
+                    <WhatsAppButton />
+                  </>
+                }
+              />
+              <Route
+                path="/cart"
+                element={
+                  <>
+                    <Header />
+                    <main className="min-h-screen pt-16">
+                      <Cart />
+                    </main>
+                    <Footer />
+                    <WhatsAppButton />
+                  </>
+                }
+              />
+              <Route
+                path="/checkout"
+                element={
+                  <>
+                    <Header />
+                    <main className="min-h-screen pt-16">
+                      <Checkout />
                     </main>
                     <Footer />
                     <WhatsAppButton />
