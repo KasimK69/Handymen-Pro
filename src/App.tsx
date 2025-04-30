@@ -33,6 +33,10 @@ import OrdersAdmin from "./pages/admin/Orders";
 import BlogAdmin from "./pages/admin/Blog";
 import Testimonials from "./pages/admin/Testimonials";
 import SmartAdport from "./pages/admin/SmartAdport";
+import Settings from "./pages/admin/Settings";
+import Bookings from "./pages/admin/Bookings";
+import Customers from "./pages/admin/Customers";
+import Payments from "./pages/admin/Payments";
 
 const queryClient = new QueryClient();
 
@@ -50,8 +54,8 @@ const App = () => (
               <Route path="/admin" element={<Admin />} />
 
               {/* Admin Routes with Admin Layout */}
-              <Route 
-                path="/admin" 
+              <Route
+                path="/admin"
                 element={
                   <ProtectedRoute>
                     <AdminLayout />
@@ -65,6 +69,10 @@ const App = () => (
                 <Route path="blog" element={<BlogAdmin />} />
                 <Route path="testimonials" element={<Testimonials />} />
                 <Route path="smart-adport" element={<SmartAdport />} />
+                <Route path="settings" element={<Settings />} />
+                <Route path="bookings" element={<Bookings />} />
+                <Route path="customers" element={<Customers />} />
+                <Route path="payments" element={<Payments />} />
               </Route>
 
               {/* Public Routes with Header and Footer */}
