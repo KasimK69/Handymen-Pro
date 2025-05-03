@@ -20,6 +20,15 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Pencil, Trash2, Plus, Search, UserCog } from "lucide-react";
 import { toast } from '@/hooks/use-toast';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogDescription, 
+  DialogFooter, 
+  DialogHeader, 
+  DialogTitle 
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 
 interface Customer {
   id: string;
@@ -79,6 +88,15 @@ const initialCustomers: Customer[] = [
 const Customers = () => {
   const [customers, setCustomers] = useState<Customer[]>(initialCustomers);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [currentCustomer, setCurrentCustomer] = useState<Customer | null>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    status: 'active' as 'active' | 'inactive'
+  });
 
   const filteredCustomers = customers.filter(customer => 
     customer.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -111,6 +129,91 @@ const Customers = () => {
     });
   };
 
+  const openAddCustomerDialog = () => {
+    setCurrentCustomer(null);
+    setFormData({
+      name: '',
+      email: '',
+      phone: '',
+      address: '',
+      status: 'active'
+    });
+    setIsDialogOpen(true);
+  };
+
+  const openEditCustomerDialog = (customer: Customer) => {
+    setCurrentCustomer(customer);
+    setFormData({
+      name: customer.name,
+      email: customer.email,
+      phone: customer.phone,
+      address: customer.address,
+      status: customer.status
+    });
+    setIsDialogOpen(true);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      status: e.target.value as 'active' | 'inactive'
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (currentCustomer) {
+      // Edit existing customer
+      setCustomers(customers.map(customer => 
+        customer.id === currentCustomer.id
+          ? { 
+              ...customer, 
+              name: formData.name,
+              email: formData.email,
+              phone: formData.phone,
+              address: formData.address,
+              status: formData.status
+            }
+          : customer
+      ));
+      
+      toast({
+        title: "Customer updated",
+        description: "The customer information has been updated successfully",
+      });
+    } else {
+      // Add new customer
+      const newCustomer: Customer = {
+        id: `C${Math.floor(1000 + Math.random() * 9000)}`,
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        joinDate: new Date().toISOString().split('T')[0],
+        orderCount: 0,
+        status: formData.status
+      };
+      
+      setCustomers([...customers, newCustomer]);
+      
+      toast({
+        title: "Customer added",
+        description: "New customer has been added successfully",
+      });
+    }
+    
+    setIsDialogOpen(false);
+  };
+
   return (
     <>
       <div className="flex justify-between items-center mb-6">
@@ -120,7 +223,10 @@ const Customers = () => {
             Manage customer accounts and information
           </p>
         </div>
-        <Button className="bg-brand-blue hover:bg-brand-blue/90">
+        <Button 
+          className="bg-brand-blue hover:bg-brand-blue/90"
+          onClick={openAddCustomerDialog}
+        >
           <Plus className="mr-2 h-4 w-4" />
           Add Customer
         </Button>
@@ -189,7 +295,7 @@ const Customers = () => {
                         <Button variant="ghost" size="icon" onClick={() => toggleCustomerStatus(customer.id)}>
                           <UserCog className="h-4 w-4 text-blue-500" />
                         </Button>
-                        <Button variant="ghost" size="icon">
+                        <Button variant="ghost" size="icon" onClick={() => openEditCustomerDialog(customer)}>
                           <Pencil className="h-4 w-4 text-blue-500" />
                         </Button>
                         <Button variant="ghost" size="icon" onClick={() => deleteCustomer(customer.id)}>
@@ -204,6 +310,109 @@ const Customers = () => {
           </Table>
         </CardContent>
       </Card>
+
+      {/* Add/Edit Customer Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>{currentCustomer ? 'Edit Customer' : 'Add New Customer'}</DialogTitle>
+            <DialogDescription>
+              {currentCustomer 
+                ? 'Update customer information below.' 
+                : 'Enter customer details to add a new customer.'}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <form onSubmit={handleSubmit}>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="name" className="text-right">
+                  Name
+                </Label>
+                <Input
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className="col-span-3"
+                  required
+                />
+              </div>
+              
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="email" className="text-right">
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className="col-span-3"
+                  required
+                />
+              </div>
+              
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="phone" className="text-right">
+                  Phone
+                </Label>
+                <Input
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  className="col-span-3"
+                  required
+                />
+              </div>
+              
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="address" className="text-right">
+                  Address
+                </Label>
+                <Input
+                  id="address"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleInputChange}
+                  className="col-span-3"
+                />
+              </div>
+              
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="status" className="text-right">
+                  Status
+                </Label>
+                <select
+                  id="status"
+                  name="status"
+                  value={formData.status}
+                  onChange={handleStatusChange}
+                  className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+              </div>
+            </div>
+            
+            <DialogFooter>
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => setIsDialogOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit">
+                {currentCustomer ? 'Save Changes' : 'Add Customer'}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
