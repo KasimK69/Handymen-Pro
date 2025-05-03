@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   Card,
@@ -206,10 +205,14 @@ const Customers = () => {
         description: "The customer information has been updated successfully",
       });
     } else {
-      // Add new customer
+      // Add new customer - Fix: Make sure all required properties are provided
       const newCustomer: Customer = {
         id: `C${Math.floor(1000 + Math.random() * 9000)}`,
-        ...values,
+        name: values.name,
+        email: values.email,
+        phone: values.phone,
+        address: values.address,
+        status: values.status,
         joinDate: new Date().toISOString().split('T')[0],
         orderCount: 0
       };
