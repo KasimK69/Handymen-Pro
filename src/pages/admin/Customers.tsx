@@ -18,7 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Pencil, Trash2, Plus, Search, UserCog } from "lucide-react";
+import { Pencil, Trash2, Plus, Search, UserCog, UserX, UserCheck } from "lucide-react";
 import { toast } from '@/hooks/use-toast';
 import { 
   Dialog, 
@@ -29,6 +29,28 @@ import {
   DialogTitle 
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+// Define the validation schema
+const customerFormSchema = z.object({
+  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
+  email: z.string().email({ message: "Please enter a valid email address." }),
+  phone: z.string().min(7, { message: "Phone number must be at least 7 digits." }),
+  address: z.string().min(5, { message: "Address must be at least 5 characters." }),
+  status: z.enum(["active", "inactive"])
+});
+
+type CustomerFormValues = z.infer<typeof customerFormSchema>;
 
 interface Customer {
   id: string;
@@ -90,12 +112,19 @@ const Customers = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [currentCustomer, setCurrentCustomer] = useState<Customer | null>(null);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
-    status: 'active' as 'active' | 'inactive'
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState<boolean>(false);
+  const [customerToDelete, setCustomerToDelete] = useState<string>('');
+
+  // Create form
+  const form = useForm<CustomerFormValues>({
+    resolver: zodResolver(customerFormSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      address: "",
+      status: "active"
+    }
   });
 
   const filteredCustomers = customers.filter(customer => 
@@ -104,13 +133,20 @@ const Customers = () => {
     customer.phone.includes(searchTerm)
   );
 
-  const deleteCustomer = (id: string) => {
-    setCustomers(customers.filter(customer => customer.id !== id));
+  const confirmDeleteCustomer = (id: string) => {
+    setCustomerToDelete(id);
+    setIsConfirmDialogOpen(true);
+  };
+
+  const deleteCustomer = () => {
+    setCustomers(customers.filter(customer => customer.id !== customerToDelete));
     
     toast({
       title: "Customer deleted",
       description: "The customer has been removed successfully",
     });
+
+    setIsConfirmDialogOpen(false);
   };
 
   const toggleCustomerStatus = (id: string) => {
@@ -131,19 +167,19 @@ const Customers = () => {
 
   const openAddCustomerDialog = () => {
     setCurrentCustomer(null);
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      address: '',
-      status: 'active'
+    form.reset({
+      name: "",
+      email: "",
+      phone: "",
+      address: "",
+      status: "active"
     });
     setIsDialogOpen(true);
   };
 
   const openEditCustomerDialog = (customer: Customer) => {
     setCurrentCustomer(customer);
-    setFormData({
+    form.reset({
       name: customer.name,
       email: customer.email,
       phone: customer.phone,
@@ -153,35 +189,14 @@ const Customers = () => {
     setIsDialogOpen(true);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      status: e.target.value as 'active' | 'inactive'
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const onSubmit = (values: CustomerFormValues) => {
     if (currentCustomer) {
       // Edit existing customer
       setCustomers(customers.map(customer => 
         customer.id === currentCustomer.id
           ? { 
               ...customer, 
-              name: formData.name,
-              email: formData.email,
-              phone: formData.phone,
-              address: formData.address,
-              status: formData.status
+              ...values
             }
           : customer
       ));
@@ -194,13 +209,9 @@ const Customers = () => {
       // Add new customer
       const newCustomer: Customer = {
         id: `C${Math.floor(1000 + Math.random() * 9000)}`,
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        address: formData.address,
+        ...values,
         joinDate: new Date().toISOString().split('T')[0],
-        orderCount: 0,
-        status: formData.status
+        orderCount: 0
       };
       
       setCustomers([...customers, newCustomer]);
@@ -274,7 +285,7 @@ const Customers = () => {
                 </TableRow>
               ) : (
                 filteredCustomers.map((customer) => (
-                  <TableRow key={customer.id}>
+                  <TableRow key={customer.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                     <TableCell>
                       <div className="font-medium">{customer.name}</div>
                       <div className="text-sm text-gray-500">{customer.id}</div>
@@ -286,19 +297,22 @@ const Customers = () => {
                     <TableCell>{customer.joinDate}</TableCell>
                     <TableCell>{customer.orderCount}</TableCell>
                     <TableCell>
-                      <Badge variant={customer.status === "active" ? "default" : "outline"}>
+                      <Badge variant={customer.status === "active" ? "default" : "outline"} className="capitalize">
                         {customer.status === "active" ? "Active" : "Inactive"}
                       </Badge>
                     </TableCell>
                     <TableCell>
                       <div className="flex space-x-2">
                         <Button variant="ghost" size="icon" onClick={() => toggleCustomerStatus(customer.id)}>
-                          <UserCog className="h-4 w-4 text-blue-500" />
+                          {customer.status === "active" ?
+                            <UserX className="h-4 w-4 text-blue-500" /> :
+                            <UserCheck className="h-4 w-4 text-green-500" />
+                          }
                         </Button>
                         <Button variant="ghost" size="icon" onClick={() => openEditCustomerDialog(customer)}>
                           <Pencil className="h-4 w-4 text-blue-500" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => deleteCustomer(customer.id)}>
+                        <Button variant="ghost" size="icon" onClick={() => confirmDeleteCustomer(customer.id)}>
                           <Trash2 className="h-4 w-4 text-red-500" />
                         </Button>
                       </div>
@@ -323,94 +337,119 @@ const Customers = () => {
             </DialogDescription>
           </DialogHeader>
           
-          <form onSubmit={handleSubmit}>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right">
-                  Name
-                </Label>
-                <Input
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  className="col-span-3"
-                  required
-                />
-              </div>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="Enter customer name" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="email" className="text-right">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="col-span-3"
-                  required
-                />
-              </div>
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input {...field} type="email" placeholder="Enter customer email" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="phone" className="text-right">
-                  Phone
-                </Label>
-                <Input
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  className="col-span-3"
-                  required
-                />
-              </div>
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="Enter customer phone" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="address" className="text-right">
-                  Address
-                </Label>
-                <Input
-                  id="address"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleInputChange}
-                  className="col-span-3"
-                />
-              </div>
+              <FormField
+                control={form.control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Address</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="Enter customer address" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="status" className="text-right">
-                  Status
-                </Label>
-                <select
-                  id="status"
-                  name="status"
-                  value={formData.status}
-                  onChange={handleStatusChange}
-                  className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <FormControl>
+                      <select
+                        className="w-full flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        value={field.value}
+                        onChange={field.onChange}
+                      >
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                      </select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <DialogFooter className="pt-2">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => setIsDialogOpen(false)}
                 >
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                </select>
-              </div>
-            </div>
-            
-            <DialogFooter>
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={() => setIsDialogOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button type="submit">
-                {currentCustomer ? 'Save Changes' : 'Add Customer'}
-              </Button>
-            </DialogFooter>
-          </form>
+                  Cancel
+                </Button>
+                <Button type="submit">
+                  {currentCustomer ? 'Save Changes' : 'Add Customer'}
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Confirmation Dialog */}
+      <Dialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Confirm Deletion</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this customer? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="mt-4">
+            <Button variant="outline" onClick={() => setIsConfirmDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={deleteCustomer}>
+              Delete Customer
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </>
