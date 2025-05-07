@@ -38,7 +38,7 @@ const Hero = () => {
                 <Link to="/booking">Book a Service</Link>
               </Button>
               <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10" asChild>
-                <Link to="/ac-sale">Shop AC Units</Link>
+                <Link to="/ac-buy-and-sale">Shop AC Units</Link>
               </Button>
             </div>
             
@@ -56,7 +56,7 @@ const Hero = () => {
           <div className="relative animate-fade-in-slow">
             <div className="relative rounded-lg overflow-hidden shadow-2xl">
               <img 
-                src="https://images.unsplash.com/photo-1581275299888-536227aac860?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
+                src="/lovable-uploads/cf10ab83-7dc8-43ab-ab86-4d1edaf5a9d3.png" 
                 alt="Professional AC service in Rawalpindi" 
                 className="w-full h-auto rounded-lg object-cover"
                 loading="eager"

@@ -16,8 +16,8 @@ import {
   Users,
   CreditCard,
   Calendar,
-  Gauge,
-  Award
+  Award,
+  ImageIcon,
 } from 'lucide-react';
 
 const AdminSidebar = () => {
@@ -25,7 +25,10 @@ const AdminSidebar = () => {
     <Sidebar className="fixed inset-y-0 left-0 z-50 w-64">
       <SidebarContent>
         <div className="px-4 py-8">
-          <h2 className="text-2xl font-bold text-center">AC Service Admin</h2>
+          <h2 className="text-2xl font-bold text-center">
+            <span className="text-black dark:text-white">AC</span>
+            <span className="text-brand-red">Admin</span>
+          </h2>
         </div>
         <SidebarGroup>
           <SidebarGroupLabel>Main</SidebarGroupLabel>
@@ -68,6 +71,15 @@ const AdminSidebar = () => {
                 </NavLink>
               </SidebarMenuItem>
               <SidebarMenuItem>
+                <NavLink to="/admin/bookings" className="w-full">
+                  {({ isActive }) => (
+                    <SidebarMenuButton isActive={isActive} tooltip="Bookings">
+                      <Calendar /> Bookings
+                    </SidebarMenuButton>
+                  )}
+                </NavLink>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
                 <NavLink to="/admin/testimonials" className="w-full">
                   {({ isActive }) => (
                     <SidebarMenuButton isActive={isActive} tooltip="Testimonials">
@@ -85,18 +97,28 @@ const AdminSidebar = () => {
                   )}
                 </NavLink>
               </SidebarMenuItem>
+              <SidebarMenuItem>
+                <NavLink to="/admin/media" className="w-full">
+                  {({ isActive }) => (
+                    <SidebarMenuButton isActive={isActive} tooltip="Media">
+                      <ImageIcon /> Media
+                    </SidebarMenuButton>
+                  )}
+                </NavLink>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        
         <SidebarGroup>
           <SidebarGroupLabel>Operations</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <NavLink to="/admin/bookings" className="w-full">
+                <NavLink to="/admin/customers" className="w-full">
                   {({ isActive }) => (
-                    <SidebarMenuButton isActive={isActive} tooltip="Bookings">
-                      <Calendar /> Bookings
+                    <SidebarMenuButton isActive={isActive} tooltip="Customers">
+                      <Users /> Customers
                     </SidebarMenuButton>
                   )}
                 </NavLink>
@@ -106,15 +128,6 @@ const AdminSidebar = () => {
                   {({ isActive }) => (
                     <SidebarMenuButton isActive={isActive} tooltip="Orders">
                       <ShoppingCart /> Orders
-                    </SidebarMenuButton>
-                  )}
-                </NavLink>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <NavLink to="/admin/customers" className="w-full">
-                  {({ isActive }) => (
-                    <SidebarMenuButton isActive={isActive} tooltip="Customers">
-                      <Users /> Customers
                     </SidebarMenuButton>
                   )}
                 </NavLink>
@@ -131,6 +144,7 @@ const AdminSidebar = () => {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        
         <SidebarGroup>
           <SidebarGroupLabel>Settings</SidebarGroupLabel>
           <SidebarGroupContent>

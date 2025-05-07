@@ -1,11 +1,12 @@
 
-import React from 'react';
-import { X, Camera, ShieldCheck } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { X, Camera, ShieldCheck, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { toast } from '@/hooks/use-toast';
 
 interface SellingFormProps {
   isOpen: boolean;
@@ -36,6 +37,31 @@ const SellingForm: React.FC<SellingFormProps> = ({
   onConditionChange,
   onSubmit
 }) => {
+  const fileInputRefs = [useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null)];
+  
+  // Handle file upload
+  const handleFileChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          onImageChange(index, event.target.result as string);
+        }
+      };
+      
+      reader.readAsDataURL(file);
+    }
+  };
+  
+  // Trigger file input click
+  const triggerFileInput = (index: number) => {
+    if (fileInputRefs[index] && fileInputRefs[index].current) {
+      fileInputRefs[index].current?.click();
+    }
+  };
+  
   if (!isOpen) return null;
 
   return (
@@ -156,17 +182,41 @@ const SellingForm: React.FC<SellingFormProps> = ({
             </div>
             
             <div>
-              <Label className="mb-2 block">Upload Images (Up to 3)</Label>
+              <Label className="mb-4 block">Upload Images (Up to 3)</Label>
               <div className="space-y-4">
                 {formData.images.map((image, index) => (
                   <div key={index} className="flex gap-4 items-center">
-                    <Input 
-                      value={image} 
-                      onChange={(e) => onImageChange(index, e.target.value)} 
-                      placeholder={`Image URL ${index + 1}`}
-                    />
+                    <div className="flex-grow">
+                      <Input 
+                        value={image} 
+                        onChange={(e) => onImageChange(index, e.target.value)} 
+                        placeholder={`Image URL ${index + 1}`}
+                        className="mb-2"
+                      />
+                      <div className="flex items-center">
+                        <span className="text-sm text-gray-500 mr-2">or</span>
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => triggerFileInput(index)}
+                          className="flex items-center"
+                        >
+                          <Upload className="h-4 w-4 mr-2" />
+                          Upload Image
+                        </Button>
+                        <input 
+                          type="file" 
+                          ref={fileInputRefs[index]} 
+                          onChange={(e) => handleFileChange(index, e)} 
+                          accept="image/*" 
+                          className="hidden" 
+                        />
+                      </div>
+                    </div>
+                    
                     {image && (
-                      <div className="h-12 w-12 rounded overflow-hidden flex-shrink-0">
+                      <div className="h-20 w-20 rounded overflow-hidden flex-shrink-0 border">
                         <img 
                           src={image} 
                           alt={`Preview ${index + 1}`} 
@@ -178,7 +228,7 @@ const SellingForm: React.FC<SellingFormProps> = ({
                       </div>
                     )}
                     {!image && (
-                      <div className="h-12 w-12 border rounded flex items-center justify-center bg-gray-100 text-gray-400 flex-shrink-0">
+                      <div className="h-20 w-20 border rounded flex items-center justify-center bg-gray-100 text-gray-400 flex-shrink-0">
                         <Camera className="h-6 w-6" />
                       </div>
                     )}

@@ -7,9 +7,11 @@ import Features from '@/components/home/Features';
 import Testimonials from '@/components/home/Testimonials';
 import CTA from '@/components/home/CTA';
 import InquiryForm from '@/components/InquiryForm';
+import MapLocation from '@/components/MapLocation';
 import { Button } from '@/components/ui/button';
 import { MessageSquare } from 'lucide-react';
 import AIChatAgent from '@/components/AIChatAgent';
+import WhatsAppButton from '@/components/WhatsAppButton';
 
 const Home = () => {
   const [isInquiryFormOpen, setIsInquiryFormOpen] = useState(false);
@@ -25,6 +27,7 @@ const Home = () => {
       <Services />
       <Features />
       <Testimonials />
+      <MapLocation />
       <CTA />
       
       {/* Quick Inquiry Button */}
@@ -38,6 +41,9 @@ const Home = () => {
       
       {/* AI Chat Agent */}
       <AIChatAgent />
+      
+      {/* WhatsApp Button */}
+      <WhatsAppButton />
       
       {/* Inquiry Form Modal */}
       <InquiryForm 

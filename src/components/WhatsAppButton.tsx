@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { MessageSquare } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 
 const WhatsAppButton = () => {
   const [isHovered, setIsHovered] = useState(false);
@@ -27,7 +27,7 @@ const WhatsAppButton = () => {
         className="flex items-center justify-center bg-[#25D366] p-4 rounded-full shadow-lg hover:scale-110 transition-transform duration-300"
         aria-label="Chat on WhatsApp"
       >
-        <MessageSquare className="w-6 h-6 text-white" />
+        <MessageCircle className="w-6 h-6 text-white" />
       </a>
     </div>
   );
