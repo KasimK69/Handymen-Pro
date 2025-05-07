@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import WhatsAppButton from "./components/WhatsAppButton";
+import QuickActionsButton from "./components/QuickActionsButton";
 import ScrollToTop from "./components/ScrollToTop";
 import Home from "./pages/Index";
 import About from "./pages/About";
@@ -86,6 +88,7 @@ const App = () => (
                     </main>
                     <Footer />
                     <WhatsAppButton />
+                    <QuickActionsButton />
                   </>
                 }
               />

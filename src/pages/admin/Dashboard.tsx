@@ -1,141 +1,139 @@
 
 import React from 'react';
+import DashboardLayout from '@/components/admin/dashboard/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { 
-  CalendarClock, 
-  UserCheck, 
-  DollarSign, 
-  ShoppingCart, 
-  TrendingUp, 
-  BarChart3 
-} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { ArrowRight, Users, FileText, Calendar, ShoppingBag, CreditCard } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
-const Dashboard = () => {
+// Mock data
+const overviewData = [
+  { title: 'Total Bookings', value: '2,856', icon: <Calendar className="h-6 w-6 text-blue-500" />, change: '+12%', period: 'from last month', color: 'text-green-600' },
+  { title: 'Total Revenue', value: 'PKR 185,420', icon: <CreditCard className="h-6 w-6 text-green-500" />, change: '+8%', period: 'from last month', color: 'text-green-600' },
+  { title: 'Active Customers', value: '1,523', icon: <Users className="h-6 w-6 text-purple-500" />, change: '+5%', period: 'from last month', color: 'text-green-600' },
+  { title: 'Pending Bookings', value: '24', icon: <Calendar className="h-6 w-6 text-amber-500" />, change: '-3%', period: 'from last month', color: 'text-red-600' },
+];
+
+const recentBookings = [
+  { id: 'BKG-2023-001', customer: 'Ahmed Khan', service: 'AC Installation', date: '2023-09-25', status: 'Completed', amount: 'PKR 15,000' },
+  { id: 'BKG-2023-002', customer: 'Sara Ali', service: 'AC Repair', date: '2023-09-24', status: 'Scheduled', amount: 'PKR 2,500' },
+  { id: 'BKG-2023-003', customer: 'Fahad Mahmood', service: 'Gas Refill', date: '2023-09-24', status: 'In Progress', amount: 'PKR 3,500' },
+  { id: 'BKG-2023-004', customer: 'Ayesha Ahmed', service: 'Maintenance', date: '2023-09-23', status: 'Completed', amount: 'PKR 4,000' },
+  { id: 'BKG-2023-005', customer: 'Bilal Hassan', service: 'AC Troubleshooting', date: '2023-09-22', status: 'Scheduled', amount: 'PKR 1,800' },
+];
+
+const Dashboard: React.FC = () => {
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <div>
-          <select 
-            className="px-3 py-2 border rounded-md bg-white dark:bg-gray-800"
-            defaultValue="today"
-          >
-            <option value="today">Today</option>
-            <option value="week">This Week</option>
-            <option value="month">This Month</option>
-            <option value="year">This Year</option>
-          </select>
+    <DashboardLayout>
+      <div className="p-6">
+        <header className="mb-8">
+          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <p className="text-gray-600 dark:text-gray-400">Welcome to your AC Services admin dashboard.</p>
+        </header>
+        
+        {/* Overview Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {overviewData.map((item, index) => (
+            <Card key={index}>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="bg-gray-100 dark:bg-gray-800 p-2 rounded-lg">{item.icon}</span>
+                  <span className={`text-sm font-medium ${item.color}`}>
+                    {item.change} <span className="text-gray-500 dark:text-gray-400">{item.period}</span>
+                  </span>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{item.title}</p>
+                  <h3 className="text-2xl font-bold">{item.value}</h3>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
-      </div>
-
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Total Bookings</CardTitle>
-            <CalendarClock className="h-4 w-4 text-gray-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">128</div>
-            <p className="text-xs text-green-500 flex items-center mt-1">
-              <TrendingUp className="h-3 w-3 mr-1" />
-              +12% from last month
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">New Customers</CardTitle>
-            <UserCheck className="h-4 w-4 text-gray-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">45</div>
-            <p className="text-xs text-green-500 flex items-center mt-1">
-              <TrendingUp className="h-3 w-3 mr-1" />
-              +5% from last month
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-            <DollarSign className="h-4 w-4 text-gray-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">$12,456</div>
-            <p className="text-xs text-green-500 flex items-center mt-1">
-              <TrendingUp className="h-3 w-3 mr-1" />
-              +18% from last month
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Product Sales</CardTitle>
-            <ShoppingCart className="h-4 w-4 text-gray-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">52</div>
-            <p className="text-xs text-green-500 flex items-center mt-1">
-              <TrendingUp className="h-3 w-3 mr-1" />
-              +8% from last month
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
+        
+        {/* Quick Actions */}
+        <div className="mb-8">
+          <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Button asChild className="bg-blue-600 hover:bg-blue-700">
+              <Link to="/admin/bookings/new" className="flex items-center">
+                <Calendar className="mr-2 h-4 w-4" />
+                New Booking
+              </Link>
+            </Button>
+            <Button asChild className="bg-purple-600 hover:bg-purple-700">
+              <Link to="/admin/customers/new" className="flex items-center">
+                <Users className="mr-2 h-4 w-4" />
+                Add Customer
+              </Link>
+            </Button>
+            <Button asChild className="bg-green-600 hover:bg-green-700">
+              <Link to="/admin/services/new" className="flex items-center">
+                <ShoppingBag className="mr-2 h-4 w-4" />
+                Add Service
+              </Link>
+            </Button>
+            <Button asChild className="bg-amber-600 hover:bg-amber-700">
+              <Link to="/admin/blog/new" className="flex items-center">
+                <FileText className="mr-2 h-4 w-4" />
+                New Blog Post
+              </Link>
+            </Button>
+          </div>
+        </div>
+        
+        {/* Recent Bookings */}
+        <Card className="mb-8">
+          <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Recent Bookings</CardTitle>
+            <Button variant="ghost" size="sm" asChild className="text-sm">
+              <Link to="/admin/bookings" className="flex items-center">
+                View All
+                <ArrowRight className="ml-1 h-4 w-4" />
+              </Link>
+            </Button>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              <div className="grid grid-cols-4 text-sm font-medium text-gray-500 pb-2 border-b">
-                <div>Customer</div>
-                <div>Service</div>
-                <div>Date</div>
-                <div>Status</div>
-              </div>
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className="grid grid-cols-4 text-sm">
-                  <div>John Doe</div>
-                  <div>AC Repair</div>
-                  <div>{new Date().toLocaleDateString()}</div>
-                  <div><span className="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Pending</span></div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Sales</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="grid grid-cols-4 text-sm font-medium text-gray-500 pb-2 border-b">
-                <div>Product</div>
-                <div>Customer</div>
-                <div>Amount</div>
-                <div>Status</div>
-              </div>
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className="grid grid-cols-4 text-sm">
-                  <div>AC 1.5 Ton</div>
-                  <div>Sarah Johnson</div>
-                  <div>$599</div>
-                  <div><span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Completed</span></div>
-                </div>
-              ))}
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-gray-200 dark:border-gray-700">
+                    <th className="text-left py-3 px-4 font-medium">Booking ID</th>
+                    <th className="text-left py-3 px-4 font-medium">Customer</th>
+                    <th className="text-left py-3 px-4 font-medium">Service</th>
+                    <th className="text-left py-3 px-4 font-medium">Date</th>
+                    <th className="text-left py-3 px-4 font-medium">Status</th>
+                    <th className="text-left py-3 px-4 font-medium">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recentBookings.map((booking) => (
+                    <tr key={booking.id} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800">
+                      <td className="py-3 px-4">{booking.id}</td>
+                      <td className="py-3 px-4">{booking.customer}</td>
+                      <td className="py-3 px-4">{booking.service}</td>
+                      <td className="py-3 px-4">{booking.date}</td>
+                      <td className="py-3 px-4">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          booking.status === 'Completed' 
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
+                            : booking.status === 'Scheduled'
+                            ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                            : 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200'
+                        }`}>
+                          {booking.status}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4">{booking.amount}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </CardContent>
         </Card>
       </div>
-    </div>
+    </DashboardLayout>
   );
 };
 
