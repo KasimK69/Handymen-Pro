@@ -90,7 +90,7 @@ const services: Service[] = [
     description: 'Regular maintenance services to keep your AC running efficiently and extend its lifespan.',
     icon: '🛠️',
     image: 'https://images.unsplash.com/photo-1621905252507-1a1a6bc3eee7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-    details: 'Regular maintenance is the key to extending your AC system's lifespan and preventing costly breakdowns. Our comprehensive maintenance service includes cleaning, inspection, and tuning to ensure optimal performance.',
+    details: "Regular maintenance is the key to extending your AC system's lifespan and preventing costly breakdowns. Our comprehensive maintenance service includes cleaning, inspection, and tuning to ensure optimal performance.",
     features: [
       'Filter cleaning or replacement',
       'Coil cleaning (evaporator and condenser)',
