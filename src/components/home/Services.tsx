@@ -15,46 +15,25 @@ interface Service {
 
 const services: Service[] = [
   {
-    id: 'plumbing',
-    title: 'Plumbing Services',
-    description: 'Professional plumbing solutions for leaks, installations, and repairs.',
-    icon: '🔧',
-    image: 'https://images.unsplash.com/photo-1621905251918-48416bd8575a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    id: 'electrical',
-    title: 'Electrical Work',
-    description: 'Safe and reliable electrical repairs, installations and maintenance.',
-    icon: '⚡',
-    image: 'https://images.unsplash.com/photo-1621905252507-1a1a6bc3eee7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    id: 'ac-repair',
-    title: 'AC Repair & Installation',
-    description: 'Expert AC services to keep your home cool and comfortable.',
+    id: 'ac-installation',
+    title: 'AC Installation',
+    description: 'Professional installation services for all AC brands and models with expert setup and configuration.',
     icon: '❄️',
     image: 'https://images.unsplash.com/photo-1581275299888-536227aac860?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
   },
   {
-    id: 'painting',
-    title: 'Painting Services',
-    description: 'Transform your space with professional painting services.',
-    icon: '🎨',
-    image: 'https://images.unsplash.com/photo-1562259929-b4e1fd3aef09?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
+    id: 'ac-repair',
+    title: 'AC Repair',
+    description: 'Fast and reliable repair services to fix any AC issues and restore optimal cooling performance.',
+    icon: '🔧',
+    image: 'https://images.unsplash.com/photo-1621905251918-48416bd8575a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
   },
   {
-    id: 'carpentry',
-    title: 'Carpentry',
-    description: 'Custom woodwork, repairs, and installations by skilled carpenters.',
-    icon: '🪚',
-    image: 'https://images.unsplash.com/photo-1622021142947-da7dedc7c39a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    id: 'home-renovation',
-    title: 'Home Renovation',
-    description: 'Complete renovation solutions to transform your living space.',
-    icon: '🏠',
-    image: 'https://images.unsplash.com/photo-1574359411659-15573d93bd51?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
+    id: 'gas-refill',
+    title: 'AC Gas Refill',
+    description: 'Expert refrigerant refill services to ensure your AC maintains maximum cooling efficiency.',
+    icon: '💨',
+    image: 'https://images.unsplash.com/photo-1617992462188-361a6e46f47d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
   }
 ];
 
@@ -63,13 +42,13 @@ const Services = () => {
     <section className="section-padding bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto">
         <div className="text-center mb-16">
-          <h2 className="section-title">Our Professional Services</h2>
+          <h2 className="section-title">Our AC Services</h2>
           <p className="section-subtitle max-w-2xl mx-auto">
-            Comprehensive home improvement and repair services delivered by skilled professionals
+            Expert AC installation, repair, and maintenance services delivered by certified professionals
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {services.map((service) => (
             <ServiceCard key={service.id} service={service} />
           ))}

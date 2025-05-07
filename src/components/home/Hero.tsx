@@ -18,18 +18,18 @@ const Hero = () => {
           {/* Content */}
           <div className="text-white animate-fade-in">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-              Professional Handyman Services in Rawalpindi & Islamabad
+              Professional AC Services in Rawalpindi & Islamabad
             </h1>
             <p className="text-lg md:text-xl opacity-90 mb-8 leading-relaxed max-w-xl">
-              From simple repairs to complete renovations, we deliver quality craftsmanship and reliable service for all your home improvement needs in Bahria Town and surrounding areas.
+              From expert installations to speedy repairs, we provide premium AC services to keep your home cool and comfortable in Bahria Town and surrounding areas.
             </p>
             
             {/* Features */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
               <FeatureItem>Same Day Service</FeatureItem>
-              <FeatureItem>Licensed & Insured</FeatureItem>
-              <FeatureItem>100% Satisfaction</FeatureItem>
-              <FeatureItem>Free Estimates</FeatureItem>
+              <FeatureItem>Certified Technicians</FeatureItem>
+              <FeatureItem>Warranty on Services</FeatureItem>
+              <FeatureItem>Free Consultations</FeatureItem>
             </div>
             
             {/* CTAs */}
@@ -38,7 +38,7 @@ const Hero = () => {
                 <Link to="/booking">Book a Service</Link>
               </Button>
               <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10" asChild>
-                <Link to="/services">Explore Services</Link>
+                <Link to="/ac-sale">Shop AC Units</Link>
               </Button>
             </div>
             
@@ -56,8 +56,8 @@ const Hero = () => {
           <div className="relative animate-fade-in-slow">
             <div className="relative rounded-lg overflow-hidden shadow-2xl">
               <img 
-                src="https://images.unsplash.com/photo-1591955506264-3f5a6834570a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
-                alt="Professional handyman service in Rawalpindi" 
+                src="https://images.unsplash.com/photo-1581275299888-536227aac860?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
+                alt="Professional AC service in Rawalpindi" 
                 className="w-full h-auto rounded-lg object-cover"
                 loading="eager"
               />
@@ -66,12 +66,12 @@ const Hero = () => {
               <div className="absolute -bottom-6 -right-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
                 <div className="flex gap-8">
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-brand-red">15+</div>
+                    <div className="text-3xl font-bold text-brand-red">12+</div>
                     <div className="text-sm text-gray-600 dark:text-gray-400">Years Experience</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-brand-red">5000+</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">Jobs Completed</div>
+                    <div className="text-3xl font-bold text-brand-red">4000+</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">AC Services Done</div>
                   </div>
                 </div>
               </div>

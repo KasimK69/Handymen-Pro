@@ -38,7 +38,7 @@ const Header = () => {
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/" className="flex items-center">
           <span className="text-2xl font-heading font-bold text-brand-blue">
-            <span className="text-brand-red">Pro</span>Handyman
+            <span className="text-brand-red">AC</span>Services
           </span>
         </Link>
 
@@ -53,10 +53,9 @@ const Header = () => {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-1">
           <NavLink to="/">Home</NavLink>
-          <NavLink to="/about">About</NavLink>
           <NavLink to="/services">Services</NavLink>
-          <NavLink to="/blog">Blog</NavLink>
           <NavLink to="/ac-sale">AC Units</NavLink>
+          <NavLink to="/blog">Blog</NavLink>
           <NavLink to="/contact">Contact</NavLink>
           <Button variant="default" className="ml-4 bg-brand-red hover:bg-brand-red/90" asChild>
             <Link to="/booking" className="flex items-center">
@@ -96,7 +95,7 @@ const Header = () => {
           <div className="flex justify-between items-center mb-8">
             <Link to="/" className="flex items-center" onClick={() => setIsMobileMenuOpen(false)}>
               <span className="text-2xl font-heading font-bold text-brand-blue">
-                <span className="text-brand-red">Pro</span>Handyman
+                <span className="text-brand-red">AC</span>Services
               </span>
             </Link>
             <Button 
@@ -110,10 +109,9 @@ const Header = () => {
           </div>
           <nav className="flex flex-col space-y-6">
             <MobileNavLink to="/" onClick={() => setIsMobileMenuOpen(false)}>Home</MobileNavLink>
-            <MobileNavLink to="/about" onClick={() => setIsMobileMenuOpen(false)}>About</MobileNavLink>
             <MobileNavLink to="/services" onClick={() => setIsMobileMenuOpen(false)}>Services</MobileNavLink>
-            <MobileNavLink to="/blog" onClick={() => setIsMobileMenuOpen(false)}>Blog</MobileNavLink>
             <MobileNavLink to="/ac-sale" onClick={() => setIsMobileMenuOpen(false)}>AC Units</MobileNavLink>
+            <MobileNavLink to="/blog" onClick={() => setIsMobileMenuOpen(false)}>Blog</MobileNavLink>
             <MobileNavLink to="/contact" onClick={() => setIsMobileMenuOpen(false)}>Contact</MobileNavLink>
             <Link 
               to="/booking" 

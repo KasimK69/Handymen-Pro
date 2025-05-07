@@ -14,68 +14,47 @@ interface Service {
 
 const services: Service[] = [
   {
-    id: 'plumbing',
-    title: 'Plumbing Services',
-    description: 'Expert plumbing repairs, installations, and maintenance services for your home or business. We handle everything from fixing leaks to complete bathroom renovations.',
-    icon: '🔧',
-    image: 'https://images.unsplash.com/photo-1621905251918-48416bd8575a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    id: 'electrical',
-    title: 'Electrical Work',
-    description: 'Comprehensive electrical services including repairs, installations, upgrades, and maintenance. Our certified electricians ensure your home\'s electrical systems are safe and functional.',
-    icon: '⚡',
-    image: 'https://images.unsplash.com/photo-1621905252507-1a1a6bc3eee7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    id: 'ac-repair',
-    title: 'AC Repair & Installation',
-    description: 'Keep your home comfortable with our AC repair, installation, and maintenance services. We work with all major brands and models to ensure optimal cooling performance.',
+    id: 'ac-installation',
+    title: 'AC Installation',
+    description: 'Professional installation services for all AC brands and models. Our certified technicians ensure proper setup, positioning, and configuration for optimal cooling efficiency and longevity of your AC unit.',
     icon: '❄️',
     image: 'https://images.unsplash.com/photo-1581275299888-536227aac860?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
   },
   {
-    id: 'painting',
-    title: 'Painting Services',
-    description: 'Transform your space with our professional painting services. From interior rooms to exterior facades, we deliver flawless finishes with premium paints and attention to detail.',
-    icon: '🎨',
-    image: 'https://images.unsplash.com/photo-1562259929-b4e1fd3aef09?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
+    id: 'ac-repair',
+    title: 'AC Repair',
+    description: 'Expert AC repair services for all makes and models. From minor issues to major malfunctions, our technicians diagnose and fix problems quickly to restore your comfort with minimal disruption.',
+    icon: '🔧',
+    image: 'https://images.unsplash.com/photo-1621905251918-48416bd8575a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
   },
   {
-    id: 'carpentry',
-    title: 'Carpentry',
-    description: 'Custom carpentry solutions including furniture building, repairs, custom shelving, and woodwork. Our skilled carpenters create beautiful and functional wood elements for your home.',
-    icon: '🪚',
-    image: 'https://images.unsplash.com/photo-1622021142947-da7dedc7c39a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
+    id: 'gas-refill',
+    title: 'AC Gas Refill',
+    description: 'Professional refrigerant refill services to restore optimal cooling performance. Our technicians check for leaks, repair if needed, and refill your AC system with the correct type and amount of refrigerant.',
+    icon: '💨',
+    image: 'https://images.unsplash.com/photo-1617992462188-361a6e46f47d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
   },
   {
-    id: 'home-renovation',
-    title: 'Home Renovation',
-    description: 'Complete home renovation services from kitchen and bathroom remodels to whole-house renovations. We handle every aspect of your project from design to final finishes.',
-    icon: '🏠',
-    image: 'https://images.unsplash.com/photo-1574359411659-15573d93bd51?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
+    id: 'ac-maintenance',
+    title: 'AC Maintenance',
+    description: 'Preventative maintenance services to keep your AC running efficiently. Regular servicing helps prevent breakdowns, extends the lifespan of your unit, and ensures optimal cooling performance year-round.',
+    icon: '🛠️',
+    image: 'https://images.unsplash.com/photo-1621905252507-1a1a6bc3eee7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
   },
   {
-    id: 'flooring',
-    title: 'Flooring Installation',
-    description: 'Expert installation of various flooring materials including hardwood, laminate, tile, vinyl, and carpet. We ensure precise fitting and beautiful results for any room.',
-    icon: '🧱',
-    image: 'https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
+    id: 'ac-troubleshooting',
+    title: 'AC Troubleshooting',
+    description: 'Comprehensive diagnostic services to identify AC issues. Our skilled technicians use advanced tools and techniques to accurately diagnose and resolve complex problems with your air conditioning system.',
+    icon: '🔍',
+    image: 'https://images.unsplash.com/photo-1595877244574-e90ce41a1e5a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
   },
   {
-    id: 'drywall',
-    title: 'Drywall Repair',
-    description: 'Professional drywall installation and repair services to fix holes, cracks, water damage, and other issues. We ensure seamless finishes that match your existing walls.',
-    icon: '🧰',
-    image: 'https://images.unsplash.com/photo-1632392176614-91c330f4c05d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    id: 'furniture-assembly',
-    title: 'Furniture Assembly',
-    description: 'Let our experts handle the assembly of your furniture items. We assemble all types of furniture from various manufacturers quickly and correctly.',
-    icon: '🪑',
-    image: 'https://images.unsplash.com/photo-1594026112284-02bb6f3352fe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-  },
+    id: 'commercial-ac',
+    title: 'Commercial AC Services',
+    description: 'Specialized AC services for businesses and commercial properties. We provide installation, maintenance, and repair for commercial AC systems, ensuring minimal disruption to your operations.',
+    icon: '🏢',
+    image: 'https://images.unsplash.com/photo-1495434942214-9b582186bad0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
+  }
 ];
 
 const Services = () => {
@@ -85,9 +64,9 @@ const Services = () => {
       <section className="bg-brand-blue text-white py-24 md:py-32">
         <div className="container mx-auto">
           <div className="max-w-3xl">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">Our Professional Services</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">Our Professional AC Services</h1>
             <p className="text-xl opacity-90 leading-relaxed">
-              Comprehensive handyman solutions for all your home improvement and repair needs.
+              Comprehensive air conditioning solutions for all your cooling needs.
             </p>
           </div>
         </div>
