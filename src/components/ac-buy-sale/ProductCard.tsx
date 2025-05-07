@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Star, BadgeCheck, ShoppingCart } from 'lucide-react';
+import { Star, BadgeCheck, MessageSquare } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ACUnit } from '@/types/acUnit';
@@ -8,14 +8,14 @@ import { ACUnit } from '@/types/acUnit';
 interface ProductCardProps {
   product: ACUnit;
   onImageClick: () => void;
-  onAddToCart: () => void;
+  onWhatsAppContact: () => void;
   formatPrice: (price: number) => string;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ 
   product, 
   onImageClick,
-  onAddToCart,
+  onWhatsAppContact,
   formatPrice
 }) => {
   return (
@@ -84,9 +84,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
           )}
         </div>
         
-        <Button className="w-full bg-brand-blue hover:bg-brand-blue/90" onClick={onAddToCart}>
-          <ShoppingCart className="mr-2 h-4 w-4" />
-          Add to Cart
+        <Button className="w-full bg-green-600 hover:bg-green-700 flex items-center justify-center" onClick={onWhatsAppContact}>
+          <MessageSquare className="mr-2 h-4 w-4" />
+          Contact on WhatsApp
         </Button>
       </CardContent>
     </Card>

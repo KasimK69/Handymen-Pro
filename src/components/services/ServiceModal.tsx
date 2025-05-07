@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import {
@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog';
-import { Clock, CheckCircle } from 'lucide-react';
+import { Clock, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface ServiceModalProps {
   isOpen: boolean;
@@ -22,20 +22,65 @@ interface ServiceModalProps {
     image: string;
     details?: string;
     features?: string[];
+    images?: string[];
   };
 }
 
 const ServiceModal: React.FC<ServiceModalProps> = ({ isOpen, onClose, service }) => {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const images = service.images || [service.image];
+  
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  const selectImage = (index: number) => {
+    setCurrentImageIndex(index);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden">
-        <div className="relative h-48 sm:h-64">
+      <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden">
+        <div className="relative h-64 sm:h-80 overflow-hidden">
           <img 
-            src={service.image} 
+            src={images[currentImageIndex]} 
             alt={service.title} 
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+          
+          {/* Image navigation controls */}
+          {images.length > 1 && (
+            <>
+              <button 
+                onClick={prevImage} 
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 dark:bg-gray-800/80 rounded-full p-2 hover:bg-white dark:hover:bg-gray-800"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </button>
+              <button 
+                onClick={nextImage} 
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 dark:bg-gray-800/80 rounded-full p-2 hover:bg-white dark:hover:bg-gray-800"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </button>
+              
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                {images.map((_, index) => (
+                  <button
+                    key={index}
+                    className={`w-2 h-2 rounded-full ${index === currentImageIndex ? 'bg-white' : 'bg-white/40'}`}
+                    onClick={() => selectImage(index)}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+          
           <DialogHeader className="absolute bottom-0 left-0 p-6 text-white">
             <DialogTitle className="text-2xl sm:text-3xl font-bold">{service.title}</DialogTitle>
           </DialogHeader>

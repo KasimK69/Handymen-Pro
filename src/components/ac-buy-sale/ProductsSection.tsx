@@ -12,7 +12,7 @@ interface ProductsSectionProps {
   acUnitsForSale: ACUnit[];
   acUnitsWanted: ACUnit[];
   onOpenGallery: (unit: ACUnit) => void;
-  onAddToCart: (unit: ACUnit) => void;
+  onWhatsAppContact: (unit: ACUnit) => void;
   formatPrice: (price: number) => string;
   onOpenSellingForm: () => void;
 }
@@ -23,7 +23,7 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({
   acUnitsForSale,
   acUnitsWanted,
   onOpenGallery,
-  onAddToCart,
+  onWhatsAppContact,
   formatPrice,
   onOpenSellingForm
 }) => {
@@ -52,7 +52,7 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({
                   key={unit.id} 
                   product={unit} 
                   onImageClick={() => onOpenGallery(unit)}
-                  onAddToCart={() => onAddToCart(unit)}
+                  onWhatsAppContact={() => onWhatsAppContact(unit)}
                   formatPrice={formatPrice}
                 />
               ))}

@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import { toast } from '@/hooks/use-toast';
-import { useCart } from '@/context/CartContext';
 import { acUnitsForSale, acUnitsWanted } from '@/data/acUnits';
 import { ACUnit } from '@/types/acUnit';
 import HeroSection from '@/components/ac-buy-sale/HeroSection';
@@ -29,17 +28,19 @@ const AcBuyAndSale: React.FC = () => {
     location: '',
   });
   
-  const { addToCart } = useCart();
-
   const formatPrice = (price: number): string => {
     return `PKR ${price.toLocaleString()}`;
   };
 
-  const handleAddToCart = (product: ACUnit): void => {
-    addToCart(product);
+  const handleWhatsAppContact = (unit: ACUnit): void => {
+    const phoneNumber = '+923125242182';
+    const message = `Hello, I'm interested in buying this AC: ${unit.name} (${formatPrice(unit.price)})`;
+    const whatsappUrl = `https://wa.me/${phoneNumber.replace('+', '')}?text=${encodeURIComponent(message)}`;
+    
+    window.open(whatsappUrl, '_blank');
     toast({
-      title: "Added to cart",
-      description: `${product.name} has been added to your cart.`,
+      title: "Opening WhatsApp",
+      description: "Connecting you with our sales team.",
     });
   };
 
@@ -125,7 +126,7 @@ const AcBuyAndSale: React.FC = () => {
         acUnitsForSale={acUnitsForSale}
         acUnitsWanted={acUnitsWanted}
         onOpenGallery={handleOpenGallery}
-        onAddToCart={handleAddToCart}
+        onWhatsAppContact={handleWhatsAppContact}
         formatPrice={formatPrice}
         onOpenSellingForm={() => setIsSellingFormOpen(true)}
       />
@@ -146,9 +147,9 @@ const AcBuyAndSale: React.FC = () => {
         onPrev={handlePrevImage}
         onNext={handleNextImage}
         onImageSelect={(index) => setCurrentImageIndex(index)}
-        onAddToCart={() => {
+        onWhatsAppContact={() => {
           if (selectedUnit) {
-            handleAddToCart(selectedUnit);
+            handleWhatsAppContact(selectedUnit);
             handleCloseGallery();
           }
         }}

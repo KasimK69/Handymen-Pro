@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { X, ChevronLeft, ChevronRight, Star, BadgeCheck, ShoppingCart, Phone } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Star, BadgeCheck, MessageSquare, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { ACUnit } from '@/types/acUnit';
@@ -13,7 +13,7 @@ interface ImageGalleryProps {
   onPrev: () => void;
   onNext: () => void;
   onImageSelect: (index: number) => void;
-  onAddToCart: () => void;
+  onWhatsAppContact: () => void;
   onContactBuyer: () => void;
 }
 
@@ -25,7 +25,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
   onPrev,
   onNext,
   onImageSelect,
-  onAddToCart,
+  onWhatsAppContact,
   onContactBuyer
 }) => {
   if (!unit) return null;
@@ -120,11 +120,11 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
           <div className="flex gap-4 mt-6">
             {unit.category === 'for-sale' ? (
               <Button 
-                className="bg-brand-red hover:bg-brand-red/90"
-                onClick={onAddToCart}
+                className="bg-green-600 hover:bg-green-700"
+                onClick={onWhatsAppContact}
               >
-                <ShoppingCart className="mr-2 h-4 w-4" />
-                Add to Cart
+                <MessageSquare className="mr-2 h-4 w-4" />
+                Contact on WhatsApp
               </Button>
             ) : (
               <Button 

@@ -14,11 +14,11 @@ const Footer = () => {
           <div>
             <Link to="/" className="inline-block mb-6">
               <span className="text-2xl font-heading font-bold">
-                <span className="text-brand-red">Pro</span>Handyman
+                <span className="text-brand-red">AC</span>Services
               </span>
             </Link>
             <p className="mb-6 text-gray-300 leading-relaxed">
-              Professional handyman services tailored to your needs in Rawalpindi and Islamabad. Quality workmanship guaranteed with over 15 years of industry experience.
+              Professional AC services tailored to your needs in Rawalpindi and Islamabad. Quality workmanship guaranteed with over 15 years of industry experience.
             </p>
             <div className="flex space-x-4">
               <SocialLink icon={<Facebook className="w-5 h-5" />} href="#" />
@@ -35,22 +35,22 @@ const Footer = () => {
               <FooterLink to="/about">About Us</FooterLink>
               <FooterLink to="/services">Services</FooterLink>
               <FooterLink to="/blog">Blog</FooterLink>
-              <FooterLink to="/ac-sale">AC Units</FooterLink>
+              <FooterLink to="/ac-buy-and-sale">AC Buy & Sale</FooterLink>
               <FooterLink to="/contact">Contact</FooterLink>
               <FooterLink to="/booking">Book Now</FooterLink>
             </ul>
           </div>
 
-          {/* Services */}
+          {/* AC Services */}
           <div>
-            <h3 className="text-lg font-bold mb-6">Our Services</h3>
+            <h3 className="text-lg font-bold mb-6">Our AC Services</h3>
             <ul className="space-y-3">
-              <FooterLink to="/services/plumbing">Plumbing</FooterLink>
-              <FooterLink to="/services/electrical">Electrical</FooterLink>
+              <FooterLink to="/services/ac-installation">AC Installation</FooterLink>
               <FooterLink to="/services/ac-repair">AC Repair</FooterLink>
-              <FooterLink to="/services/painting">Painting</FooterLink>
-              <FooterLink to="/services/carpentry">Carpentry</FooterLink>
-              <FooterLink to="/services/home-renovation">Home Renovation</FooterLink>
+              <FooterLink to="/services/gas-refill">AC Gas Refill</FooterLink>
+              <FooterLink to="/services/ac-maintenance">AC Maintenance</FooterLink>
+              <FooterLink to="/services/ac-troubleshooting">AC Troubleshooting</FooterLink>
+              <FooterLink to="/services/commercial-ac">Commercial AC Services</FooterLink>
             </ul>
           </div>
 
@@ -64,7 +64,7 @@ const Footer = () => {
               </li>
               <li className="flex items-start">
                 <Mail className="w-5 h-5 mr-3 text-brand-red shrink-0" />
-                <span>info@prohandyman.com</span>
+                <span>info@acservices.com</span>
               </li>
               <li className="flex items-start">
                 <MapPin className="w-5 h-5 mr-3 text-brand-red shrink-0" />
@@ -86,7 +86,7 @@ const Footer = () => {
 
         {/* Copyright */}
         <div className="flex flex-col md:flex-row justify-between items-center text-gray-400 text-sm">
-          <p>© {currentYear} Handyman Pro Services. All rights reserved.</p>
+          <p>© {currentYear} AC Services. All rights reserved.</p>
           <div className="flex mt-4 md:mt-0">
             <Link to="/privacy-policy" className="mr-6 hover:text-white transition-colors">
               Privacy Policy

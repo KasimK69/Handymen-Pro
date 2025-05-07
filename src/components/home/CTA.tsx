@@ -2,9 +2,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Phone } from 'lucide-react';
+import { Phone, MessageSquare } from 'lucide-react';
 
 const CTA = () => {
+  const phoneNumber = '+923125242182';
+  const message = 'Hello, I need AC services. Please contact me.';
+  const whatsappUrl = `https://wa.me/${phoneNumber.replace('+', '')}?text=${encodeURIComponent(message)}`;
+  
   return (
     <section className="relative py-24 overflow-hidden">
       <div 
@@ -36,6 +40,12 @@ const CTA = () => {
               <a href="tel:+923125242182" className="flex items-center">
                 <Phone className="mr-2 h-5 w-5" />
                 Call +92 312 5242182
+              </a>
+            </Button>
+            <Button size="lg" className="bg-green-600 hover:bg-green-700 text-white" asChild>
+              <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="flex items-center">
+                <MessageSquare className="mr-2 h-5 w-5" />
+                WhatsApp
               </a>
             </Button>
           </div>
