@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAdminAuth } from '@/context/AdminAuthContext';
-import { Loader2, Lock } from 'lucide-react';
+import { Loader2, Lock, AirVent } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const Admin = () => {
   const [email, setEmail] = useState('');
@@ -29,14 +30,22 @@ const Admin = () => {
   };
 
   return (
-    <section className="bg-gray-50 dark:bg-gray-900 min-h-screen py-24">
-      <div className="container mx-auto">
-        <div className="max-w-md mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-xl overflow-hidden">
+    <section className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 min-h-screen py-24">
+      <div className="container mx-auto px-4">
+        <motion.div 
+          className="max-w-md mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-xl overflow-hidden"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           <div className="h-2 bg-gradient-to-r from-brand-blue to-brand-red"></div>
           <div className="p-8">
             <div className="text-center mb-8">
+              <div className="inline-flex items-center justify-center p-3 bg-brand-blue/10 rounded-full mb-4">
+                <AirVent className="h-8 w-8 text-brand-blue" />
+              </div>
               <h1 className="text-2xl font-bold inline-flex items-center justify-center">
-                <span className="mr-2">AC</span>
+                <span className="mr-2 text-gray-900 dark:text-gray-100">AC</span>
                 <span className="text-brand-red">Admin</span>
               </h1>
               <div className="h-1 w-12 bg-brand-red mx-auto mt-2"></div>
@@ -44,7 +53,7 @@ const Admin = () => {
             
             <h2 className="text-2xl font-bold mb-2 text-center">Admin Login</h2>
             <p className="text-gray-600 dark:text-gray-400 mb-8 text-center">
-              Please log in to access the admin dashboard.
+              Please log in to access the AC Services admin dashboard.
             </p>
             
             <form className="space-y-6" onSubmit={handleSubmit}>
@@ -123,7 +132,7 @@ const Admin = () => {
               </p>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

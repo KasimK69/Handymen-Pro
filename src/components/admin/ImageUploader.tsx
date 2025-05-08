@@ -1,173 +1,216 @@
 
 import React, { useState, useRef } from 'react';
-import { Upload, X, Image as ImageIcon, Check } from 'lucide-react';
+import { Upload, X, Image as ImageIcon, Link as LinkIcon } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from '@/hooks/use-toast';
 
 interface ImageUploaderProps {
-  onImageUpload: (imageUrl: string) => void;
+  onImageSelected: (imageUrl: string) => void;
   defaultImage?: string;
-  label?: string;
+  className?: string;
 }
 
-const ImageUploader: React.FC<ImageUploaderProps> = ({
-  onImageUpload,
+const ImageUploader: React.FC<ImageUploaderProps> = ({ 
+  onImageSelected, 
   defaultImage = '',
-  label = 'Upload Image'
+  className = ''
 }) => {
+  const [activeTab, setActiveTab] = useState<string>("upload");
   const [previewUrl, setPreviewUrl] = useState<string>(defaultImage);
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [imageUrl, setImageUrl] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    
     if (!file) return;
-
-    // Check file type
-    if (!file.type.startsWith('image/')) {
-      toast({
-        title: "Invalid file type",
-        description: "Please select an image file.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    // Check file size (max 5MB)
+    
+    // Check file size (limit to 5MB)
     if (file.size > 5 * 1024 * 1024) {
       toast({
         title: "File too large",
-        description: "Image size should be less than 5MB.",
+        description: "Image must be less than 5MB",
         variant: "destructive"
       });
       return;
     }
-
-    // Simulate upload
-    setIsUploading(true);
-    setUploadProgress(0);
-
+    
+    // Check file type
+    if (!['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.type)) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload a valid image (JPEG, PNG, GIF, WEBP)",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    // In a real implementation, you would upload the file to your server or cloud storage
+    // For this demo, we'll just create a local object URL
     const reader = new FileReader();
     reader.onload = () => {
-      const interval = setInterval(() => {
-        setUploadProgress(prev => {
-          if (prev >= 100) {
-            clearInterval(interval);
-            setIsUploading(false);
-            // Set the preview URL and call the callback
-            const imageUrl = reader.result as string;
-            setPreviewUrl(imageUrl);
-            onImageUpload(imageUrl);
-            return 100;
-          }
-          return prev + 10;
-        });
-      }, 100);
+      const result = reader.result as string;
+      setPreviewUrl(result);
+      onImageSelected(result);
+      setIsLoading(false);
+      
+      toast({
+        title: "Image uploaded",
+        description: "Your image has been uploaded successfully"
+      });
     };
+    
+    reader.onerror = () => {
+      setIsLoading(false);
+      toast({
+        title: "Upload failed",
+        description: "There was a problem uploading your image",
+        variant: "destructive"
+      });
+    };
+    
     reader.readAsDataURL(file);
   };
 
-  const handleRemoveImage = () => {
-    setPreviewUrl('');
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+  const handleUrlSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!imageUrl.trim()) return;
+    
+    // Basic URL validation
+    if (!imageUrl.match(/^(http|https):\/\/[^ "]+$/)) {
+      toast({
+        title: "Invalid URL",
+        description: "Please enter a valid image URL",
+        variant: "destructive"
+      });
+      return;
     }
-    onImageUpload('');
+    
+    setIsLoading(true);
+    
+    // Check if URL is an image by attempting to load it
+    const img = new Image();
+    img.onload = () => {
+      setPreviewUrl(imageUrl);
+      onImageSelected(imageUrl);
+      setIsLoading(false);
+      
+      toast({
+        title: "Image added",
+        description: "Image URL has been added successfully"
+      });
+    };
+    
+    img.onerror = () => {
+      setIsLoading(false);
+      toast({
+        title: "Invalid image",
+        description: "The URL does not point to a valid image",
+        variant: "destructive"
+      });
+    };
+    
+    img.src = imageUrl;
   };
 
   const triggerFileInput = () => {
     fileInputRef.current?.click();
   };
 
+  const clearImage = () => {
+    setPreviewUrl('');
+    onImageSelected('');
+    setImageUrl('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   return (
-    <div className="space-y-3">
-      {label && <p className="text-sm font-medium">{label}</p>}
-      
-      <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4">
-        <input
-          type="file"
-          ref={fileInputRef}
-          onChange={handleFileChange}
-          accept="image/*"
-          className="hidden"
-        />
-
-        {!previewUrl && !isUploading && (
-          <div 
-            onClick={triggerFileInput}
-            className="h-40 flex flex-col items-center justify-center gap-2 cursor-pointer bg-gray-50 dark:bg-gray-800 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-          >
-            <ImageIcon className="h-8 w-8 text-gray-400" />
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Click to upload an image
-            </p>
-            <p className="text-xs text-gray-400">
-              JPG, PNG or GIF (max 5MB)
-            </p>
-          </div>
-        )}
-
-        {isUploading && (
-          <div className="h-40 flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-800 rounded-md">
-            <div className="w-full max-w-xs bg-gray-200 rounded-full h-2.5 mb-4">
-              <div 
-                className="bg-blue-600 h-2.5 rounded-full" 
-                style={{ width: `${uploadProgress}%` }}
-              ></div>
-            </div>
-            <p className="text-sm text-gray-500">
-              Uploading... {uploadProgress}%
-            </p>
-          </div>
-        )}
-
-        {previewUrl && !isUploading && (
-          <div className="relative">
-            <div className="h-40 bg-gray-100 dark:bg-gray-800 rounded-md overflow-hidden">
-              <img 
-                src={previewUrl} 
-                alt="Preview" 
-                className="w-full h-full object-contain"
-              />
-            </div>
-            
-            <div className="absolute top-2 right-2 flex gap-2">
-              <Button 
-                size="icon" 
-                variant="secondary" 
-                className="h-8 w-8 rounded-full bg-white dark:bg-gray-800" 
-                onClick={handleRemoveImage}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-              <Button 
-                size="icon" 
-                variant="secondary" 
-                className="h-8 w-8 rounded-full bg-white dark:bg-gray-800" 
-                onClick={triggerFileInput}
-              >
-                <Upload className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        )}
-      </div>
-
+    <div className={`border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden ${className}`}>
       {previewUrl ? (
-        <p className="flex items-center text-xs text-green-600 dark:text-green-400">
-          <Check className="h-3 w-3 mr-1" /> Image ready
-        </p>
+        <div className="relative">
+          <img
+            src={previewUrl}
+            alt="Selected preview"
+            className="w-full h-48 object-cover"
+          />
+          <Button
+            variant="destructive"
+            size="icon"
+            className="absolute top-2 right-2"
+            onClick={clearImage}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
       ) : (
-        <Button 
-          type="button" 
-          variant="outline" 
-          size="sm" 
-          onClick={triggerFileInput} 
-          className="text-xs"
-        >
-          <Upload className="h-3 w-3 mr-1" /> Browse files
-        </Button>
+        <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="upload" className="data-[state=active]:bg-brand-blue data-[state=active]:text-white">
+              <Upload className="h-4 w-4 mr-2" />
+              Upload
+            </TabsTrigger>
+            <TabsTrigger value="url" className="data-[state=active]:bg-brand-blue data-[state=active]:text-white">
+              <LinkIcon className="h-4 w-4 mr-2" />
+              URL
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="upload" className="p-4">
+            <div 
+              onClick={triggerFileInput}
+              className="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-6 cursor-pointer flex flex-col items-center justify-center h-36 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            >
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                accept="image/*"
+                className="hidden"
+                disabled={isLoading}
+              />
+              <ImageIcon className="h-10 w-10 text-gray-400 mb-2" />
+              <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
+                {isLoading ? "Uploading..." : "Click to upload or drag and drop"}
+              </p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                PNG, JPG, GIF, WEBP up to 5MB
+              </p>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="url" className="p-4">
+            <form onSubmit={handleUrlSubmit} className="space-y-4">
+              <div>
+                <Input
+                  type="url"
+                  placeholder="Enter image URL"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  disabled={isLoading}
+                  className="mb-2"
+                />
+                <p className="text-xs text-gray-400 dark:text-gray-500">
+                  Example: https://example.com/image.jpg
+                </p>
+              </div>
+              <Button 
+                type="submit" 
+                className="w-full bg-brand-blue hover:bg-brand-blue/90"
+                disabled={isLoading}
+              >
+                {isLoading ? "Loading..." : "Add Image"}
+              </Button>
+            </form>
+          </TabsContent>
+        </Tabs>
       )}
     </div>
   );

@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Hero from '@/components/home/Hero';
 import SmartAdport from '@/components/home/SmartAdport';
 import Services from '@/components/home/Services';
@@ -12,9 +12,20 @@ import { Button } from '@/components/ui/button';
 import { MessageSquare } from 'lucide-react';
 import AIChatAgent from '@/components/AIChatAgent';
 import WhatsAppButton from '@/components/WhatsAppButton';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Home = () => {
   const [isInquiryFormOpen, setIsInquiryFormOpen] = useState(false);
+  const [visible, setVisible] = useState(false);
+  
+  useEffect(() => {
+    // Delay the appearance of the quick inquiry button for a better UX
+    const timer = setTimeout(() => {
+      setVisible(true);
+    }, 1500);
+    
+    return () => clearTimeout(timer);
+  }, []);
   
   const openInquiryForm = () => {
     setIsInquiryFormOpen(true);
@@ -31,13 +42,24 @@ const Home = () => {
       <CTA />
       
       {/* Quick Inquiry Button */}
-      <Button 
-        onClick={openInquiryForm}
-        className="fixed left-6 bottom-24 z-50 bg-brand-red hover:bg-brand-red/90 text-white shadow-lg flex items-center gap-2 px-4 py-6 rounded-full"
-      >
-        <MessageSquare className="h-5 w-5" />
-        <span className="font-medium">Quick Inquiry</span>
-      </Button>
+      <AnimatePresence>
+        {visible && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+          >
+            <Button 
+              onClick={openInquiryForm}
+              className="fixed left-6 bottom-24 z-50 bg-brand-red hover:bg-brand-red/90 text-white shadow-lg flex items-center gap-2 px-4 py-6 rounded-full"
+            >
+              <MessageSquare className="h-5 w-5" />
+              <span className="font-medium">Quick Inquiry</span>
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
       
       {/* AI Chat Agent */}
       <AIChatAgent />
