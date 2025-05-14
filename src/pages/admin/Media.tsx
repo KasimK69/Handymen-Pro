@@ -22,7 +22,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
 import ImageUploader from '@/components/admin/ImageUploader';
 
@@ -53,6 +53,7 @@ const Media = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [imageToDelete, setImageToDelete] = useState<number | null>(null);
   const [filter, setFilter] = useState('all');
+  const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
 
   const filteredImages = images.filter(image => {
     const matchesSearch = image.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -77,6 +78,8 @@ const Media = () => {
         title: "Image uploaded successfully",
         description: "The image has been added to your media library.",
       });
+      
+      setIsUploadDialogOpen(false);
     }
   };
 
@@ -152,16 +155,21 @@ const Media = () => {
           </p>
         </div>
         
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button className="bg-brand-blue hover:bg-brand-blue/90">
-              <Upload className="mr-2 h-4 w-4" />
-              Upload New
-            </Button>
-          </DialogTrigger>
+        <Button 
+          className="bg-brand-blue hover:bg-brand-blue/90"
+          onClick={() => setIsUploadDialogOpen(true)}
+        >
+          <Upload className="mr-2 h-4 w-4" />
+          Upload New
+        </Button>
+        
+        <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
           <DialogContent className="sm:max-w-[500px]">
             <DialogHeader>
               <DialogTitle>Upload New Image</DialogTitle>
+              <DialogDescription>
+                Upload a new image to your media library.
+              </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <ImageUploader 
@@ -184,7 +192,7 @@ const Media = () => {
           />
         </div>
         
-        <Tabs defaultValue="all" className="w-full md:w-2/3" onValueChange={setFilter}>
+        <Tabs defaultValue={filter} className="w-full md:w-2/3" onValueChange={setFilter}>
           <TabsList className="grid grid-cols-2 md:grid-cols-4">
             <TabsTrigger value="all">All</TabsTrigger>
             <TabsTrigger value="service">Services</TabsTrigger>
@@ -218,25 +226,10 @@ const Media = () => {
                 ? `No results for "${searchQuery}"`
                 : "Your media library is empty"}
             </p>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button>
-                  <Upload className="mr-2 h-4 w-4" />
-                  Upload New Image
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[500px]">
-                <DialogHeader>
-                  <DialogTitle>Upload New Image</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4 py-4">
-                  <ImageUploader 
-                    onImageSelected={handleImageUpload} 
-                    aspectRatio="square"
-                  />
-                </div>
-              </DialogContent>
-            </Dialog>
+            <Button onClick={() => setIsUploadDialogOpen(true)}>
+              <Upload className="mr-2 h-4 w-4" />
+              Upload New Image
+            </Button>
           </CardContent>
         </Card>
       ) : (
@@ -249,6 +242,10 @@ const Media = () => {
                     src={image.url}
                     alt={image.name}
                     className="object-cover w-full h-full"
+                    onError={(e) => {
+                      console.error("Gallery image failed to load:", image.url);
+                      e.currentTarget.src = 'https://via.placeholder.com/300x200?text=Image+Not+Found';
+                    }}
                   />
                 </AspectRatio>
                 
@@ -277,7 +274,10 @@ const Media = () => {
                     <DropdownMenuContent align="end">
                       <Dialog>
                         <DialogTrigger asChild>
-                          <DropdownMenuItem>
+                          <DropdownMenuItem onSelect={(e) => {
+                            e.preventDefault();
+                            handleImageEdit(image);
+                          }}>
                             <Edit2 className="mr-2 h-4 w-4" />
                             Edit Details
                           </DropdownMenuItem>
@@ -285,6 +285,9 @@ const Media = () => {
                         <DialogContent>
                           <DialogHeader>
                             <DialogTitle>Edit Image Details</DialogTitle>
+                            <DialogDescription>
+                              Update the details for this image
+                            </DialogDescription>
                           </DialogHeader>
                           <div className="space-y-4 py-4">
                             <div className="mb-4">
@@ -292,6 +295,9 @@ const Media = () => {
                                 src={image.url}
                                 alt={image.name}
                                 className="w-full h-48 object-cover rounded-md"
+                                onError={(e) => {
+                                  e.currentTarget.src = 'https://via.placeholder.com/300x200?text=Image+Not+Found';
+                                }}
                               />
                             </div>
                             <div className="space-y-2">
@@ -328,8 +334,8 @@ const Media = () => {
                                 disabled
                               />
                             </div>
-                            <div className="flex justify-end space-x-2">
-                              <Button variant="outline">Cancel</Button>
+                            <div className="flex justify-end space-x-2 mt-4">
+                              <Button variant="outline" onClick={() => setEditingImage(null)}>Cancel</Button>
                               <Button onClick={() => handleSaveEdit(editingImage || {})}>Save Changes</Button>
                             </div>
                           </div>
@@ -340,7 +346,10 @@ const Media = () => {
                       
                       <DropdownMenuItem 
                         className="text-destructive focus:text-destructive"
-                        onClick={() => handleImageDelete(image.id)}
+                        onSelect={(e) => {
+                          e.preventDefault();
+                          handleImageDelete(image.id);
+                        }}
                       >
                         <Trash2 className="mr-2 h-4 w-4" />
                         Delete Image
@@ -367,9 +376,12 @@ const Media = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Delete Image</DialogTitle>
+            <DialogDescription>
+              This action cannot be undone. The image will be permanently removed from your library.
+            </DialogDescription>
           </DialogHeader>
           <div className="py-4">
-            <p className="mb-4">Are you sure you want to delete this image? This action cannot be undone.</p>
+            <p className="mb-4">Are you sure you want to delete this image?</p>
             <div className="flex justify-end space-x-2">
               <Button
                 variant="outline"

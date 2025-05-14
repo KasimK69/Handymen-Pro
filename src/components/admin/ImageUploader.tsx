@@ -50,23 +50,35 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     
     setIsUploading(true);
     
-    // Simulate upload with a FileReader to get a data URL
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const result = e.target?.result as string;
-      setImageUrl(result);
-      onImageSelected(result);
-      setIsUploading(false);
-    };
-    reader.onerror = () => {
+    try {
+      // Create a FileReader to get a data URL
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        if (result) {
+          setImageUrl(result);
+          onImageSelected(result);
+        }
+        setIsUploading(false);
+      };
+      reader.onerror = () => {
+        toast({
+          title: "Upload failed",
+          description: "There was a problem uploading your image.",
+          variant: "destructive"
+        });
+        setIsUploading(false);
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error("Error during file upload:", error);
       toast({
         title: "Upload failed",
-        description: "There was a problem uploading your image.",
+        description: "There was a problem processing your image.",
         variant: "destructive"
       });
       setIsUploading(false);
-    };
-    reader.readAsDataURL(file);
+    }
   };
 
   const handleUrlSubmit = (e: React.FormEvent) => {
@@ -131,22 +143,34 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       
       setIsUploading(true);
       
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result as string;
-        setImageUrl(result);
-        onImageSelected(result);
-        setIsUploading(false);
-      };
-      reader.onerror = () => {
+      try {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const result = e.target?.result as string;
+          if (result) {
+            setImageUrl(result);
+            onImageSelected(result);
+          }
+          setIsUploading(false);
+        };
+        reader.onerror = () => {
+          toast({
+            title: "Upload failed",
+            description: "There was a problem uploading your image.",
+            variant: "destructive"
+          });
+          setIsUploading(false);
+        };
+        reader.readAsDataURL(file);
+      } catch (error) {
+        console.error("Error during file drop:", error);
         toast({
           title: "Upload failed",
-          description: "There was a problem uploading your image.",
+          description: "There was a problem processing your image.",
           variant: "destructive"
         });
         setIsUploading(false);
-      };
-      reader.readAsDataURL(file);
+      }
     }
   };
 
@@ -182,6 +206,10 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                     src={imageUrl} 
                     alt="Uploaded preview"
                     className="absolute inset-0 w-full h-full object-cover"
+                    onError={(e) => {
+                      console.error("Image failed to load");
+                      e.currentTarget.src = 'https://via.placeholder.com/300x200?text=Image+Error';
+                    }}
                   />
                   <Button 
                     variant="destructive" 
@@ -244,6 +272,10 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                     src={imageUrl} 
                     alt="URL preview"
                     className="absolute inset-0 w-full h-full object-cover"
+                    onError={(e) => {
+                      console.error("Image URL failed to load");
+                      e.currentTarget.src = 'https://via.placeholder.com/300x200?text=Invalid+URL';
+                    }}
                   />
                   <Button 
                     variant="destructive" 
