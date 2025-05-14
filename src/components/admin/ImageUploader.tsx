@@ -1,89 +1,84 @@
 
 import React, { useState, useRef } from 'react';
-import { Upload, X, Image as ImageIcon, Link as LinkIcon } from 'lucide-react';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { AlertCircle, Image, Upload, X } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 interface ImageUploaderProps {
   onImageSelected: (imageUrl: string) => void;
   defaultImage?: string;
+  aspectRatio?: "square" | "video" | "wide" | "portrait";
+  maxSize?: number; // in MB
   className?: string;
 }
 
-const ImageUploader: React.FC<ImageUploaderProps> = ({ 
-  onImageSelected, 
-  defaultImage = '',
-  className = ''
+const ImageUploader: React.FC<ImageUploaderProps> = ({
+  onImageSelected,
+  defaultImage = "",
+  aspectRatio = "square",
+  maxSize = 5,
+  className
 }) => {
-  const [activeTab, setActiveTab] = useState<string>("upload");
-  const [previewUrl, setPreviewUrl] = useState<string>(defaultImage);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [imageUrl, setImageUrl] = useState<string>('');
+  const [imageUrl, setImageUrl] = useState<string>(defaultImage);
+  const [uploadMethod, setUploadMethod] = useState<string>("upload");
+  const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const aspectRatioClass = {
+    square: "aspect-square",
+    video: "aspect-video",
+    wide: "aspect-[16/9]",
+    portrait: "aspect-[3/4]"
+  }[aspectRatio];
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    
     if (!file) return;
     
-    // Check file size (limit to 5MB)
-    if (file.size > 5 * 1024 * 1024) {
+    // Check file size
+    if (file.size > maxSize * 1024 * 1024) {
       toast({
         title: "File too large",
-        description: "Image must be less than 5MB",
+        description: `Maximum file size is ${maxSize}MB`,
         variant: "destructive"
       });
       return;
     }
     
-    // Check file type
-    if (!['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.type)) {
-      toast({
-        title: "Invalid file type",
-        description: "Please upload a valid image (JPEG, PNG, GIF, WEBP)",
-        variant: "destructive"
-      });
-      return;
-    }
+    setIsUploading(true);
     
-    setIsLoading(true);
-    
-    // In a real implementation, you would upload the file to your server or cloud storage
-    // For this demo, we'll just create a local object URL
+    // Simulate upload with a FileReader to get a data URL
     const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result as string;
-      setPreviewUrl(result);
+    reader.onload = (e) => {
+      const result = e.target?.result as string;
+      setImageUrl(result);
       onImageSelected(result);
-      setIsLoading(false);
-      
-      toast({
-        title: "Image uploaded",
-        description: "Your image has been uploaded successfully"
-      });
+      setIsUploading(false);
     };
-    
     reader.onerror = () => {
-      setIsLoading(false);
       toast({
         title: "Upload failed",
-        description: "There was a problem uploading your image",
+        description: "There was a problem uploading your image.",
         variant: "destructive"
       });
+      setIsUploading(false);
     };
-    
     reader.readAsDataURL(file);
   };
 
   const handleUrlSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const url = formData.get('imageUrl') as string;
     
-    if (!imageUrl.trim()) return;
+    if (!url) return;
     
     // Basic URL validation
-    if (!imageUrl.match(/^(http|https):\/\/[^ "]+$/)) {
+    if (!url.match(/^(http|https):\/\/[^ "]+$/)) {
       toast({
         title: "Invalid URL",
         description: "Please enter a valid image URL",
@@ -92,126 +87,190 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       return;
     }
     
-    setIsLoading(true);
-    
-    // Check if URL is an image by attempting to load it
-    const img = new Image();
-    img.onload = () => {
-      setPreviewUrl(imageUrl);
-      onImageSelected(imageUrl);
-      setIsLoading(false);
-      
-      toast({
-        title: "Image added",
-        description: "Image URL has been added successfully"
-      });
-    };
-    
-    img.onerror = () => {
-      setIsLoading(false);
-      toast({
-        title: "Invalid image",
-        description: "The URL does not point to a valid image",
-        variant: "destructive"
-      });
-    };
-    
-    img.src = imageUrl;
+    setImageUrl(url);
+    onImageSelected(url);
+    form.reset();
   };
 
-  const triggerFileInput = () => {
-    fileInputRef.current?.click();
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      const file = files[0];
+      
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        toast({
+          title: "Invalid file type",
+          description: "Please upload an image file",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      // Check file size
+      if (file.size > maxSize * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: `Maximum file size is ${maxSize}MB`,
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      setIsUploading(true);
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        setImageUrl(result);
+        onImageSelected(result);
+        setIsUploading(false);
+      };
+      reader.onerror = () => {
+        toast({
+          title: "Upload failed",
+          description: "There was a problem uploading your image.",
+          variant: "destructive"
+        });
+        setIsUploading(false);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const clearImage = () => {
-    setPreviewUrl('');
-    onImageSelected('');
-    setImageUrl('');
+    setImageUrl("");
+    onImageSelected("");
     if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      fileInputRef.current.value = "";
     }
   };
 
   return (
-    <div className={`border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden ${className}`}>
-      {previewUrl ? (
-        <div className="relative">
-          <img
-            src={previewUrl}
-            alt="Selected preview"
-            className="w-full h-48 object-cover"
-          />
-          <Button
-            variant="destructive"
-            size="icon"
-            className="absolute top-2 right-2"
-            onClick={clearImage}
+    <div className={`w-full ${className}`}>
+      <Tabs defaultValue={uploadMethod} onValueChange={setUploadMethod}>
+        <TabsList className="grid grid-cols-2 w-full">
+          <TabsTrigger value="upload">Upload Image</TabsTrigger>
+          <TabsTrigger value="url">Image URL</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="upload" className="space-y-4">
+          <div 
+            className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors ${
+              isDragging ? 'border-primary bg-primary/5' : 'border-gray-300 dark:border-gray-700'
+            }`}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
           >
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-      ) : (
-        <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="upload" className="data-[state=active]:bg-brand-blue data-[state=active]:text-white">
-              <Upload className="h-4 w-4 mr-2" />
-              Upload
-            </TabsTrigger>
-            <TabsTrigger value="url" className="data-[state=active]:bg-brand-blue data-[state=active]:text-white">
-              <LinkIcon className="h-4 w-4 mr-2" />
-              URL
-            </TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="upload" className="p-4">
-            <div 
-              onClick={triggerFileInput}
-              className="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-6 cursor-pointer flex flex-col items-center justify-center h-36 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-            >
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                accept="image/*"
-                className="hidden"
-                disabled={isLoading}
-              />
-              <ImageIcon className="h-10 w-10 text-gray-400 mb-2" />
-              <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
-                {isLoading ? "Uploading..." : "Click to upload or drag and drop"}
-              </p>
-              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                PNG, JPG, GIF, WEBP up to 5MB
-              </p>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="url" className="p-4">
-            <form onSubmit={handleUrlSubmit} className="space-y-4">
-              <div>
-                <Input
-                  type="url"
-                  placeholder="Enter image URL"
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  disabled={isLoading}
-                  className="mb-2"
-                />
-                <p className="text-xs text-gray-400 dark:text-gray-500">
-                  Example: https://example.com/image.jpg
-                </p>
+            {imageUrl ? (
+              <div className="relative">
+                <div className={`relative ${aspectRatioClass} overflow-hidden rounded-md mb-2`}>
+                  <img 
+                    src={imageUrl} 
+                    alt="Uploaded preview"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                  <Button 
+                    variant="destructive" 
+                    size="icon" 
+                    className="absolute top-2 right-2 h-7 w-7" 
+                    onClick={clearImage}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+                <p className="text-sm text-gray-500 truncate">{imageUrl.substring(0, 50)}{imageUrl.length > 50 ? '...' : ''}</p>
               </div>
-              <Button 
-                type="submit" 
-                className="w-full bg-brand-blue hover:bg-brand-blue/90"
-                disabled={isLoading}
-              >
-                {isLoading ? "Loading..." : "Add Image"}
-              </Button>
-            </form>
-          </TabsContent>
-        </Tabs>
-      )}
+            ) : (
+              <div className="py-6">
+                <div className="flex flex-col items-center justify-center">
+                  <div className="mb-3 rounded-full bg-gray-100 dark:bg-gray-800 p-3">
+                    <Upload className="h-6 w-6 text-gray-400" />
+                  </div>
+                  <p className="text-sm font-medium mb-1">
+                    Drag and drop your image here
+                  </p>
+                  <p className="text-xs text-gray-500 mb-3">
+                    PNG, JPG or WebP (max {maxSize}MB)
+                  </p>
+                  <Button
+                    variant="outline"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploading}
+                  >
+                    {isUploading ? 'Uploading...' : 'Choose File'}
+                  </Button>
+                </div>
+              </div>
+            )}
+            <input 
+              type="file" 
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              accept="image/*"
+              className="hidden"
+            />
+          </div>
+          
+          <div className="text-sm text-gray-500">
+            <div className="flex items-center">
+              <AlertCircle className="h-4 w-4 mr-1" />
+              <span>Recommended dimensions: {aspectRatio === 'square' ? '1:1' : 
+                aspectRatio === 'portrait' ? '3:4' : 
+                aspectRatio === 'wide' ? '16:9' : '16:9'}</span>
+            </div>
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="url">
+          <form onSubmit={handleUrlSubmit} className="space-y-4">
+            {imageUrl && uploadMethod === "url" && (
+              <div className="relative">
+                <div className={`relative ${aspectRatioClass} overflow-hidden rounded-md mb-2`}>
+                  <img 
+                    src={imageUrl} 
+                    alt="URL preview"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                  <Button 
+                    variant="destructive" 
+                    size="icon" 
+                    className="absolute top-2 right-2 h-7 w-7" 
+                    onClick={clearImage}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            )}
+            
+            <div className="flex space-x-2">
+              <div className="relative flex-grow">
+                <Input 
+                  name="imageUrl"
+                  placeholder="https://example.com/image.jpg"
+                  defaultValue={imageUrl && uploadMethod === "url" ? imageUrl : ""}
+                />
+                <Image className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              </div>
+              <Button type="submit">Use URL</Button>
+            </div>
+          </form>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
