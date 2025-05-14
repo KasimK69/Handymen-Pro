@@ -20,7 +20,7 @@ import { cn } from '@/lib/utils';
 import { useSidebar } from '@/components/ui/sidebar';
 
 const AdminSidebar = () => {
-  const { isOpen, toggle, close } = useSidebar();
+  const { open: isOpen, toggleSidebar: toggle, setOpen: setIsOpen } = useSidebar();
   const location = useLocation();
   const { logout } = useAdminAuth();
   
@@ -43,6 +43,9 @@ const AdminSidebar = () => {
   const handleLogout = () => {
     logout();
   };
+
+  // Close sidebar function
+  const close = () => setIsOpen(false);
 
   return (
     <>
