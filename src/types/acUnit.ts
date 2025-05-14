@@ -11,4 +11,5 @@ export interface ACUnit {
   discounted?: boolean;
   discountPercentage?: number;
   active?: boolean;
+  brand?: string;  // Added the brand property
 }

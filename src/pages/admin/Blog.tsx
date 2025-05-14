@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   FileText, 
@@ -11,7 +10,9 @@ import {
   Tag,
   X,
   ImagePlus,
-  Upload
+  Upload,
+  Search,  // Added Search import
+  Plus     // Added Plus import
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
