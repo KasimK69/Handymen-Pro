@@ -6,13 +6,12 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { 
-  Image, 
+  Image as ImageIcon, 
   Search, 
   Upload, 
   MoreVertical, 
   Edit2, 
   Trash2, 
-  X,
   CheckCircle
 } from 'lucide-react';
 import { 
@@ -22,7 +21,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
 import ImageUploader from '@/components/admin/ImageUploader';
 
@@ -219,7 +218,7 @@ const Media = () => {
       {filteredImages.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <Image className="h-12 w-12 text-gray-400 mb-4" />
+            <ImageIcon className="h-12 w-12 text-gray-400 mb-4" />
             <h3 className="text-lg font-medium mb-2">No images found</h3>
             <p className="text-muted-foreground mb-4">
               {searchQuery 
@@ -272,75 +271,13 @@ const Media = () => {
                       </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <DropdownMenuItem onSelect={(e) => {
-                            e.preventDefault();
-                            handleImageEdit(image);
-                          }}>
-                            <Edit2 className="mr-2 h-4 w-4" />
-                            Edit Details
-                          </DropdownMenuItem>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader>
-                            <DialogTitle>Edit Image Details</DialogTitle>
-                            <DialogDescription>
-                              Update the details for this image
-                            </DialogDescription>
-                          </DialogHeader>
-                          <div className="space-y-4 py-4">
-                            <div className="mb-4">
-                              <img
-                                src={image.url}
-                                alt={image.name}
-                                className="w-full h-48 object-cover rounded-md"
-                                onError={(e) => {
-                                  e.currentTarget.src = 'https://via.placeholder.com/300x200?text=Image+Not+Found';
-                                }}
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <label className="text-sm font-medium">Image Name</label>
-                              <Input 
-                                defaultValue={image.name} 
-                                onChange={(e) => setEditingImage({
-                                  ...image,
-                                  name: e.target.value
-                                })}
-                              />
-                            </div>
-                            <div className="space-y-2">
-                              <label className="text-sm font-medium">Image Type</label>
-                              <select 
-                                className="w-full p-2 border rounded-md" 
-                                defaultValue={image.type}
-                                onChange={(e) => setEditingImage({
-                                  ...image,
-                                  type: e.target.value
-                                })}
-                              >
-                                <option value="service">Service</option>
-                                <option value="blog">Blog</option>
-                                <option value="banner">Banner</option>
-                                <option value="team">Team</option>
-                                <option value="other">Other</option>
-                              </select>
-                            </div>
-                            <div className="space-y-2">
-                              <label className="text-sm font-medium">Image URL</label>
-                              <Input 
-                                defaultValue={image.url}
-                                disabled
-                              />
-                            </div>
-                            <div className="flex justify-end space-x-2 mt-4">
-                              <Button variant="outline" onClick={() => setEditingImage(null)}>Cancel</Button>
-                              <Button onClick={() => handleSaveEdit(editingImage || {})}>Save Changes</Button>
-                            </div>
-                          </div>
-                        </DialogContent>
-                      </Dialog>
+                      <DropdownMenuItem onSelect={(e) => {
+                        e.preventDefault();
+                        handleImageEdit(image);
+                      }}>
+                        <Edit2 className="mr-2 h-4 w-4" />
+                        Edit Details
+                      </DropdownMenuItem>
                       
                       <DropdownMenuSeparator />
                       
@@ -399,6 +336,70 @@ const Media = () => {
           </div>
         </DialogContent>
       </Dialog>
+      
+      {/* Edit image dialog */}
+      {editingImage && (
+        <Dialog open={!!editingImage} onOpenChange={(open) => !open && setEditingImage(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit Image Details</DialogTitle>
+              <DialogDescription>
+                Update the details for this image
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="mb-4">
+                <img
+                  src={editingImage.url}
+                  alt={editingImage.name}
+                  className="w-full h-48 object-cover rounded-md"
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://via.placeholder.com/300x200?text=Image+Not+Found';
+                  }}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Image Name</label>
+                <Input 
+                  defaultValue={editingImage.name} 
+                  onChange={(e) => setEditingImage({
+                    ...editingImage,
+                    name: e.target.value
+                  })}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Image Type</label>
+                <select 
+                  className="w-full p-2 border rounded-md" 
+                  defaultValue={editingImage.type}
+                  onChange={(e) => setEditingImage({
+                    ...editingImage,
+                    type: e.target.value
+                  })}
+                >
+                  <option value="service">Service</option>
+                  <option value="blog">Blog</option>
+                  <option value="banner">Banner</option>
+                  <option value="team">Team</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Image URL</label>
+                <Input 
+                  defaultValue={editingImage.url}
+                  disabled
+                />
+              </div>
+              <div className="flex justify-end space-x-2 mt-4">
+                <Button variant="outline" onClick={() => setEditingImage(null)}>Cancel</Button>
+                <Button onClick={() => handleSaveEdit(editingImage)}>Save Changes</Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };

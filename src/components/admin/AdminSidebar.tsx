@@ -1,128 +1,89 @@
 
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { 
-  Home, 
-  AirVent, 
-  ShoppingBag, 
-  FileText, 
-  MessageSquare, 
-  Settings, 
-  LogOut, 
-  Menu, 
-  X,
-  Calendar,
-  Users,
-  Image
-} from 'lucide-react';
-import { useAdminAuth } from '@/context/AdminAuthContext';
-import { cn } from '@/lib/utils';
+import { NavLink } from 'react-router-dom';
 import { useSidebar } from '@/components/ui/sidebar';
+import { cn } from '@/lib/utils';
+import {
+  LayoutDashboard,
+  Settings,
+  Package,
+  FileText,
+  MessageSquare,
+  CalendarCheck,
+  Users,
+  Image,
+  PanelLeft,
+  Bell
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const AdminSidebar = () => {
-  const { open: isOpen, toggleSidebar: toggle, setOpen: setIsOpen } = useSidebar();
-  const location = useLocation();
-  const { logout } = useAdminAuth();
-  
-  const navigation = [
-    { name: 'Dashboard', href: '/admin/dashboard', icon: Home },
-    { name: 'Services', href: '/admin/services', icon: AirVent },
-    { name: 'Products', href: '/admin/products', icon: ShoppingBag },
-    { name: 'Bookings', href: '/admin/bookings', icon: Calendar },
-    { name: 'Customers', href: '/admin/customers', icon: Users },
-    { name: 'Media', href: '/admin/media', icon: Image },
-    { name: 'Blog', href: '/admin/blog', icon: FileText },
-    { name: 'Testimonials', href: '/admin/testimonials', icon: MessageSquare },
-    { name: 'Settings', href: '/admin/settings', icon: Settings },
-  ];
-  
-  const isActive = (path: string) => {
-    return location.pathname === path;
-  };
-  
-  const handleLogout = () => {
-    logout();
-  };
+  const { open, setOpen, toggleSidebar } = useSidebar();
 
-  // Close sidebar function
-  const close = () => setIsOpen(false);
+  const links = [
+    { name: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
+    { name: 'Services', path: '/admin/services', icon: Package },
+    { name: 'Blog', path: '/admin/blog', icon: FileText },
+    { name: 'Media', path: '/admin/media', icon: Image },
+    { name: 'Testimonials', path: '/admin/testimonials', icon: MessageSquare },
+    { name: 'Bookings', path: '/admin/bookings', icon: CalendarCheck },
+    { name: 'Customers', path: '/admin/customers', icon: Users },
+    { name: 'Smart Adport', path: '/admin/smart-adport', icon: Bell },
+    { name: 'Settings', path: '/admin/settings', icon: Settings },
+  ];
 
   return (
-    <>
-      {/* Mobile Backdrop */}
-      {isOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 md:hidden z-30"
-          onClick={close}
-        ></div>
-      )}
-      
-      {/* Sidebar */}
-      <aside
-        className={cn(
-          'fixed top-0 left-0 z-40 h-screen transition-transform bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700',
-          'w-64',
-          isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
-        )}
-      >
-        <div className="flex flex-col h-full">
-          {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-            <Link to="/admin/dashboard" className="flex items-center">
-              <span className="text-xl font-bold">
-                <span className="text-gray-900 dark:text-white">AC</span>
-                <span className="text-brand-red">Admin</span>
-              </span>
-            </Link>
-            <button 
-              onClick={toggle}
-              className="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 md:hidden"
-            >
-              <X className="h-6 w-6" />
-            </button>
-          </div>
-          
-          {/* Navigation */}
-          <nav className="flex-1 p-4 overflow-y-auto">
-            <ul className="space-y-1">
-              {navigation.map((item) => {
-                const isActiveRoute = isActive(item.href);
-                return (
-                  <li key={item.name}>
-                    <Link
-                      to={item.href}
-                      className={cn(
-                        'flex items-center p-3 rounded-lg transition-colors',
-                        isActiveRoute
-                          ? 'bg-brand-blue text-white'
-                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                      )}
-                    >
-                      <item.icon className={cn(
-                        'h-5 w-5 mr-3',
-                        isActiveRoute ? 'text-white' : 'text-gray-500 dark:text-gray-400'
-                      )} />
-                      <span>{item.name}</span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
-          
-          {/* Footer */}
-          <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-            <button
-              onClick={handleLogout}
-              className="flex items-center w-full p-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-            >
-              <LogOut className="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" />
-              <span>Logout</span>
-            </button>
-          </div>
+    <aside className={cn(
+      "fixed left-0 top-0 z-30 h-screen w-64 border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800 transition-transform duration-300",
+      open ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+    )}>
+      <div className="flex flex-col h-full">
+        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-lg font-bold text-brand-blue">AC Services Admin</h2>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="md:hidden" 
+            onClick={toggleSidebar}
+          >
+            <PanelLeft className="h-5 w-5" />
+            <span className="sr-only">Toggle Sidebar</span>
+          </Button>
         </div>
-      </aside>
-    </>
+        
+        <nav className="flex-1 overflow-y-auto p-4">
+          <ul className="space-y-1">
+            {links.map((link) => (
+              <li key={link.path}>
+                <NavLink
+                  to={link.path}
+                  className={({ isActive }) => cn(
+                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
+                    isActive
+                      ? "bg-gray-100 text-brand-blue font-medium dark:bg-gray-700 dark:text-gray-100"
+                      : "text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-100"
+                  )}
+                  onClick={() => {
+                    if (window.innerWidth < 768) {
+                      setOpen(false);
+                    }
+                  }}
+                >
+                  <link.icon className="h-5 w-5" />
+                  <span>{link.name}</span>
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        
+        <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            © 2023 AC Services Admin
+          </p>
+        </div>
+      </div>
+    </aside>
   );
 };
 

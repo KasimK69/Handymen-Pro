@@ -40,11 +40,11 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
+    <BrowserRouter>
+      <TooltipProvider>
         <AdminAuthProvider>
+          <Toaster />
+          <Sonner />
           <ScrollToTop />
           <Routes>
             {/* Admin Login (no layout) */}
@@ -208,8 +208,8 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AdminAuthProvider>
-      </BrowserRouter>
-    </TooltipProvider>
+      </TooltipProvider>
+    </BrowserRouter>
   </QueryClientProvider>
 );
 
