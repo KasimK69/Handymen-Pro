@@ -3,8 +3,9 @@ import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertCircle, Image, Upload, X } from 'lucide-react';
+import { AlertCircle, Image as ImageIcon, Upload, X } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 interface ImageUploaderProps {
   onImageSelected: (imageUrl: string) => void;
@@ -25,6 +26,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   const [uploadMethod, setUploadMethod] = useState<string>("upload");
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [uploadError, setUploadError] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const aspectRatioClass = {
@@ -34,10 +36,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     portrait: "aspect-[3/4]"
   }[aspectRatio];
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    
+  const validateFile = (file: File): boolean => {
     // Check file size
     if (file.size > maxSize * 1024 * 1024) {
       toast({
@@ -45,19 +44,41 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         description: `Maximum file size is ${maxSize}MB`,
         variant: "destructive"
       });
-      return;
+      setUploadError(`File too large. Maximum size is ${maxSize}MB`);
+      return false;
     }
+
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload an image file",
+        variant: "destructive"
+      });
+      setUploadError("Invalid file type. Please upload an image file");
+      return false;
+    }
+
+    setUploadError("");
+    return true;
+  };
+
+  const processFile = (file: File): void => {
+    if (!validateFile(file)) return;
     
     setIsUploading(true);
     
     try {
-      // Create a FileReader to get a data URL
       const reader = new FileReader();
       reader.onload = (e) => {
         const result = e.target?.result as string;
         if (result) {
           setImageUrl(result);
           onImageSelected(result);
+          toast({
+            title: "Image uploaded",
+            description: "Your image has been uploaded successfully",
+          });
         }
         setIsUploading(false);
       };
@@ -67,6 +88,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
           description: "There was a problem uploading your image.",
           variant: "destructive"
         });
+        setUploadError("Upload failed. Please try again.");
         setIsUploading(false);
       };
       reader.readAsDataURL(file);
@@ -77,17 +99,29 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         description: "There was a problem processing your image.",
         variant: "destructive"
       });
+      setUploadError("Upload failed. Please try again.");
       setIsUploading(false);
     }
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    processFile(file);
+  };
+
   const handleUrlSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
     const url = formData.get('imageUrl') as string;
     
-    if (!url) return;
+    if (!url) {
+      setUploadError("Please enter a valid URL");
+      return;
+    }
     
     // Basic URL validation
     if (!url.match(/^(http|https):\/\/[^ "]+$/)) {
@@ -96,12 +130,36 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         description: "Please enter a valid image URL",
         variant: "destructive"
       });
+      setUploadError("Invalid URL. Please enter a valid image URL");
       return;
     }
     
-    setImageUrl(url);
-    onImageSelected(url);
-    form.reset();
+    // Check if URL is an image by attempting to load it
+    setIsUploading(true);
+    
+    const img = new Image();
+    img.onload = () => {
+      setImageUrl(url);
+      onImageSelected(url);
+      setUploadError("");
+      setIsUploading(false);
+      toast({
+        title: "URL added",
+        description: "Image URL has been added successfully",
+      });
+    };
+    img.onerror = () => {
+      toast({
+        title: "Invalid image URL",
+        description: "Could not load image from the provided URL",
+        variant: "destructive"
+      });
+      setUploadError("Could not load image from the provided URL");
+      setIsUploading(false);
+    };
+    img.src = url;
+    
+    // Don't reset the form yet, wait for onload or onerror
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -120,63 +178,14 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     const files = e.dataTransfer.files;
     if (files.length > 0) {
       const file = files[0];
-      
-      // Check file type
-      if (!file.type.startsWith('image/')) {
-        toast({
-          title: "Invalid file type",
-          description: "Please upload an image file",
-          variant: "destructive"
-        });
-        return;
-      }
-      
-      // Check file size
-      if (file.size > maxSize * 1024 * 1024) {
-        toast({
-          title: "File too large",
-          description: `Maximum file size is ${maxSize}MB`,
-          variant: "destructive"
-        });
-        return;
-      }
-      
-      setIsUploading(true);
-      
-      try {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const result = e.target?.result as string;
-          if (result) {
-            setImageUrl(result);
-            onImageSelected(result);
-          }
-          setIsUploading(false);
-        };
-        reader.onerror = () => {
-          toast({
-            title: "Upload failed",
-            description: "There was a problem uploading your image.",
-            variant: "destructive"
-          });
-          setIsUploading(false);
-        };
-        reader.readAsDataURL(file);
-      } catch (error) {
-        console.error("Error during file drop:", error);
-        toast({
-          title: "Upload failed",
-          description: "There was a problem processing your image.",
-          variant: "destructive"
-        });
-        setIsUploading(false);
-      }
+      processFile(file);
     }
   };
 
   const clearImage = () => {
     setImageUrl("");
     onImageSelected("");
+    setUploadError("");
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -199,13 +208,13 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
           >
-            {imageUrl ? (
+            {imageUrl && uploadMethod === "upload" ? (
               <div className="relative">
-                <div className={`relative ${aspectRatioClass} overflow-hidden rounded-md mb-2`}>
+                <AspectRatio ratio={aspectRatio === "square" ? 1 : aspectRatio === "video" ? 16/9 : aspectRatio === "portrait" ? 3/4 : 16/9} className="overflow-hidden rounded-md mb-2">
                   <img 
                     src={imageUrl} 
                     alt="Uploaded preview"
-                    className="absolute inset-0 w-full h-full object-cover"
+                    className="w-full h-full object-cover"
                     onError={(e) => {
                       console.error("Image failed to load");
                       e.currentTarget.src = 'https://via.placeholder.com/300x200?text=Image+Error';
@@ -219,8 +228,8 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                   >
                     <X className="h-4 w-4" />
                   </Button>
-                </div>
-                <p className="text-sm text-gray-500 truncate">{imageUrl.substring(0, 50)}{imageUrl.length > 50 ? '...' : ''}</p>
+                </AspectRatio>
+                <p className="text-sm text-gray-500 truncate max-w-full">{imageUrl.substring(0, 50)}{imageUrl.length > 50 ? '...' : ''}</p>
               </div>
             ) : (
               <div className="py-6">
@@ -253,6 +262,13 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
             />
           </div>
           
+          {uploadError && (
+            <div className="text-sm text-destructive flex items-center">
+              <AlertCircle className="h-4 w-4 mr-1" />
+              <span>{uploadError}</span>
+            </div>
+          )}
+          
           <div className="text-sm text-gray-500">
             <div className="flex items-center">
               <AlertCircle className="h-4 w-4 mr-1" />
@@ -267,11 +283,11 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
           <form onSubmit={handleUrlSubmit} className="space-y-4">
             {imageUrl && uploadMethod === "url" && (
               <div className="relative">
-                <div className={`relative ${aspectRatioClass} overflow-hidden rounded-md mb-2`}>
+                <AspectRatio ratio={aspectRatio === "square" ? 1 : aspectRatio === "video" ? 16/9 : aspectRatio === "portrait" ? 3/4 : 16/9} className="overflow-hidden rounded-md mb-2">
                   <img 
                     src={imageUrl} 
                     alt="URL preview"
-                    className="absolute inset-0 w-full h-full object-cover"
+                    className="w-full h-full object-cover"
                     onError={(e) => {
                       console.error("Image URL failed to load");
                       e.currentTarget.src = 'https://via.placeholder.com/300x200?text=Invalid+URL';
@@ -285,7 +301,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                   >
                     <X className="h-4 w-4" />
                   </Button>
-                </div>
+                </AspectRatio>
               </div>
             )}
             
@@ -295,11 +311,21 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                   name="imageUrl"
                   placeholder="https://example.com/image.jpg"
                   defaultValue={imageUrl && uploadMethod === "url" ? imageUrl : ""}
+                  className="pr-10"
                 />
-                <Image className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <ImageIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               </div>
-              <Button type="submit">Use URL</Button>
+              <Button type="submit" disabled={isUploading}>
+                {isUploading ? 'Adding...' : 'Use URL'}
+              </Button>
             </div>
+            
+            {uploadError && (
+              <div className="text-sm text-destructive flex items-center">
+                <AlertCircle className="h-4 w-4 mr-1" />
+                <span>{uploadError}</span>
+              </div>
+            )}
           </form>
         </TabsContent>
       </Tabs>

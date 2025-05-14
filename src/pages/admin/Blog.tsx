@@ -10,7 +10,8 @@ import {
   Calendar,
   Tag,
   X,
-  ImagePlus
+  ImagePlus,
+  Upload
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -36,7 +37,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -50,6 +50,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from '@/hooks/use-toast';
 import { Switch } from '@/components/ui/switch';
+import ImageUploader from '@/components/admin/ImageUploader';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 // Sample blog post data for demonstration
 const initialBlogPosts = [
@@ -191,6 +193,10 @@ const BlogAdmin = () => {
     setFormData(prev => ({ ...prev, tags: updatedTags }));
   };
   
+  const handleImageSelected = (url: string) => {
+    setFormData(prev => ({ ...prev, featuredImage: url }));
+  };
+  
   const openNewPostDialog = () => {
     setEditMode(false);
     setCurrentPost(null);
@@ -312,7 +318,7 @@ const BlogAdmin = () => {
   };
   
   return (
-    <div className="space-y-8 p-4">
+    <div className="space-y-8 p-4 md:p-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold">Blog Posts</h1>
@@ -336,11 +342,15 @@ const BlogAdmin = () => {
             </div>
             
             <div className="w-full md:w-64">
-              <Input
-                placeholder="Search posts..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search posts..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
             </div>
           </div>
         </CardHeader>
@@ -369,6 +379,10 @@ const BlogAdmin = () => {
                               src={post.featuredImage} 
                               alt={post.title}
                               className="w-full h-full object-cover"
+                              onError={(e) => {
+                                console.error("Image failed to load");
+                                e.currentTarget.src = 'https://via.placeholder.com/300x200?text=Image+Error';
+                              }}
                             />
                           </div>
                         ) : (
@@ -473,8 +487,8 @@ const BlogAdmin = () => {
             </DialogDescription>
           </DialogHeader>
           
-          <form onSubmit={handleSubmit}>
-            <div className="space-y-4 py-2">
+          <form onSubmit={handleSubmit} className="space-y-6 py-2">
+            <div className="grid grid-cols-1 gap-6">
               <div>
                 <Label htmlFor="title">Title</Label>
                 <Input
@@ -483,6 +497,7 @@ const BlogAdmin = () => {
                   value={formData.title}
                   onChange={handleChange}
                   required
+                  className="mt-1"
                 />
               </div>
               
@@ -494,6 +509,7 @@ const BlogAdmin = () => {
                   value={formData.slug}
                   onChange={handleChange}
                   required
+                  className="mt-1"
                 />
                 <p className="text-xs text-gray-500 mt-1">
                   The slug will be used in the URL: yoursite.com/blog/{formData.slug}
@@ -509,10 +525,54 @@ const BlogAdmin = () => {
                   onChange={handleChange}
                   rows={2}
                   required
+                  className="mt-1"
                 />
                 <p className="text-xs text-gray-500 mt-1">
                   A brief summary of your post that will appear in blog listings
                 </p>
+              </div>
+              
+              <div>
+                <Label className="mb-2 block">Featured Image</Label>
+                <div className="border rounded-md p-4 bg-gray-50 dark:bg-gray-800">
+                  <div className="mb-4">
+                    {formData.featuredImage ? (
+                      <div className="relative">
+                        <AspectRatio ratio={16/9} className="bg-muted overflow-hidden rounded-md mb-2">
+                          <img 
+                            src={formData.featuredImage} 
+                            alt="Featured preview" 
+                            className="object-cover w-full h-full"
+                            onError={(e) => (e.currentTarget.src = 'https://via.placeholder.com/300x200?text=Image+Not+Found')}
+                          />
+                        </AspectRatio>
+                        <Button 
+                          type="button"
+                          variant="destructive" 
+                          size="sm"
+                          className="absolute top-2 right-2"
+                          onClick={() => setFormData(prev => ({ ...prev, featuredImage: '' }))}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-md bg-white dark:bg-gray-900">
+                        <ImagePlus className="h-10 w-10 text-gray-400 mb-2" />
+                        <p className="text-sm font-medium mb-1">No featured image selected</p>
+                        <p className="text-xs text-gray-500 mb-3 text-center">
+                          Upload an image or provide a URL for your featured image
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <ImageUploader
+                    onImageSelected={handleImageSelected}
+                    defaultImage={formData.featuredImage}
+                    aspectRatio="wide"
+                  />
+                </div>
               </div>
               
               <div>
@@ -524,75 +584,59 @@ const BlogAdmin = () => {
                   onChange={handleChange}
                   rows={10}
                   required
+                  className="mt-1 font-mono text-sm"
                 />
-              </div>
-              
-              <div>
-                <Label htmlFor="featuredImage">Featured Image URL</Label>
-                <Input
-                  id="featuredImage"
-                  name="featuredImage"
-                  value={formData.featuredImage}
-                  onChange={handleChange}
-                />
-                {formData.featuredImage && (
-                  <div className="mt-2">
-                    <img 
-                      src={formData.featuredImage} 
-                      alt="Featured preview" 
-                      className="max-h-32 rounded-md object-cover"
-                      onError={(e) => (e.currentTarget.src = 'https://via.placeholder.com/300x200?text=Image+Not+Found')}
-                    />
-                  </div>
-                )}
               </div>
               
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <Label>Tags</Label>
                   <Button type="button" size="sm" variant="outline" onClick={addTag}>
+                    <Plus className="h-4 w-4 mr-1" />
                     Add Tag
                   </Button>
                 </div>
                 
-                {formData.tags.map((tag, index) => (
-                  <div key={index} className="flex items-center gap-2 mb-2">
-                    <Input
-                      value={tag}
-                      onChange={(e) => handleTagChange(index, e.target.value)}
-                      placeholder={`Tag ${index + 1}`}
-                    />
-                    {formData.tags.length > 1 && (
-                      <Button 
-                        type="button" 
-                        size="sm" 
-                        variant="ghost" 
-                        className="text-red-500 hover:text-red-600"
-                        onClick={() => removeTag(index)}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
-                ))}
+                <div className="space-y-2">
+                  {formData.tags.map((tag, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <Input
+                        value={tag}
+                        onChange={(e) => handleTagChange(index, e.target.value)}
+                        placeholder={`Tag ${index + 1}`}
+                      />
+                      {formData.tags.length > 1 && (
+                        <Button 
+                          type="button" 
+                          size="sm" 
+                          variant="ghost" 
+                          className="text-destructive hover:text-destructive"
+                          onClick={() => removeTag(index)}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
               
-              <div>
-                <Label htmlFor="status">Status</Label>
-                <select
+              <div className="flex items-center space-x-2">
+                <Label htmlFor="status">Publish post</Label>
+                <Switch
                   id="status"
-                  name="status"
-                  value={formData.status}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 mt-1"
-                >
-                  <option value="draft">Draft</option>
-                  <option value="published">Published</option>
-                </select>
+                  checked={formData.status === "published"}
+                  onCheckedChange={(checked) => 
+                    setFormData(prev => ({ ...prev, status: checked ? "published" : "draft" }))
+                  }
+                />
+                <span className="text-sm text-muted-foreground ml-1">
+                  {formData.status === "published" ? "Published" : "Draft"}
+                </span>
               </div>
             </div>
             
-            <DialogFooter className="mt-6">
+            <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                 Cancel
               </Button>
@@ -614,7 +658,7 @@ const BlogAdmin = () => {
             </DialogDescription>
           </DialogHeader>
           
-          <DialogFooter>
+          <DialogFooter className="mt-4">
             <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
               Cancel
             </Button>

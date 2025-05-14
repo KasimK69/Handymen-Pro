@@ -1,10 +1,5 @@
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { 
   Image as ImageIcon, 
   Search, 
@@ -12,8 +7,17 @@ import {
   MoreVertical, 
   Edit2, 
   Trash2, 
-  CheckCircle
+  CheckCircle,
+  Plus,
+  Filter,
+  X
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -21,7 +25,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
 import ImageUploader from '@/components/admin/ImageUploader';
 
@@ -35,6 +39,9 @@ const initialImages = [
   { id: 6, url: 'https://images.unsplash.com/photo-1513366173304-65a31f2be6b4?auto=format&fit=crop&w=500', name: 'Blog Post.jpg', size: '380 KB', date: '2023-05-05', type: 'blog' }
 ];
 
+// Additional sample image for the hero section
+const heroImage = '/lovable-uploads/8e189df9-3491-4f13-929a-cbb549c7ef80.png';
+
 interface ImageItem {
   id: number;
   url: string;
@@ -45,7 +52,17 @@ interface ImageItem {
 }
 
 const Media = () => {
-  const [images, setImages] = useState<ImageItem[]>(initialImages);
+  const [images, setImages] = useState<ImageItem[]>([
+    ...initialImages,
+    { 
+      id: 7, 
+      url: heroImage, 
+      name: 'Hero AC Service.jpg', 
+      size: '720 KB', 
+      date: '2023-05-04', 
+      type: 'hero' 
+    }
+  ]);
   const [selectedImages, setSelectedImages] = useState<number[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [editingImage, setEditingImage] = useState<ImageItem | null>(null);
@@ -53,19 +70,27 @@ const Media = () => {
   const [imageToDelete, setImageToDelete] = useState<number | null>(null);
   const [filter, setFilter] = useState('all');
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState<ImageItem | null>(null);
 
   const filteredImages = images.filter(image => {
-    const matchesSearch = image.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = image.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         image.type.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesFilter = filter === 'all' || image.type === filter;
     return matchesSearch && matchesFilter;
   });
 
   const handleImageUpload = (newImageUrl: string) => {
     if (newImageUrl) {
+      // Extract filename from URL or use timestamp
+      const filename = newImageUrl.startsWith('data:') 
+        ? `Image-${Date.now()}.jpg` 
+        : newImageUrl.split('/').pop() || `Image-${Date.now()}.jpg`;
+        
       const newImage = {
         id: Date.now(),
         url: newImageUrl,
-        name: `Image-${Date.now()}.jpg`,
+        name: filename,
         size: 'New',
         date: new Date().toISOString().split('T')[0],
         type: 'upload'
@@ -80,6 +105,11 @@ const Media = () => {
       
       setIsUploadDialogOpen(false);
     }
+  };
+
+  const handlePreviewImage = (image: ImageItem) => {
+    setPreviewImage(image);
+    setIsPreviewOpen(true);
   };
 
   const handleImageSelect = (id: number) => {
@@ -144,6 +174,28 @@ const Media = () => {
     }
   };
 
+  const handleCopyUrl = (url: string) => {
+    navigator.clipboard.writeText(url);
+    toast({
+      title: "URL Copied",
+      description: "Image URL has been copied to clipboard",
+    });
+  };
+
+  const getImageCount = (type: string) => {
+    return images.filter(image => type === 'all' || image.type === type).length;
+  };
+
+  const imageTypes = [
+    { value: 'all', label: 'All' },
+    { value: 'service', label: 'Services' },
+    { value: 'blog', label: 'Blog' },
+    { value: 'banner', label: 'Banners' },
+    { value: 'hero', label: 'Hero' },
+    { value: 'team', label: 'Team' },
+    { value: 'upload', label: 'Uploads' }
+  ];
+
   return (
     <div className="space-y-6 p-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -161,26 +213,9 @@ const Media = () => {
           <Upload className="mr-2 h-4 w-4" />
           Upload New
         </Button>
-        
-        <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
-          <DialogContent className="sm:max-w-[500px]">
-            <DialogHeader>
-              <DialogTitle>Upload New Image</DialogTitle>
-              <DialogDescription>
-                Upload a new image to your media library.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4 py-4">
-              <ImageUploader 
-                onImageSelected={handleImageUpload} 
-                aspectRatio="square"
-              />
-            </div>
-          </DialogContent>
-        </Dialog>
       </div>
       
-      <div className="flex flex-col gap-4 md:flex-row">
+      <div className="flex flex-col gap-4 md:flex-row md:flex-wrap">
         <div className="relative w-full md:w-1/3">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -191,19 +226,23 @@ const Media = () => {
           />
         </div>
         
-        <Tabs defaultValue={filter} className="w-full md:w-2/3" onValueChange={setFilter}>
-          <TabsList className="grid grid-cols-2 md:grid-cols-4">
-            <TabsTrigger value="all">All</TabsTrigger>
-            <TabsTrigger value="service">Services</TabsTrigger>
-            <TabsTrigger value="blog">Blog</TabsTrigger>
-            <TabsTrigger value="banner">Banners</TabsTrigger>
+        <Tabs defaultValue={filter} className="w-full" onValueChange={setFilter}>
+          <TabsList className="h-auto flex flex-wrap justify-start py-1">
+            {imageTypes.map(type => (
+              <TabsTrigger key={type.value} value={type.value} className="px-3 py-1 h-8">
+                {type.label} 
+                <Badge variant="secondary" className="ml-2 bg-muted text-muted-foreground">
+                  {getImageCount(type.value)}
+                </Badge>
+              </TabsTrigger>
+            ))}
           </TabsList>
         </Tabs>
       </div>
       
       {selectedImages.length > 0 && (
-        <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg flex items-center justify-between">
-          <span>{selectedImages.length} images selected</span>
+        <div className="bg-muted p-3 rounded-lg flex items-center justify-between">
+          <span className="font-medium">{selectedImages.length} images selected</span>
           <Button 
             variant="destructive" 
             size="sm" 
@@ -232,15 +271,16 @@ const Media = () => {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredImages.map((image) => (
-            <Card key={image.id} className="overflow-hidden">
+            <Card key={image.id} className="overflow-hidden group hover:shadow-md transition-all">
               <div className="relative">
-                <AspectRatio ratio={1}>
+                <AspectRatio ratio={1} className="bg-muted/20">
                   <img
                     src={image.url}
                     alt={image.name}
-                    className="object-cover w-full h-full"
+                    className="object-cover w-full h-full cursor-pointer"
+                    onClick={() => handlePreviewImage(image)}
                     onError={(e) => {
                       console.error("Gallery image failed to load:", image.url);
                       e.currentTarget.src = 'https://via.placeholder.com/300x200?text=Image+Not+Found';
@@ -271,10 +311,17 @@ const Media = () => {
                       </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem onSelect={(e) => {
-                        e.preventDefault();
-                        handleImageEdit(image);
-                      }}>
+                      <DropdownMenuItem onClick={() => handlePreviewImage(image)}>
+                        <ImageIcon className="mr-2 h-4 w-4" />
+                        Preview
+                      </DropdownMenuItem>
+                      
+                      <DropdownMenuItem onClick={() => handleCopyUrl(image.url)}>
+                        <Plus className="mr-2 h-4 w-4" />
+                        Copy URL
+                      </DropdownMenuItem>
+                      
+                      <DropdownMenuItem onClick={() => handleImageEdit(image)}>
                         <Edit2 className="mr-2 h-4 w-4" />
                         Edit Details
                       </DropdownMenuItem>
@@ -283,10 +330,7 @@ const Media = () => {
                       
                       <DropdownMenuItem 
                         className="text-destructive focus:text-destructive"
-                        onSelect={(e) => {
-                          e.preventDefault();
-                          handleImageDelete(image.id);
-                        }}
+                        onClick={() => handleImageDelete(image.id)}
                       >
                         <Trash2 className="mr-2 h-4 w-4" />
                         Delete Image
@@ -299,8 +343,10 @@ const Media = () => {
               <CardContent className="p-3">
                 <p className="font-medium truncate text-sm">{image.name}</p>
                 <div className="flex justify-between items-center text-xs text-muted-foreground mt-1">
+                  <Badge variant="outline" className="text-xs px-1 py-0">
+                    {image.type}
+                  </Badge>
                   <span>{image.size}</span>
-                  <span>{image.date}</span>
                 </div>
               </CardContent>
             </Card>
@@ -308,9 +354,32 @@ const Media = () => {
         </div>
       )}
       
+      {/* Upload dialog */}
+      <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
+        <DialogContent className="sm:max-w-[550px]">
+          <DialogHeader>
+            <DialogTitle>Upload New Image</DialogTitle>
+            <DialogDescription>
+              Upload a new image to your media library. You can upload from your device or use an image URL.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <ImageUploader 
+              onImageSelected={handleImageUpload} 
+              aspectRatio="square"
+            />
+          </div>
+          <DialogFooter className="mt-4">
+            <Button variant="outline" onClick={() => setIsUploadDialogOpen(false)}>
+              Cancel
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
       {/* Delete confirmation dialog */}
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Delete Image</DialogTitle>
             <DialogDescription>
@@ -340,23 +409,25 @@ const Media = () => {
       {/* Edit image dialog */}
       {editingImage && (
         <Dialog open={!!editingImage} onOpenChange={(open) => !open && setEditingImage(null)}>
-          <DialogContent>
+          <DialogContent className="sm:max-w-[500px]">
             <DialogHeader>
               <DialogTitle>Edit Image Details</DialogTitle>
               <DialogDescription>
                 Update the details for this image
               </DialogDescription>
             </DialogHeader>
-            <div className="space-y-4 py-4">
+            <div className="space-y-4 py-2">
               <div className="mb-4">
-                <img
-                  src={editingImage.url}
-                  alt={editingImage.name}
-                  className="w-full h-48 object-cover rounded-md"
-                  onError={(e) => {
-                    e.currentTarget.src = 'https://via.placeholder.com/300x200?text=Image+Not+Found';
-                  }}
-                />
+                <AspectRatio ratio={1} className="overflow-hidden rounded-md bg-muted/20">
+                  <img
+                    src={editingImage.url}
+                    alt={editingImage.name}
+                    className="object-cover w-full h-full"
+                    onError={(e) => {
+                      e.currentTarget.src = 'https://via.placeholder.com/300x200?text=Image+Not+Found';
+                    }}
+                  />
+                </AspectRatio>
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Image Name</label>
@@ -371,13 +442,14 @@ const Media = () => {
               <div className="space-y-2">
                 <label className="text-sm font-medium">Image Type</label>
                 <select 
-                  className="w-full p-2 border rounded-md" 
+                  className="w-full p-2 border border-input bg-background rounded-md" 
                   defaultValue={editingImage.type}
                   onChange={(e) => setEditingImage({
                     ...editingImage,
                     type: e.target.value
                   })}
                 >
+                  <option value="hero">Hero</option>
                   <option value="service">Service</option>
                   <option value="blog">Blog</option>
                   <option value="banner">Banner</option>
@@ -387,14 +459,73 @@ const Media = () => {
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Image URL</label>
-                <Input 
-                  defaultValue={editingImage.url}
-                  disabled
+                <div className="relative">
+                  <Input 
+                    value={editingImage.url}
+                    readOnly
+                    className="pr-10"
+                  />
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="absolute top-0 right-0 h-full px-3"
+                    onClick={() => handleCopyUrl(editingImage.url)}
+                  >
+                    Copy
+                  </Button>
+                </div>
+              </div>
+            </div>
+            <DialogFooter className="mt-4">
+              <Button variant="outline" onClick={() => setEditingImage(null)}>Cancel</Button>
+              <Button onClick={() => handleSaveEdit(editingImage)}>Save Changes</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+      
+      {/* Preview image dialog */}
+      {previewImage && (
+        <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
+          <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-auto">
+            <DialogHeader>
+              <DialogTitle>{previewImage.name}</DialogTitle>
+            </DialogHeader>
+            <div className="py-2">
+              <div className="rounded-md overflow-hidden">
+                <img
+                  src={previewImage.url}
+                  alt={previewImage.name}
+                  className="w-full h-auto"
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://via.placeholder.com/800x600?text=Image+Not+Found';
+                  }}
                 />
               </div>
-              <div className="flex justify-end space-x-2 mt-4">
-                <Button variant="outline" onClick={() => setEditingImage(null)}>Cancel</Button>
-                <Button onClick={() => handleSaveEdit(editingImage)}>Save Changes</Button>
+              <div className="flex flex-col sm:flex-row items-start gap-2 sm:items-center justify-between mt-4">
+                <div>
+                  <Badge className="mb-2">{previewImage.type}</Badge>
+                  <p className="text-sm text-muted-foreground">{previewImage.size} • {previewImage.date}</p>
+                </div>
+                <div className="flex gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleCopyUrl(previewImage.url)}
+                  >
+                    Copy URL
+                  </Button>
+                  <Button 
+                    variant="secondary" 
+                    size="sm"
+                    onClick={() => {
+                      setIsPreviewOpen(false);
+                      handleImageEdit(previewImage);
+                    }}
+                  >
+                    <Edit2 className="h-4 w-4 mr-1" /> Edit
+                  </Button>
+                </div>
               </div>
             </div>
           </DialogContent>

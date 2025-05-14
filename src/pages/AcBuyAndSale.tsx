@@ -34,7 +34,7 @@ const AcBuyAndSale: React.FC = () => {
 
   const handleWhatsAppContact = (unit: ACUnit): void => {
     const phoneNumber = '+923125242182';
-    const message = `Hello, I'm interested in buying this AC: ${unit.name} (${formatPrice(unit.price)})`;
+    const message = `Hello, I'm interested in this AC: ${unit.name} (${formatPrice(unit.price)})`;
     const whatsappUrl = `https://wa.me/${phoneNumber.replace('+', '')}?text=${encodeURIComponent(message)}`;
     
     window.open(whatsappUrl, '_blank');

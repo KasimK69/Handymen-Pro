@@ -40,7 +40,7 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({
           
           <TabsContent value="for-sale">
             <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold mb-4">Air Conditioners For Sale</h2>
+              <h2 className="text-3xl font-bold mb-4">Quality Air Conditioners For Sale</h2>
               <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
                 Browse our selection of new and used air conditioning units with competitive pricing and quality assurance.
               </p>

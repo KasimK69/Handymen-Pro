@@ -55,7 +55,7 @@ const Home = () => {
               className="fixed left-6 bottom-24 z-50 bg-brand-red hover:bg-brand-red/90 text-white shadow-lg flex items-center gap-2 px-4 py-6 rounded-full"
             >
               <MessageSquare className="h-5 w-5" />
-              <span className="font-medium">Quick Inquiry</span>
+              <span className="font-medium">Request Service</span>
             </Button>
           </motion.div>
         )}

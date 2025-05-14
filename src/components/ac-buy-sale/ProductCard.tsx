@@ -1,8 +1,10 @@
 
 import React from 'react';
-import { Star, BadgeCheck, MessageSquare } from 'lucide-react';
+import { BadgeCheck, MessageSquare, Info } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { ACUnit } from '@/types/acUnit';
 
 interface ProductCardProps {
@@ -22,37 +24,31 @@ const ProductCard: React.FC<ProductCardProps> = ({
     <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-all duration-300 group">
       <div className="relative">
         {product.discounted && (
-          <div className="absolute top-4 right-4 bg-brand-red text-white text-xs font-bold px-3 py-1 rounded-full z-10">
+          <Badge className="absolute top-4 right-4 z-10 bg-brand-red hover:bg-brand-red">
             {product.discountPercentage}% OFF
-          </div>
+          </Badge>
         )}
         
-        <div 
-          className="h-56 overflow-hidden cursor-pointer" 
-          onClick={onImageClick}
-        >
+        <AspectRatio ratio={4/3} className="overflow-hidden cursor-pointer">
           <img 
             src={product.images[0]} 
             alt={product.name} 
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
             loading="lazy"
+            onClick={onImageClick}
           />
-        </div>
+        </AspectRatio>
       </div>
       
       <CardContent className="p-6">
-        <div className="flex items-center mb-2 gap-2">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Star 
-              key={i} 
-              className={`h-4 w-4 ${i < Math.floor(product.rating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
-            />
-          ))}
-          <span className="text-sm text-gray-600">{product.rating}</span>
-          
-          <span className="ml-auto text-sm px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+        <div className="flex items-start justify-between mb-2 gap-2">
+          <Badge variant="outline" className="bg-gray-100 dark:bg-gray-700">
             {product.condition === 'new' ? 'New' : 'Used'}
-          </span>
+          </Badge>
+          
+          <Badge variant="outline" className="bg-gray-100 dark:bg-gray-700">
+            {product.brand}
+          </Badge>
         </div>
         
         <h3 className="text-xl font-bold mb-2">{product.name}</h3>
@@ -78,16 +74,33 @@ const ProductCard: React.FC<ProductCardProps> = ({
             </div>
           ))}
           {product.features.length > 3 && (
-            <div className="text-sm text-gray-600 dark:text-gray-400 pl-6">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="text-sm text-brand-blue hover:text-brand-blue pl-0 flex items-center" 
+              onClick={onImageClick}
+            >
+              <Info className="h-4 w-4 mr-1" />
               +{product.features.length - 3} more features
-            </div>
+            </Button>
           )}
         </div>
         
-        <Button className="w-full bg-green-600 hover:bg-green-700 flex items-center justify-center" onClick={onWhatsAppContact}>
-          <MessageSquare className="mr-2 h-4 w-4" />
-          Contact on WhatsApp
-        </Button>
+        <div className="grid grid-cols-2 gap-2">
+          <Button 
+            className="w-full bg-brand-blue hover:bg-brand-blue/90" 
+            onClick={onImageClick}
+          >
+            View Details
+          </Button>
+          <Button 
+            className="w-full bg-green-600 hover:bg-green-700 flex items-center justify-center" 
+            onClick={onWhatsAppContact}
+          >
+            <MessageSquare className="mr-2 h-4 w-4" />
+            Contact Us
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
