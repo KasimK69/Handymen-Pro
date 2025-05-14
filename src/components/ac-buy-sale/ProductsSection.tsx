@@ -5,6 +5,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import ProductCard from './ProductCard';
 import WantedCard from './WantedCard';
 import { ACUnit } from '@/types/acUnit';
+import { ArrowRight } from 'lucide-react';
 
 interface ProductsSectionProps {
   selectedTab: 'for-sale' | 'wanted';
@@ -28,22 +29,29 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({
   onOpenSellingForm
 }) => {
   return (
-    <section className="py-16 bg-white dark:bg-gray-800">
+    <section className="py-16 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-950">
       <div className="container mx-auto px-4">
         <Tabs value={selectedTab} onValueChange={(value) => onTabChange(value as 'for-sale' | 'wanted')}>
           <div className="flex justify-center mb-8">
-            <TabsList className="grid grid-cols-2 w-full max-w-md">
-              <TabsTrigger value="for-sale" className="text-base py-3">ACs For Sale</TabsTrigger>
-              <TabsTrigger value="wanted" className="text-base py-3">ACs Wanted</TabsTrigger>
+            <TabsList className="grid grid-cols-2 w-full max-w-md shadow-md rounded-lg overflow-hidden">
+              <TabsTrigger value="for-sale" className="text-base py-3 data-[state=active]:bg-brand-blue data-[state=active]:text-white">
+                ACs For Sale
+              </TabsTrigger>
+              <TabsTrigger value="wanted" className="text-base py-3 data-[state=active]:bg-brand-blue data-[state=active]:text-white">
+                ACs Wanted
+              </TabsTrigger>
             </TabsList>
           </div>
           
           <TabsContent value="for-sale">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold mb-4">Quality Air Conditioners For Sale</h2>
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 dark:text-white">
+                Premium Air Conditioners <span className="text-brand-blue">For Sale</span>
+              </h2>
               <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-                Browse our selection of new and used air conditioning units with competitive pricing and quality assurance.
+                Browse our curated selection of new and used air conditioning units with competitive pricing and quality assurance.
               </p>
+              <div className="w-20 h-1 bg-brand-blue mx-auto mt-6"></div>
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -57,16 +65,29 @@ const ProductsSection: React.FC<ProductsSectionProps> = ({
                 />
               ))}
             </div>
+            
+            <div className="mt-12 text-center">
+              <Button 
+                className="bg-gray-900 hover:bg-gray-800 text-white group"
+                onClick={() => onOpenGallery(acUnitsForSale[0])}
+              >
+                View More Options
+                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </div>
           </TabsContent>
           
           <TabsContent value="wanted">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold mb-4">AC Buying Requests</h2>
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 dark:text-white">
+                AC <span className="text-brand-blue">Buying Requests</span>
+              </h2>
               <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
                 These are the current requests from people looking to buy AC units. If you have something that matches, contact us.
               </p>
+              <div className="w-20 h-1 bg-brand-blue mx-auto mt-6"></div>
               <Button 
-                className="mt-4 bg-brand-blue hover:bg-brand-blue/80"
+                className="mt-6 bg-brand-blue hover:bg-brand-blue/80 text-white shadow-lg"
                 onClick={onOpenSellingForm}
               >
                 Sell Your AC Unit

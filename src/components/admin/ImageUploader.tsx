@@ -27,13 +27,14 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [uploadError, setUploadError] = useState<string>("");
+  const [urlInput, setUrlInput] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const aspectRatioClass = {
-    square: "aspect-square",
-    video: "aspect-video",
-    wide: "aspect-[16/9]",
-    portrait: "aspect-[3/4]"
+  const aspectRatioValue = {
+    square: 1,
+    video: 16/9,
+    wide: 16/9,
+    portrait: 3/4
   }[aspectRatio];
 
   const validateFile = (file: File): boolean => {
@@ -114,17 +115,13 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   const handleUrlSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
-    const url = formData.get('imageUrl') as string;
-    
-    if (!url) {
+    if (!urlInput) {
       setUploadError("Please enter a valid URL");
       return;
     }
     
     // Basic URL validation
-    if (!url.match(/^(http|https):\/\/[^ "]+$/)) {
+    if (!urlInput.match(/^(http|https):\/\/[^ "]+$/)) {
       toast({
         title: "Invalid URL",
         description: "Please enter a valid image URL",
@@ -139,8 +136,8 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     
     const img = new Image();
     img.onload = () => {
-      setImageUrl(url);
-      onImageSelected(url);
+      setImageUrl(urlInput);
+      onImageSelected(urlInput);
       setUploadError("");
       setIsUploading(false);
       toast({
@@ -157,9 +154,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       setUploadError("Could not load image from the provided URL");
       setIsUploading(false);
     };
-    img.src = url;
-    
-    // Don't reset the form yet, wait for onload or onerror
+    img.src = urlInput;
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -184,6 +179,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
 
   const clearImage = () => {
     setImageUrl("");
+    setUrlInput("");
     onImageSelected("");
     setUploadError("");
     if (fileInputRef.current) {
@@ -210,7 +206,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
           >
             {imageUrl && uploadMethod === "upload" ? (
               <div className="relative">
-                <AspectRatio ratio={aspectRatio === "square" ? 1 : aspectRatio === "video" ? 16/9 : aspectRatio === "portrait" ? 3/4 : 16/9} className="overflow-hidden rounded-md mb-2">
+                <AspectRatio ratio={aspectRatioValue} className="overflow-hidden rounded-md mb-2">
                   <img 
                     src={imageUrl} 
                     alt="Uploaded preview"
@@ -283,7 +279,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
           <form onSubmit={handleUrlSubmit} className="space-y-4">
             {imageUrl && uploadMethod === "url" && (
               <div className="relative">
-                <AspectRatio ratio={aspectRatio === "square" ? 1 : aspectRatio === "video" ? 16/9 : aspectRatio === "portrait" ? 3/4 : 16/9} className="overflow-hidden rounded-md mb-2">
+                <AspectRatio ratio={aspectRatioValue} className="overflow-hidden rounded-md mb-2">
                   <img 
                     src={imageUrl} 
                     alt="URL preview"
@@ -308,9 +304,9 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
             <div className="flex space-x-2">
               <div className="relative flex-grow">
                 <Input 
-                  name="imageUrl"
+                  value={urlInput}
+                  onChange={(e) => setUrlInput(e.target.value)}
                   placeholder="https://example.com/image.jpg"
-                  defaultValue={imageUrl && uploadMethod === "url" ? imageUrl : ""}
                   className="pr-10"
                 />
                 <ImageIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />

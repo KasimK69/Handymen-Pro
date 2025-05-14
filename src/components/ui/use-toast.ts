@@ -1,4 +1,21 @@
 
-import { useToast, toast } from "@/hooks/use-toast";
+import { toast as sonnerToast } from "sonner";
 
-export { useToast, toast };
+type ToastProps = {
+  title: string;
+  description?: string;
+  variant?: "default" | "destructive";
+};
+
+export const toast = ({ title, description, variant }: ToastProps) => {
+  const isDestructive = variant === "destructive";
+  
+  return sonnerToast[isDestructive ? "error" : "success"](title, {
+    description,
+    position: "bottom-right",
+  });
+};
+
+export const useToast = () => {
+  return { toast };
+};

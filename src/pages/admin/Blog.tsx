@@ -1,649 +1,724 @@
+
 import React, { useState } from 'react';
 import { 
   FileText, 
-  PlusCircle, 
-  Edit, 
+  Edit2, 
   Trash2, 
-  ChevronDown,
-  Eye,
-  Calendar,
+  Calendar, 
+  Eye, 
+  ArrowUpRight,
+  PenLine, 
+  Layout, 
   Tag,
   X,
   ImagePlus,
   Upload,
-  Search,  // Added Search import
-  Plus     // Added Plus import
+  Search,
+  Plus
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Badge } from '@/components/ui/badge';
-import {
-  Dialog,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+import { 
+  Dialog, 
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
+} from '@/components/ui/dialog';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { toast } from '@/hooks/use-toast';
-import { Switch } from '@/components/ui/switch';
-import ImageUploader from '@/components/admin/ImageUploader';
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { toast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import ImageUploader from '@/components/admin/ImageUploader';
 
-// Sample blog post data for demonstration
-const initialBlogPosts = [
+// Sample blog posts data
+const samplePosts = [
   {
-    id: 'blog-001',
-    title: 'How to Choose the Right AC for Your Home',
-    slug: 'how-to-choose-the-right-ac',
-    excerpt: 'Learn the key factors to consider when selecting an air conditioning unit for your home.',
-    content: `
-      <p>Selecting the right air conditioning unit for your home is a crucial decision that affects your comfort and energy bills. This guide will help you understand the key factors to consider.</p>
-      <h2>Understand AC Capacity and Room Size</h2>
-      <p>The first step is to calculate the required cooling capacity based on your room size. As a general rule:</p>
-      <ul>
-        <li>For rooms up to 150 sq ft: 1 ton AC</li>
-        <li>For rooms between 150-250 sq ft: 1.5 ton AC</li>
-        <li>For rooms between 250-400 sq ft: 2 ton AC</li>
-      </ul>
-      <h2>Inverter vs. Non-inverter Technology</h2>
-      <p>Inverter ACs adjust their speed based on the required cooling, leading to energy savings of up to 30-50% compared to non-inverter models.</p>
-      <h2>Energy Efficiency Ratings</h2>
-      <p>Check the Energy Efficiency Ratio (EER) or Seasonal Energy Efficiency Ratio (SEER) ratings. Higher ratings mean better efficiency.</p>
-      <h2>Additional Features to Consider</h2>
-      <ul>
-        <li>Air purification filters</li>
-        <li>Sleep mode functionality</li>
-        <li>Noise levels</li>
-        <li>Smart connectivity options</li>
-        <li>Warranty coverage</li>
-      </ul>
-    `,
-    featuredImage: 'https://images.unsplash.com/photo-1581275326027-70a6b944649a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-    publishDate: '2023-03-15T10:00:00',
-    author: 'Admin User',
-    tags: ['AC Tips', 'Buying Guide', 'Energy Efficiency'],
-    status: 'published',
-    views: 1245
+    id: '1',
+    title: 'Ultimate Home Maintenance Checklist for Every Season',
+    content: `<p>Keep your home in top condition year-round with this comprehensive seasonal maintenance checklist.</p><p>Regular maintenance not only helps prevent costly repairs but also extends the lifespan of your home's systems and appliances.</p><h3>Spring Maintenance</h3><ul><li>Check for winter damage</li><li>Clean gutters and downspouts</li><li>Inspect roof for damage</li><li>Schedule AC maintenance</li></ul>`,
+    excerpt: 'Keep your home in top condition year-round with this comprehensive seasonal maintenance checklist.',
+    slug: 'home-maintenance-checklist',
+    published: true,
+    featured: true,
+    image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267',
+    category: 'Maintenance',
+    author: 'Ahmed Khan',
+    date: '2023-04-15T08:00:00.000Z',
+    tags: ['maintenance', 'seasonal', 'home care'],
   },
   {
-    id: 'blog-002',
-    title: '5 AC Maintenance Tips for Summer',
-    slug: 'ac-maintenance-tips-for-summer',
-    excerpt: 'Regular maintenance can extend the life of your AC and improve its efficiency. Here are 5 essential tips.',
-    content: `
-      <p>Regular maintenance of your air conditioner not only ensures optimal performance but also extends its lifespan and reduces energy consumption. Here are five essential AC maintenance tips for the summer season.</p>
-      <h2>1. Clean or Replace Air Filters Monthly</h2>
-      <p>Dirty filters restrict airflow and reduce system efficiency. Clean or replace them every 1-2 months during heavy use periods.</p>
-      <h2>2. Keep the Outdoor Unit Clean</h2>
-      <p>Clear debris, leaves, and dirt from around the outdoor condensing unit. Ensure there's at least 2 feet of clear space around it for proper airflow.</p>
-      <h2>3. Check and Clean the Evaporator Coil</h2>
-      <p>The indoor evaporator coil can collect dirt over time, reducing airflow and insulating the coil, which reduces its ability to absorb heat.</p>
-      <h2>4. Inspect Refrigerant Lines</h2>
-      <p>Check the refrigerant lines for any signs of wear or damage. Any leaks should be addressed immediately by a professional.</p>
-      <h2>5. Schedule Professional Maintenance</h2>
-      <p>Have a professional HVAC technician inspect and service your unit before the summer season begins. They can identify and fix potential issues before they become major problems.</p>
-    `,
-    featuredImage: 'https://images.unsplash.com/photo-1580595999172-787970a962d9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-    publishDate: '2023-04-05T14:30:00',
-    author: 'Admin User',
-    tags: ['AC Maintenance', 'Summer Tips', 'Energy Savings'],
-    status: 'published',
-    views: 876
-  },
-  {
-    id: 'blog-003',
-    title: 'Benefits of Smart Air Conditioners',
-    slug: 'benefits-of-smart-air-conditioners',
-    excerpt: 'Smart ACs offer convenience, energy savings, and improved comfort. Discover the advantages of upgrading.',
-    content: `
-      <p>Smart air conditioners are revolutionizing home cooling by offering unprecedented control, automation, and energy efficiency. Here's why you might want to consider upgrading to a smart AC system.</p>
-      <h2>Remote Control and Monitoring</h2>
-      <p>Control your AC from anywhere using smartphone apps. Adjust temperature, set schedules, and monitor energy usage remotely.</p>
-      <h2>Automated Temperature Control</h2>
-      <p>Smart ACs can learn your preferences and automatically adjust settings based on time of day, occupancy, or even local weather forecasts.</p>
-      <h2>Integration with Smart Home Ecosystems</h2>
-      <p>Most smart ACs work with popular smart home platforms like Google Home, Amazon Alexa, and Apple HomeKit, allowing for voice control and automated routines.</p>
-      <h2>Energy Savings</h2>
-      <p>By optimizing cooling cycles and preventing unnecessary operation, smart ACs can reduce energy consumption by up to 25% compared to traditional units.</p>
-      <h2>Maintenance Alerts and Diagnostics</h2>
-      <p>Many smart AC systems can detect issues early and send maintenance alerts, helping you address problems before they lead to major failures.</p>
-    `,
-    featuredImage: 'https://images.unsplash.com/photo-1563351672-62b74891a28a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-    publishDate: '2023-04-18T09:15:00',
-    author: 'Admin User',
-    tags: ['Smart AC', 'Technology', 'Energy Efficiency'],
-    status: 'draft',
-    views: 0
+    id: '2',
+    title: '5 DIY Plumbing Tips Every Homeowner Should Know',
+    content: `<p>Learn simple plumbing techniques to handle common issues before calling a professional.</p><p>Knowing some basic plumbing skills can save you time and money when minor issues arise.</p><h3>Must-Know Plumbing Skills</h3><ul><li>How to shut off water valves</li><li>Unclogging drains naturally</li><li>Fixing a running toilet</li><li>Dealing with leaky faucets</li></ul>`,
+    excerpt: 'Learn simple plumbing techniques to handle common issues before calling a professional.',
+    slug: 'diy-plumbing-tips',
+    published: true,
+    featured: false,
+    image: 'https://images.unsplash.com/photo-1558618666-176827a41dec',
+    category: 'Plumbing',
+    author: 'Sara Mahmood',
+    date: '2023-03-22T10:30:00.000Z',
+    tags: ['plumbing', 'DIY', 'home repair'],
   }
 ];
 
-const BlogAdmin = () => {
-  const [blogPosts, setBlogPosts] = useState(initialBlogPosts);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+// Sample categories and statuses
+const categories = [
+  'All Categories',
+  'Maintenance',
+  'Plumbing',
+  'Energy Efficiency',
+  'Renovation',
+  'AC',
+  'DIY'
+];
+
+const statuses = [
+  { value: 'all', label: 'All Status' },
+  { value: 'published', label: 'Published' },
+  { value: 'draft', label: 'Draft' }
+];
+
+interface BlogPost {
+  id: string;
+  title: string;
+  content: string;
+  excerpt: string;
+  slug: string;
+  published: boolean;
+  featured: boolean;
+  image: string;
+  category: string;
+  author: string;
+  date: string;
+  tags: string[];
+}
+
+const Blog = () => {
+  const [posts, setPosts] = useState<BlogPost[]>(samplePosts);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All Categories');
+  const [selectedStatus, setSelectedStatus] = useState('all');
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [currentPost, setCurrentPost] = useState<any>(null);
-  const [editMode, setEditMode] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  
-  // New blog post form state
-  const [formData, setFormData] = useState({
-    id: '',
+  const [isPreviewDialogOpen, setIsPreviewDialogOpen] = useState(false);
+  const [currentPost, setCurrentPost] = useState<BlogPost | null>(null);
+  const [newPostForm, setNewPostForm] = useState({
     title: '',
-    slug: '',
-    excerpt: '',
     content: '',
-    featuredImage: '',
-    author: 'Admin User',
-    tags: [''],
-    status: 'draft',
+    excerpt: '',
+    slug: '',
+    published: true,
+    featured: false,
+    image: '',
+    category: 'Maintenance',
+    author: 'Admin',
+    tags: '',
   });
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
+
+  // Filter posts based on search, category, and status
+  const filteredPosts = posts.filter(post => {
+    const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          post.author.toLowerCase().includes(searchTerm.toLowerCase());
     
-    // Auto-generate slug from title
-    if (name === 'title' && !editMode) {
-      const slug = value.toLowerCase()
-        .replace(/[^\w\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-');
-      setFormData(prev => ({ ...prev, [name]: value, slug }));
-    } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
-    }
+    const matchesCategory = selectedCategory === 'All Categories' || post.category === selectedCategory;
+    
+    const matchesStatus = selectedStatus === 'all' || 
+                         (selectedStatus === 'published' && post.published) ||
+                         (selectedStatus === 'draft' && !post.published);
+    
+    return matchesSearch && matchesCategory && matchesStatus;
+  });
+
+  const handleCreatePost = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const newPost: BlogPost = {
+      id: Date.now().toString(),
+      title: newPostForm.title,
+      content: newPostForm.content,
+      excerpt: newPostForm.excerpt || newPostForm.content.substring(0, 150) + '...',
+      slug: newPostForm.slug || newPostForm.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+      published: newPostForm.published,
+      featured: newPostForm.featured,
+      image: newPostForm.image || 'https://via.placeholder.com/800x450?text=Blog+Image',
+      category: newPostForm.category,
+      author: newPostForm.author,
+      date: new Date().toISOString(),
+      tags: newPostForm.tags.split(',').map(tag => tag.trim()),
+    };
+    
+    setPosts([...posts, newPost]);
+    setIsCreateDialogOpen(false);
+    resetNewPostForm();
+    
+    toast({
+      title: "Blog post created",
+      description: "Your blog post has been created successfully.",
+    });
   };
-  
-  const handleTagChange = (index: number, value: string) => {
-    const updatedTags = [...formData.tags];
-    updatedTags[index] = value;
-    setFormData(prev => ({ ...prev, tags: updatedTags }));
-  };
-  
-  const addTag = () => {
-    setFormData(prev => ({ ...prev, tags: [...prev.tags, ''] }));
-  };
-  
-  const removeTag = (index: number) => {
-    const updatedTags = [...formData.tags];
-    updatedTags.splice(index, 1);
-    setFormData(prev => ({ ...prev, tags: updatedTags }));
-  };
-  
-  const handleImageSelected = (url: string) => {
-    setFormData(prev => ({ ...prev, featuredImage: url }));
-  };
-  
-  const openNewPostDialog = () => {
-    setEditMode(false);
+
+  const handleUpdatePost = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!currentPost) return;
+    
+    const updatedPost: BlogPost = {
+      ...currentPost,
+      title: newPostForm.title,
+      content: newPostForm.content,
+      excerpt: newPostForm.excerpt || newPostForm.content.substring(0, 150) + '...',
+      slug: newPostForm.slug || newPostForm.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+      published: newPostForm.published,
+      featured: newPostForm.featured,
+      image: newPostForm.image,
+      category: newPostForm.category,
+      author: newPostForm.author,
+      tags: newPostForm.tags.split(',').map(tag => tag.trim()),
+    };
+    
+    setPosts(posts.map(post => post.id === currentPost.id ? updatedPost : post));
+    setIsEditDialogOpen(false);
     setCurrentPost(null);
-    setFormData({
-      id: '',
-      title: '',
-      slug: '',
-      excerpt: '',
-      content: '',
-      featuredImage: '',
-      author: 'Admin User',
-      tags: [''],
-      status: 'draft',
+    
+    toast({
+      title: "Blog post updated",
+      description: "Your blog post has been updated successfully.",
     });
-    setIsDialogOpen(true);
   };
-  
-  const openEditPostDialog = (post: any) => {
-    setEditMode(true);
+
+  const handleDeletePost = () => {
+    if (!currentPost) return;
+    
+    setPosts(posts.filter(post => post.id !== currentPost.id));
+    setIsDeleteDialogOpen(false);
+    setCurrentPost(null);
+    
+    toast({
+      title: "Blog post deleted",
+      description: "Your blog post has been deleted successfully.",
+    });
+  };
+
+  const handleEditClick = (post: BlogPost) => {
     setCurrentPost(post);
-    setFormData({
-      ...post,
-      tags: [...post.tags] // Create a copy of tags array
+    setNewPostForm({
+      title: post.title,
+      content: post.content,
+      excerpt: post.excerpt,
+      slug: post.slug,
+      published: post.published,
+      featured: post.featured,
+      image: post.image,
+      category: post.category,
+      author: post.author,
+      tags: post.tags.join(', '),
     });
-    setIsDialogOpen(true);
+    setIsEditDialogOpen(true);
   };
-  
-  const openDeleteDialog = (post: any) => {
+
+  const handleDeleteClick = (post: BlogPost) => {
     setCurrentPost(post);
     setIsDeleteDialogOpen(true);
   };
-  
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    const now = new Date().toISOString();
-    const postData = {
-      ...formData,
-      id: formData.id || `blog-${Date.now()}`,
-      publishDate: editMode ? currentPost.publishDate : now,
-      views: editMode ? currentPost.views : 0
-    };
-    
-    if (editMode) {
-      // Update existing post
-      setBlogPosts(prev => 
-        prev.map(post => 
-          post.id === currentPost.id ? postData : post
-        )
-      );
-      toast({
-        title: "Blog Post Updated",
-        description: `"${postData.title}" has been updated successfully.`,
-      });
-    } else {
-      // Add new post
-      setBlogPosts(prev => [...prev, postData]);
-      toast({
-        title: "Blog Post Created",
-        description: `"${postData.title}" has been created successfully.`,
-      });
-    }
-    
-    setIsDialogOpen(false);
+
+  const handlePreviewClick = (post: BlogPost) => {
+    setCurrentPost(post);
+    setIsPreviewDialogOpen(true);
   };
-  
-  const handleDelete = () => {
-    setBlogPosts(prev => prev.filter(post => post.id !== currentPost.id));
-    toast({
-      title: "Blog Post Deleted",
-      description: `"${currentPost.title}" has been deleted successfully.`,
-      variant: "destructive"
-    });
-    setIsDeleteDialogOpen(false);
-  };
-  
-  const togglePostStatus = (id: string) => {
-    setBlogPosts(prev => 
-      prev.map(post => 
-        post.id === id ? 
-          { ...post, status: post.status === 'published' ? 'draft' : 'published' } 
-          : post
-      )
-    );
-    
-    const post = blogPosts.find(post => post.id === id);
-    const newStatus = post?.status === 'published' ? 'draft' : 'published';
-    
-    toast({
-      title: `Post ${newStatus === 'published' ? 'Published' : 'Unpublished'}`,
-      description: `"${post?.title}" is now ${newStatus}.`,
+
+  const resetNewPostForm = () => {
+    setNewPostForm({
+      title: '',
+      content: '',
+      excerpt: '',
+      slug: '',
+      published: true,
+      featured: false,
+      image: '',
+      category: 'Maintenance',
+      author: 'Admin',
+      tags: '',
     });
   };
-  
-  // Filter posts based on search query
-  const filteredPosts = blogPosts.filter(post => {
-    if (!searchQuery) return true;
-    
-    const query = searchQuery.toLowerCase();
-    return (
-      post.title.toLowerCase().includes(query) ||
-      post.excerpt.toLowerCase().includes(query) ||
-      post.tags.some(tag => tag.toLowerCase().includes(query))
-    );
-  });
-  
-  // Sort posts by publish date (newest first)
-  const sortedPosts = [...filteredPosts].sort((a, b) => 
-    new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime()
-  );
-  
+
+  const handleImageSelected = (imageUrl: string) => {
+    setNewPostForm({
+      ...newPostForm,
+      image: imageUrl
+    });
+  };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      day: 'numeric', 
-      month: 'short', 
-      year: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     });
   };
-  
+
   return (
-    <div className="space-y-8 p-4 md:p-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Blog Posts</h1>
-          <p className="text-muted-foreground">Manage your blog content</p>
+          <h1 className="text-3xl font-bold tracking-tight">Blog Management</h1>
+          <p className="text-muted-foreground">
+            Create, edit and manage your blog posts
+          </p>
         </div>
         
-        <Button onClick={openNewPostDialog}>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Create New Post
+        <Button onClick={() => setIsCreateDialogOpen(true)} className="bg-brand-blue hover:bg-brand-blue/90">
+          <Plus className="mr-2 h-4 w-4" />
+          New Post
         </Button>
       </div>
       
-      <Card>
-        <CardHeader>
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 w-full">
-            <div>
-              <CardTitle>All Blog Posts</CardTitle>
-              <CardDescription>
-                You have {blogPosts.length} posts in total
-              </CardDescription>
-            </div>
-            
-            <div className="w-full md:w-64">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search posts..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[80px]">Image</TableHead>
-                  <TableHead>Title</TableHead>
-                  <TableHead>Tags</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Views</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {sortedPosts.length > 0 ? (
-                  sortedPosts.map(post => (
-                    <TableRow key={post.id}>
-                      <TableCell>
-                        {post.featuredImage ? (
-                          <div className="w-16 h-16 rounded overflow-hidden">
-                            <img 
-                              src={post.featuredImage} 
-                              alt={post.title}
-                              className="w-full h-full object-cover"
-                              onError={(e) => {
-                                console.error("Image failed to load");
-                                e.currentTarget.src = 'https://via.placeholder.com/300x200?text=Image+Error';
-                              }}
-                            />
-                          </div>
-                        ) : (
-                          <div className="w-16 h-16 rounded bg-gray-200 flex items-center justify-center">
-                            <FileText className="h-8 w-8 text-gray-400" />
-                          </div>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <div className="font-medium">{post.title}</div>
-                        <div className="text-sm text-gray-500 truncate" style={{maxWidth: "300px"}}>
-                          {post.excerpt}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex flex-wrap gap-1">
-                          {post.tags.map((tag, index) => (
-                            <Badge key={index} variant="outline" className="bg-gray-100 dark:bg-gray-800">
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge className={post.status === 'published' ? 'bg-green-500' : 'bg-amber-500'}>
-                          {post.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        {formatDate(post.publishDate)}
-                      </TableCell>
-                      <TableCell>
-                        {post.views.toLocaleString()}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                              <ChevronDown className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem onClick={() => togglePostStatus(post.id)}>
-                              {post.status === 'published' ? (
-                                <>
-                                  <X className="mr-2 h-4 w-4" />
-                                  Unpublish
-                                </>
-                              ) : (
-                                <>
-                                  <Eye className="mr-2 h-4 w-4" />
-                                  Publish
-                                </>
-                              )}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => openEditPostDialog(post)}>
-                              <Edit className="mr-2 h-4 w-4" />
-                              Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => openDeleteDialog(post)}>
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8">
-                      <div className="flex flex-col items-center">
-                        <FileText className="h-12 w-12 text-gray-300 mb-2" />
-                        <h3 className="text-lg font-medium">No blog posts found</h3>
-                        <p className="text-gray-500">
-                          {searchQuery 
-                            ? "Try adjusting your search query" 
-                            : "Create your first blog post by clicking the button above"}
-                        </p>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="relative flex-grow">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Input
+            placeholder="Search posts..."
+            className="pl-10"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        
+        <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Category" />
+          </SelectTrigger>
+          <SelectContent>
+            {categories.map(category => (
+              <SelectItem key={category} value={category}>{category}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        
+        <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+          <SelectTrigger className="w-[150px]">
+            <SelectValue placeholder="Status" />
+          </SelectTrigger>
+          <SelectContent>
+            {statuses.map(status => (
+              <SelectItem key={status.value} value={status.value}>{status.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
       
-      {/* Add/Edit Blog Post Dialog */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>
-              {editMode ? 'Edit Blog Post' : 'Create New Blog Post'}
-            </DialogTitle>
-            <DialogDescription>
-              {editMode 
-                ? 'Update the details of your blog post.' 
-                : 'Fill out the form below to create a new blog post.'}
-            </DialogDescription>
-          </DialogHeader>
-          
-          <form onSubmit={handleSubmit} className="space-y-6 py-2">
-            <div className="grid grid-cols-1 gap-6">
-              <div>
-                <Label htmlFor="title">Title</Label>
-                <Input
-                  id="title"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleChange}
-                  required
-                  className="mt-1"
-                />
-              </div>
-              
-              <div>
-                <Label htmlFor="slug">Slug (URL)</Label>
-                <Input
-                  id="slug"
-                  name="slug"
-                  value={formData.slug}
-                  onChange={handleChange}
-                  required
-                  className="mt-1"
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  The slug will be used in the URL: yoursite.com/blog/{formData.slug}
-                </p>
-              </div>
-              
-              <div>
-                <Label htmlFor="excerpt">Excerpt</Label>
-                <Textarea
-                  id="excerpt"
-                  name="excerpt"
-                  value={formData.excerpt}
-                  onChange={handleChange}
-                  rows={2}
-                  required
-                  className="mt-1"
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  A brief summary of your post that will appear in blog listings
-                </p>
-              </div>
-              
-              <div>
-                <Label className="mb-2 block">Featured Image</Label>
-                <div className="border rounded-md p-4 bg-gray-50 dark:bg-gray-800">
-                  <div className="mb-4">
-                    {formData.featuredImage ? (
-                      <div className="relative">
-                        <AspectRatio ratio={16/9} className="bg-muted overflow-hidden rounded-md mb-2">
-                          <img 
-                            src={formData.featuredImage} 
-                            alt="Featured preview" 
-                            className="object-cover w-full h-full"
-                            onError={(e) => (e.currentTarget.src = 'https://via.placeholder.com/300x200?text=Image+Not+Found')}
-                          />
-                        </AspectRatio>
-                        <Button 
-                          type="button"
-                          variant="destructive" 
-                          size="sm"
-                          className="absolute top-2 right-2"
-                          onClick={() => setFormData(prev => ({ ...prev, featuredImage: '' }))}
-                        >
-                          <X className="h-4 w-4" />
+      {filteredPosts.length === 0 ? (
+        <Card className="text-center p-8">
+          <div className="flex flex-col items-center gap-2">
+            <FileText className="h-10 w-10 text-gray-400" />
+            <h3 className="text-lg font-semibold">No blog posts found</h3>
+            <p className="text-muted-foreground max-w-sm">
+              No posts match your current filters. Try changing your search query or filters.
+            </p>
+          </div>
+        </Card>
+      ) : (
+        <div className="grid gap-6">
+          {filteredPosts.map((post) => (
+            <Card key={post.id} className="overflow-hidden">
+              <div className="md:flex">
+                <div className="md:w-1/4 h-full">
+                  <AspectRatio ratio={16/9} className="md:h-full bg-muted">
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      className="object-cover"
+                      loading="lazy"
+                      onError={(e) => {
+                        e.currentTarget.src = 'https://via.placeholder.com/300x200?text=Blog+Image';
+                      }}
+                    />
+                  </AspectRatio>
+                </div>
+                <CardContent className="p-6 md:w-3/4 space-y-2">
+                  <div className="flex justify-between items-start gap-4">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        {post.featured && (
+                          <Badge className="bg-amber-500">Featured</Badge>
+                        )}
+                        <Badge variant={post.published ? "default" : "outline"}>
+                          {post.published ? 'Published' : 'Draft'}
+                        </Badge>
+                        <Badge variant="outline">{post.category}</Badge>
+                      </div>
+                      <h3 className="text-lg font-semibold">{post.title}</h3>
+                      <p className="text-muted-foreground line-clamp-1">
+                        {post.excerpt}
+                      </p>
+                    </div>
+                    
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <span className="sr-only">Open menu</span>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="1" />
+                            <circle cx="12" cy="5" r="1" />
+                            <circle cx="12" cy="19" r="1" />
+                          </svg>
                         </Button>
-                      </div>
-                    ) : (
-                      <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-md bg-white dark:bg-gray-900">
-                        <ImagePlus className="h-10 w-10 text-gray-400 mb-2" />
-                        <p className="text-sm font-medium mb-1">No featured image selected</p>
-                        <p className="text-xs text-gray-500 mb-3 text-center">
-                          Upload an image or provide a URL for your featured image
-                        </p>
-                      </div>
-                    )}
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => handlePreviewClick(post)}>
+                          <Eye className="mr-2 h-4 w-4" />
+                          Preview
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleEditClick(post)}>
+                          <Edit2 className="mr-2 h-4 w-4" />
+                          Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <a href={`/blog/${post.slug}`} target="_blank" rel="noopener noreferrer">
+                            <ArrowUpRight className="mr-2 h-4 w-4" />
+                            View on site
+                          </a>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem 
+                          className="text-red-600 focus:text-red-600" 
+                          onClick={() => handleDeleteClick(post)}
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                   
-                  <ImageUploader
-                    onImageSelected={handleImageSelected}
-                    defaultImage={formData.featuredImage}
-                    aspectRatio="wide"
+                  <div className="pt-4 flex flex-wrap gap-3 justify-between items-center border-t">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Calendar className="h-4 w-4" />
+                      <span>{formatDate(post.date)}</span>
+                    </div>
+                    
+                    <div className="flex gap-1 flex-wrap">
+                      {post.tags.slice(0, 3).map(tag => (
+                        <Badge key={tag} variant="secondary" className="text-xs">
+                          {tag}
+                        </Badge>
+                      ))}
+                      {post.tags.length > 3 && (
+                        <Badge variant="secondary" className="text-xs">
+                          +{post.tags.length - 3}
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </div>
+            </Card>
+          ))}
+        </div>
+      )}
+      
+      {/* Create Post Dialog */}
+      <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Create New Blog Post</DialogTitle>
+            <DialogDescription>
+              Fill in the details below to create a new blog post.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleCreatePost} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4 col-span-1 md:col-span-2">
+                <Label htmlFor="title">Blog Title</Label>
+                <Input 
+                  id="title" 
+                  placeholder="Enter post title"
+                  value={newPostForm.title}
+                  onChange={(e) => setNewPostForm({...newPostForm, title: e.target.value})}
+                  required
+                />
+              </div>
+              
+              <div className="space-y-4 md:col-span-2">
+                <Label>Featured Image</Label>
+                <ImageUploader
+                  onImageSelected={handleImageSelected}
+                  defaultImage={newPostForm.image}
+                  aspectRatio="wide"
+                />
+              </div>
+              
+              <div className="space-y-4 md:col-span-2">
+                <Label htmlFor="content">Blog Content</Label>
+                <Textarea 
+                  id="content"
+                  placeholder="Write your blog post content here..."
+                  className="min-h-32"
+                  value={newPostForm.content}
+                  onChange={(e) => setNewPostForm({...newPostForm, content: e.target.value})}
+                  required
+                />
+              </div>
+              
+              <div className="space-y-4">
+                <Label htmlFor="excerpt">Excerpt (optional)</Label>
+                <Textarea 
+                  id="excerpt"
+                  placeholder="Brief summary of the post"
+                  value={newPostForm.excerpt}
+                  onChange={(e) => setNewPostForm({...newPostForm, excerpt: e.target.value})}
+                />
+              </div>
+              
+              <div className="space-y-4">
+                <Label htmlFor="slug">URL Slug (optional)</Label>
+                <div className="flex">
+                  <span className="bg-gray-100 dark:bg-gray-800 px-3 py-2 text-gray-500 border border-r-0 rounded-l-md">
+                    /blog/
+                  </span>
+                  <Input 
+                    id="slug"
+                    placeholder="your-post-url"
+                    value={newPostForm.slug}
+                    onChange={(e) => setNewPostForm({...newPostForm, slug: e.target.value})}
+                    className="rounded-l-none"
                   />
                 </div>
               </div>
               
-              <div>
-                <Label htmlFor="content">Content (HTML)</Label>
-                <Textarea
-                  id="content"
-                  name="content"
-                  value={formData.content}
-                  onChange={handleChange}
-                  rows={10}
-                  required
-                  className="mt-1 font-mono text-sm"
+              <div className="space-y-4">
+                <Label htmlFor="category">Category</Label>
+                <Select 
+                  value={newPostForm.category} 
+                  onValueChange={(value) => setNewPostForm({...newPostForm, category: value})}
+                >
+                  <SelectTrigger id="category">
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.filter(c => c !== 'All Categories').map(category => (
+                      <SelectItem key={category} value={category}>{category}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="space-y-4">
+                <Label htmlFor="author">Author</Label>
+                <Input 
+                  id="author"
+                  placeholder="Post author"
+                  value={newPostForm.author}
+                  onChange={(e) => setNewPostForm({...newPostForm, author: e.target.value})}
                 />
               </div>
               
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <Label>Tags</Label>
-                  <Button type="button" size="sm" variant="outline" onClick={addTag}>
-                    <Plus className="h-4 w-4 mr-1" />
-                    Add Tag
-                  </Button>
+              <div className="space-y-4 md:col-span-2">
+                <Label htmlFor="tags">Tags (comma separated)</Label>
+                <Input 
+                  id="tags"
+                  placeholder="maintenance, seasonal, home care"
+                  value={newPostForm.tags}
+                  onChange={(e) => setNewPostForm({...newPostForm, tags: e.target.value})}
+                />
+              </div>
+              
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="published" 
+                    checked={newPostForm.published}
+                    onCheckedChange={(checked) => 
+                      setNewPostForm({...newPostForm, published: checked as boolean})
+                    }
+                  />
+                  <Label htmlFor="published" className="cursor-pointer">Published</Label>
                 </div>
                 
-                <div className="space-y-2">
-                  {formData.tags.map((tag, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <Input
-                        value={tag}
-                        onChange={(e) => handleTagChange(index, e.target.value)}
-                        placeholder={`Tag ${index + 1}`}
-                      />
-                      {formData.tags.length > 1 && (
-                        <Button 
-                          type="button" 
-                          size="sm" 
-                          variant="ghost" 
-                          className="text-destructive hover:text-destructive"
-                          onClick={() => removeTag(index)}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      )}
-                    </div>
-                  ))}
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="featured" 
+                    checked={newPostForm.featured}
+                    onCheckedChange={(checked) => 
+                      setNewPostForm({...newPostForm, featured: checked as boolean})
+                    }
+                  />
+                  <Label htmlFor="featured" className="cursor-pointer">Featured</Label>
                 </div>
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <Label htmlFor="status">Publish post</Label>
-                <Switch
-                  id="status"
-                  checked={formData.status === "published"}
-                  onCheckedChange={(checked) => 
-                    setFormData(prev => ({ ...prev, status: checked ? "published" : "draft" }))
-                  }
-                />
-                <span className="text-sm text-muted-foreground ml-1">
-                  {formData.status === "published" ? "Published" : "Draft"}
-                </span>
               </div>
             </div>
             
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+              <Button type="button" variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit">
-                {editMode ? 'Save Changes' : 'Create Post'}
+              <Button type="submit">Create Post</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Edit Post Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Blog Post</DialogTitle>
+            <DialogDescription>
+              Make changes to your blog post below.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleUpdatePost} className="space-y-6">
+            {/* Same form fields as create, but pre-filled */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4 col-span-1 md:col-span-2">
+                <Label htmlFor="edit-title">Blog Title</Label>
+                <Input 
+                  id="edit-title" 
+                  placeholder="Enter post title"
+                  value={newPostForm.title}
+                  onChange={(e) => setNewPostForm({...newPostForm, title: e.target.value})}
+                  required
+                />
+              </div>
+              
+              <div className="space-y-4 md:col-span-2">
+                <Label>Featured Image</Label>
+                <ImageUploader
+                  onImageSelected={handleImageSelected}
+                  defaultImage={newPostForm.image}
+                  aspectRatio="wide"
+                />
+              </div>
+              
+              <div className="space-y-4 md:col-span-2">
+                <Label htmlFor="edit-content">Blog Content</Label>
+                <Textarea 
+                  id="edit-content"
+                  placeholder="Write your blog post content here..."
+                  className="min-h-32"
+                  value={newPostForm.content}
+                  onChange={(e) => setNewPostForm({...newPostForm, content: e.target.value})}
+                  required
+                />
+              </div>
+              
+              <div className="space-y-4">
+                <Label htmlFor="edit-excerpt">Excerpt (optional)</Label>
+                <Textarea 
+                  id="edit-excerpt"
+                  placeholder="Brief summary of the post"
+                  value={newPostForm.excerpt}
+                  onChange={(e) => setNewPostForm({...newPostForm, excerpt: e.target.value})}
+                />
+              </div>
+              
+              <div className="space-y-4">
+                <Label htmlFor="edit-slug">URL Slug</Label>
+                <div className="flex">
+                  <span className="bg-gray-100 dark:bg-gray-800 px-3 py-2 text-gray-500 border border-r-0 rounded-l-md">
+                    /blog/
+                  </span>
+                  <Input 
+                    id="edit-slug"
+                    placeholder="your-post-url"
+                    value={newPostForm.slug}
+                    onChange={(e) => setNewPostForm({...newPostForm, slug: e.target.value})}
+                    className="rounded-l-none"
+                  />
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                <Label htmlFor="edit-category">Category</Label>
+                <Select 
+                  value={newPostForm.category} 
+                  onValueChange={(value) => setNewPostForm({...newPostForm, category: value})}
+                >
+                  <SelectTrigger id="edit-category">
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.filter(c => c !== 'All Categories').map(category => (
+                      <SelectItem key={category} value={category}>{category}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="space-y-4">
+                <Label htmlFor="edit-author">Author</Label>
+                <Input 
+                  id="edit-author"
+                  placeholder="Post author"
+                  value={newPostForm.author}
+                  onChange={(e) => setNewPostForm({...newPostForm, author: e.target.value})}
+                />
+              </div>
+              
+              <div className="space-y-4 md:col-span-2">
+                <Label htmlFor="edit-tags">Tags (comma separated)</Label>
+                <Input 
+                  id="edit-tags"
+                  placeholder="maintenance, seasonal, home care"
+                  value={newPostForm.tags}
+                  onChange={(e) => setNewPostForm({...newPostForm, tags: e.target.value})}
+                />
+              </div>
+              
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="edit-published" 
+                    checked={newPostForm.published}
+                    onCheckedChange={(checked) => 
+                      setNewPostForm({...newPostForm, published: checked as boolean})
+                    }
+                  />
+                  <Label htmlFor="edit-published" className="cursor-pointer">Published</Label>
+                </div>
+                
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="edit-featured" 
+                    checked={newPostForm.featured}
+                    onCheckedChange={(checked) => 
+                      setNewPostForm({...newPostForm, featured: checked as boolean})
+                    }
+                  />
+                  <Label htmlFor="edit-featured" className="cursor-pointer">Featured</Label>
+                </div>
+              </div>
+            </div>
+            
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                Cancel
               </Button>
+              <Button type="submit">Update Post</Button>
             </DialogFooter>
           </form>
         </DialogContent>
@@ -653,19 +728,93 @@ const BlogAdmin = () => {
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Confirm Deletion</DialogTitle>
+            <DialogTitle>Delete Blog Post</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete the blog post <strong>"{currentPost?.title}"</strong>? This action cannot be undone.
+              Are you sure you want to delete this blog post? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
-          
-          <DialogFooter className="mt-4">
+          <div className="bg-muted p-3 rounded-md">
+            {currentPost && (
+              <>
+                <h4 className="font-semibold">{currentPost.title}</h4>
+                <p className="text-sm text-muted-foreground">{currentPost.excerpt}</p>
+              </>
+            )}
+          </div>
+          <DialogFooter>
             <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
               Cancel
             </Button>
-            <Button variant="destructive" onClick={handleDelete}>
+            <Button variant="destructive" onClick={handleDeletePost}>
               Delete
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Preview Dialog */}
+      <Dialog open={isPreviewDialogOpen} onOpenChange={setIsPreviewDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Preview Blog Post</DialogTitle>
+          </DialogHeader>
+          {currentPost && (
+            <div className="mt-4 space-y-6">
+              <AspectRatio ratio={21/9} className="overflow-hidden rounded-md bg-muted">
+                <img
+                  src={currentPost.image}
+                  alt={currentPost.title}
+                  className="object-cover w-full h-full"
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://via.placeholder.com/1200x630?text=Blog+Header+Image';
+                  }}
+                />
+              </AspectRatio>
+              
+              <div className="flex flex-wrap gap-2">
+                <Badge>{currentPost.category}</Badge>
+                {currentPost.featured && <Badge variant="secondary">Featured</Badge>}
+                <Badge variant={currentPost.published ? "default" : "outline"}>
+                  {currentPost.published ? 'Published' : 'Draft'}
+                </Badge>
+              </div>
+              
+              <h1 className="text-3xl font-bold">{currentPost.title}</h1>
+              
+              <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                <div className="flex items-center">
+                  <Calendar className="h-4 w-4 mr-1" />
+                  {formatDate(currentPost.date)}
+                </div>
+                <div className="flex items-center">
+                  <User className="h-4 w-4 mr-1" />
+                  {currentPost.author}
+                </div>
+              </div>
+              
+              <div className="prose dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: currentPost.content }} />
+              
+              <div className="pt-4 border-t flex flex-wrap gap-2">
+                {currentPost.tags.map(tag => (
+                  <Badge key={tag} variant="outline" className="text-sm">
+                    #{tag}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsPreviewDialogOpen(false)}>
+              Close Preview
+            </Button>
+            {currentPost && (
+              <Button asChild>
+                <a href={`/blog/${currentPost.slug}`} target="_blank" rel="noopener noreferrer">
+                  <ArrowUpRight className="mr-2 h-4 w-4" />
+                  View on Site
+                </a>
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -673,4 +822,4 @@ const BlogAdmin = () => {
   );
 };
 
-export default BlogAdmin;
+export default Blog;
