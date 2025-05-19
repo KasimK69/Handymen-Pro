@@ -14,6 +14,7 @@ export interface ACUnit {
   availability: 'in-stock' | 'out-of-stock' | 'pre-order';
   featured?: boolean;
   rating?: number;
+  category?: 'for-sale' | 'wanted';
   reviews?: {
     id: string;
     user: string;

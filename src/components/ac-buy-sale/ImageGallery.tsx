@@ -81,7 +81,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
                 {[...Array(5)].map((_, i) => (
                   <Star 
                     key={i} 
-                    className={`h-4 w-4 ${i < Math.floor(unit.rating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
+                    className={`h-4 w-4 ${i < Math.floor(unit.rating || 0) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
                   />
                 ))}
                 <span className="ml-2 text-sm text-gray-600">{unit.rating > 0 ? unit.rating : 'N/A'}</span>

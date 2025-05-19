@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -5,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Search, Plus, User } from "lucide-react";
 import ImageUploader from '@/components/admin/ImageUploader';
@@ -65,6 +67,7 @@ const BlogAdminPage = () => {
     });
   };
 
+  // This is our handler for the ImageUploader component
   const handleImageUpload = (url: string) => {
     setImageUrl(url);
   };
@@ -119,7 +122,7 @@ const BlogAdminPage = () => {
                 </div>
                 <div>
                   <Label>Image Upload</Label>
-                  <ImageUploader onUpload={handleImageUpload} />
+                  <ImageUploader onImageUpload={handleImageUpload} />
                   {imageUrl && (
                     <img
                       src={imageUrl}
