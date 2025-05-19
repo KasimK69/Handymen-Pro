@@ -1,4 +1,4 @@
-
+import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -20,6 +20,7 @@ import BlogPost from "./pages/BlogPost";
 import AcBuyAndSale from "./pages/AcBuyAndSale";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
+import Cart from "./pages/Cart";
 
 // Admin pages
 import { AdminAuthProvider } from "./context/AdminAuthContext";
@@ -36,181 +37,204 @@ import Bookings from "./pages/admin/Bookings";
 import Customers from "./pages/admin/Customers";
 import Media from "./pages/admin/Media";
 
-const queryClient = new QueryClient();
+// Create a new QueryClient instance
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: false,
+    },
+  }
+});
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <TooltipProvider>
-        <AdminAuthProvider>
-          <Toaster />
-          <Sonner />
-          <ScrollToTop />
-          <Routes>
-            {/* Admin Login (no layout) */}
-            <Route path="/admin" element={<Admin />} />
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <TooltipProvider>
+          <AdminAuthProvider>
+            <Toaster />
+            <Sonner />
+            <ScrollToTop />
+            <Routes>
+              {/* Admin Login (no layout) */}
+              <Route path="/admin" element={<Admin />} />
 
-            {/* Admin Routes with Admin Layout */}
-            <Route
-              path="/admin"
-              element={
-                <ProtectedRoute>
-                  <AdminLayout />
-                </ProtectedRoute>
-              }
-            >
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="services" element={<ServicesAdmin />} />
-              <Route path="products" element={<ProductsAdmin />} />
-              <Route path="blog" element={<BlogAdmin />} />
-              <Route path="testimonials" element={<Testimonials />} />
-              <Route path="smart-adport" element={<SmartAdport />} />
-              <Route path="settings" element={<Settings />} />
-              <Route path="bookings" element={<Bookings />} />
-              <Route path="customers" element={<Customers />} />
-              <Route path="media" element={<Media />} />
-            </Route>
+              {/* Admin Routes with Admin Layout */}
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute>
+                    <AdminLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route path="dashboard" element={<Dashboard />} />
+                <Route path="services" element={<ServicesAdmin />} />
+                <Route path="products" element={<ProductsAdmin />} />
+                <Route path="blog" element={<BlogAdmin />} />
+                <Route path="testimonials" element={<Testimonials />} />
+                <Route path="smart-adport" element={<SmartAdport />} />
+                <Route path="settings" element={<Settings />} />
+                <Route path="bookings" element={<Bookings />} />
+                <Route path="customers" element={<Customers />} />
+                <Route path="media" element={<Media />} />
+              </Route>
 
-            {/* Public Routes with Header and Footer */}
-            <Route
-              path="/"
-              element={
-                <>
-                  <Header />
-                  <main className="min-h-screen pt-16">
-                    <Home />
-                  </main>
-                  <Footer />
-                  <WhatsAppButton />
-                  <QuickActionsButton />
-                </>
-              }
-            />
-            <Route
-              path="/about"
-              element={
-                <>
-                  <Header />
-                  <main className="min-h-screen pt-16">
-                    <About />
-                  </main>
-                  <Footer />
-                  <WhatsAppButton />
-                </>
-              }
-            />
-            <Route
-              path="/services"
-              element={
-                <>
-                  <Header />
-                  <main className="min-h-screen pt-16">
-                    <Services />
-                  </main>
-                  <Footer />
-                  <WhatsAppButton />
-                </>
-              }
-            />
-            <Route
-              path="/services/:slug"
-              element={
-                <>
-                  <Header />
-                  <main className="min-h-screen pt-16">
-                    <ServiceDetail />
-                  </main>
-                  <Footer />
-                  <WhatsAppButton />
-                </>
-              }
-            />
-            <Route
-              path="/contact"
-              element={
-                <>
-                  <Header />
-                  <main className="min-h-screen pt-16">
-                    <Contact />
-                  </main>
-                  <Footer />
-                  <WhatsAppButton />
-                </>
-              }
-            />
-            <Route
-              path="/booking"
-              element={
-                <>
-                  <Header />
-                  <main className="min-h-screen pt-16">
-                    <Booking />
-                  </main>
-                  <Footer />
-                  <WhatsAppButton />
-                </>
-              }
-            />
-            <Route
-              path="/blog"
-              element={
-                <>
-                  <Header />
-                  <main className="min-h-screen pt-16">
-                    <Blog />
-                  </main>
-                  <Footer />
-                  <WhatsAppButton />
-                </>
-              }
-            />
-            <Route
-              path="/blog/:slug"
-              element={
-                <>
-                  <Header />
-                  <main className="min-h-screen pt-16">
-                    <BlogPost />
-                  </main>
-                  <Footer />
-                  <WhatsAppButton />
-                </>
-              }
-            />
-            <Route
-              path="/ac-buy-and-sale"
-              element={
-                <>
-                  <Header />
-                  <main className="min-h-screen pt-16">
-                    <AcBuyAndSale />
-                  </main>
-                  <Footer />
-                  <WhatsAppButton />
-                </>
-              }
-            />
-            <Route
-              path="/ac-sale"
-              element={
-                <>
-                  <Header />
-                  <main className="min-h-screen pt-16">
-                    <AcBuyAndSale />
-                  </main>
-                  <Footer />
-                  <WhatsAppButton />
-                </>
-              }
-            />
+              {/* Public Routes with Header and Footer */}
+              <Route
+                path="/"
+                element={
+                  <>
+                    <Header />
+                    <main className="min-h-screen pt-16">
+                      <Home />
+                    </main>
+                    <Footer />
+                    <WhatsAppButton />
+                    <QuickActionsButton />
+                  </>
+                }
+              />
+              <Route
+                path="/about"
+                element={
+                  <>
+                    <Header />
+                    <main className="min-h-screen pt-16">
+                      <About />
+                    </main>
+                    <Footer />
+                    <WhatsAppButton />
+                  </>
+                }
+              />
+              <Route
+                path="/services"
+                element={
+                  <>
+                    <Header />
+                    <main className="min-h-screen pt-16">
+                      <Services />
+                    </main>
+                    <Footer />
+                    <WhatsAppButton />
+                  </>
+                }
+              />
+              <Route
+                path="/services/:slug"
+                element={
+                  <>
+                    <Header />
+                    <main className="min-h-screen pt-16">
+                      <ServiceDetail />
+                    </main>
+                    <Footer />
+                    <WhatsAppButton />
+                  </>
+                }
+              />
+              <Route
+                path="/contact"
+                element={
+                  <>
+                    <Header />
+                    <main className="min-h-screen pt-16">
+                      <Contact />
+                    </main>
+                    <Footer />
+                    <WhatsAppButton />
+                  </>
+                }
+              />
+              <Route
+                path="/booking"
+                element={
+                  <>
+                    <Header />
+                    <main className="min-h-screen pt-16">
+                      <Booking />
+                    </main>
+                    <Footer />
+                    <WhatsAppButton />
+                  </>
+                }
+              />
+              <Route
+                path="/blog"
+                element={
+                  <>
+                    <Header />
+                    <main className="min-h-screen pt-16">
+                      <Blog />
+                    </main>
+                    <Footer />
+                    <WhatsAppButton />
+                  </>
+                }
+              />
+              <Route
+                path="/blog/:slug"
+                element={
+                  <>
+                    <Header />
+                    <main className="min-h-screen pt-16">
+                      <BlogPost />
+                    </main>
+                    <Footer />
+                    <WhatsAppButton />
+                  </>
+                }
+              />
+              <Route
+                path="/ac-buy-and-sale"
+                element={
+                  <>
+                    <Header />
+                    <main className="min-h-screen pt-16">
+                      <AcBuyAndSale />
+                    </main>
+                    <Footer />
+                    <WhatsAppButton />
+                  </>
+                }
+              />
+              <Route
+                path="/ac-sale"
+                element={
+                  <>
+                    <Header />
+                    <main className="min-h-screen pt-16">
+                      <AcBuyAndSale />
+                    </main>
+                    <Footer />
+                    <WhatsAppButton />
+                  </>
+                }
+              />
+              <Route
+                path="/cart"
+                element={
+                  <>
+                    <Header />
+                    <main className="min-h-screen pt-16">
+                      <Cart />
+                    </main>
+                    <Footer />
+                    <WhatsAppButton />
+                  </>
+                }
+              />
 
-            {/* 404 Route */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </AdminAuthProvider>
-      </TooltipProvider>
-    </BrowserRouter>
-  </QueryClientProvider>
+              {/* 404 Route */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AdminAuthProvider>
+        </TooltipProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
+  </React.StrictMode>
 );
 
 export default App;

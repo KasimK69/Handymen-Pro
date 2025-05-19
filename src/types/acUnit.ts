@@ -2,14 +2,23 @@
 export interface ACUnit {
   id: string;
   name: string;
+  brand: string;
+  description: string;
   price: number;
-  rating: number;
-  features: string[];
   images: string[];
-  category: 'for-sale' | 'wanted';
+  features: string[];
+  specifications: Record<string, string>;
   condition: 'new' | 'used';
   discounted?: boolean;
   discountPercentage?: number;
-  active?: boolean;
-  brand?: string;  // Added the brand property
+  availability: 'in-stock' | 'out-of-stock' | 'pre-order';
+  featured?: boolean;
+  rating?: number;
+  reviews?: {
+    id: string;
+    user: string;
+    date: string;
+    rating: number;
+    comment: string;
+  }[];
 }

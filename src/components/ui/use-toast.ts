@@ -16,6 +16,6 @@ export const toast = ({ title, description, variant }: ToastProps) => {
   });
 };
 
-export const useToast = () => {
-  return { toast };
-};
+// Import from the main hook to ensure consistency
+import { useToast } from "@/hooks/use-toast";
+export { useToast };
