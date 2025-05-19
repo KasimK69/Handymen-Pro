@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Calendar, User, Tag, ArrowRight, Filter, Clock } from 'lucide-react';
@@ -142,44 +141,103 @@ const Blog = () => {
 
   return (
     <>
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-brand-blue to-blue-700 text-white py-24 md:py-32 overflow-hidden">
+      {/* Redesigned Hero Section */}
+      <section className="relative overflow-hidden bg-gradient-to-r from-brand-blue to-blue-700 py-28 md:py-36">
+        {/* Background Pattern */}
         <div className="absolute inset-0 z-0">
           <div 
-            className="absolute inset-0 bg-gradient-to-r from-brand-blue to-blue-700 opacity-90"
+            className="absolute inset-0 opacity-30"
             style={{
-              backgroundImage: `url('https://images.unsplash.com/photo-1527092035324-6f06428eda6d?auto=format&fit=crop&q=80')`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              mixBlendMode: 'overlay'
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
             }}
           />
+          <div className="absolute inset-0 bg-gradient-to-br from-brand-blue via-blue-700 to-blue-900 opacity-90" />
         </div>
         
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          transition={{ duration: 0.8 }}
-          className="container relative z-10 mx-auto px-4"
-        >
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
-              <span className="inline-block">
-                AC Service
-                <div className="h-1 bg-white rounded mt-1"></div>
-              </span>
-              {' '}
-              <span className="text-blue-200">Blog</span>
-            </h1>
-            <p className="text-xl opacity-90 leading-relaxed max-w-xl mx-auto">
-              Expert advice, tips, and insights for all your air conditioning needs and home maintenance.
-            </p>
-          </div>
-        </motion.div>
+        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white dark:from-gray-900 to-transparent"></div>
         
+        <div className="container relative z-10 mx-auto px-4">
+          <div className="grid items-center gap-12 md:grid-cols-2">
+            <motion.div 
+              initial={{ opacity: 0, x: -50 }} 
+              animate={{ opacity: 1, x: 0 }} 
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-white"
+            >
+              <h1 className="mb-3 text-4xl font-bold leading-tight md:text-5xl lg:text-6xl">
+                <span className="inline-block pb-2 pr-4 relative">
+                  AC Service
+                  <div className="absolute bottom-0 left-0 h-1 w-full bg-white opacity-70 rounded"></div>
+                </span>
+                <span className="block mt-2 text-blue-100 font-light">Insights & Expertise</span>
+              </h1>
+              
+              <p className="mt-6 text-xl leading-relaxed text-blue-50">
+                Expert advice, maintenance tips, and industry insights for all your air conditioning needs.
+              </p>
+              
+              <div className="mt-8 flex flex-wrap gap-4">
+                <Button size="lg" variant="default" className="bg-white text-brand-blue hover:bg-blue-50">
+                  Latest Articles
+                </Button>
+                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+                  AC Maintenance Tips
+                </Button>
+              </div>
+              
+              <div className="mt-10 flex items-center space-x-6">
+                <div className="flex items-center">
+                  <div className="mr-2 flex h-10 w-10 items-center justify-center rounded-full bg-white/20">
+                    <Calendar className="h-5 w-5 text-white" />
+                  </div>
+                  <span className="text-sm text-blue-50">Updated Weekly</span>
+                </div>
+                
+                <div className="flex items-center">
+                  <div className="mr-2 flex h-10 w-10 items-center justify-center rounded-full bg-white/20">
+                    <Tag className="h-5 w-5 text-white" />
+                  </div>
+                  <span className="text-sm text-blue-50">{categories.length - 1} Categories</span>
+                </div>
+              </div>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }} 
+              animate={{ opacity: 1, scale: 1 }} 
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="relative hidden md:block"
+            >
+              <div className="relative overflow-hidden rounded-2xl shadow-2xl">
+                <div className="absolute inset-0 bg-gradient-to-tr from-brand-blue to-transparent opacity-70 z-10"></div>
+                <img 
+                  src={blogPosts[0].image} 
+                  alt="Featured Blog Post" 
+                  className="h-full w-full object-cover"
+                />
+                <div className="absolute bottom-0 left-0 right-0 z-20 p-6 bg-gradient-to-t from-black/80 to-transparent">
+                  <Badge className="mb-3 bg-brand-blue text-white">{blogPosts[0].category}</Badge>
+                  <h3 className="text-xl font-bold text-white mb-2">{blogPosts[0].title}</h3>
+                  <Link 
+                    to={`/blog/${blogPosts[0].slug}`}
+                    className="text-white text-sm flex items-center group"
+                  >
+                    Read more <ArrowRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
+              </div>
+              
+              {/* Decorative elements */}
+              <div className="absolute -right-12 -top-12 h-24 w-24 rounded-full bg-blue-500 opacity-30 blur-2xl"></div>
+              <div className="absolute -left-4 -bottom-8 h-20 w-20 rounded-full bg-brand-blue opacity-40 blur-xl"></div>
+            </motion.div>
+          </div>
+        </div>
+        
+        {/* Wave pattern at the bottom */}
         <div className="absolute bottom-0 left-0 right-0">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="w-full">
-            <path fill="#ffffff" fillOpacity="1" d="M0,192L48,197.3C96,203,192,213,288,208C384,203,480,181,576,181.3C672,181,768,203,864,218.7C960,235,1056,245,1152,229.3C1248,213,1344,171,1392,149.3L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z" />
+            <path fill="white" fillOpacity="1" d="M0,96L48,106.7C96,117,192,139,288,133.3C384,128,480,96,576,90.7C672,85,768,107,864,133.3C960,160,1056,192,1152,186.7C1248,181,1344,139,1392,117.3L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z" className="dark:fill-gray-900"></path>
           </svg>
         </div>
       </section>
