@@ -122,7 +122,7 @@ const BlogAdminPage = () => {
                 </div>
                 <div>
                   <Label>Image Upload</Label>
-                  <ImageUploader onImageUpload={handleImageUpload} />
+                  <ImageUploader onImageSelected={handleImageUpload} />
                   {imageUrl && (
                     <img
                       src={imageUrl}
