@@ -1,413 +1,398 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Calendar, User, Clock, Share2, ArrowLeft, MessageCircle, Phone } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from '@/hooks/use-toast';
-
-interface BlogPost {
-  id: string;
-  title: string;
-  content: string;
-  excerpt: string | null;
-  image_url: string | null;
-  author: string;
-  category: string;
-  tags: string[] | null;
-  read_time: number;
-  featured: boolean;
-  status: string;
-  created_at: string;
-  updated_at: string;
-  slug: string;
-}
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { 
+  Calendar, 
+  Clock, 
+  User, 
+  ArrowLeft, 
+  Share2,
+  MessageCircle,
+  Phone,
+  ChevronRight,
+  BookOpen,
+  ThumbsUp,
+  Eye
+} from 'lucide-react';
 
 const BlogPost = () => {
-  const { slug } = useParams<{ slug: string }>();
-  const [post, setPost] = useState<BlogPost | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
+  const { slug } = useParams();
 
-  useEffect(() => {
-    if (slug) {
-      fetchPost();
-    }
-  }, [slug]);
-
-  const fetchPost = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('blogs')
-        .select('*')
-        .eq('slug', slug)
-        .eq('status', 'active')
-        .single();
-      
-      if (error) throw error;
-      setPost(data);
-      
-      // Fetch related posts
-      if (data) {
-        const { data: related } = await supabase
-          .from('blogs')
-          .select('*')
-          .eq('status', 'active')
-          .eq('category', data.category)
-          .neq('id', data.id)
-          .limit(3);
+  // Sample blog post data - in a real app, this would come from an API
+  const blogPost = {
+    id: '1',
+    title: 'Complete Guide to AC Maintenance: Keep Your AC Running Efficiently',
+    slug: 'ac-maintenance-guide',
+    content: `
+      <div class="prose prose-lg max-w-none">
+        <p class="text-xl text-gray-600 leading-relaxed mb-8">Air conditioning maintenance is crucial for ensuring your AC unit operates efficiently, lasts longer, and provides optimal cooling performance. Regular maintenance not only saves you money on energy bills but also prevents costly repairs and extends your AC's lifespan.</p>
         
-        setRelatedPosts(related || []);
-      }
-    } catch (error) {
-      console.error('Error fetching blog post:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load blog post.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
+        <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">Why AC Maintenance Matters</h2>
+        <p class="mb-6">Regular AC maintenance is like regular health checkups for your air conditioning system. Just as you wouldn't skip medical checkups, you shouldn't skip AC maintenance. Here's why it's so important:</p>
+        
+        <ul class="list-disc pl-6 mb-8 space-y-2">
+          <li><strong>Energy Efficiency:</strong> A well-maintained AC uses less energy, reducing your electricity bills by up to 30%</li>
+          <li><strong>Longer Lifespan:</strong> Regular maintenance can extend your AC's life by 5-10 years</li>
+          <li><strong>Better Air Quality:</strong> Clean filters and coils mean cleaner air in your home</li>
+          <li><strong>Fewer Breakdowns:</strong> Preventive maintenance catches problems before they become expensive repairs</li>
+          <li><strong>Warranty Protection:</strong> Many manufacturers require regular maintenance to keep warranties valid</li>
+        </ul>
+
+        <div class="bg-blue-50 border-l-4 border-blue-400 p-6 my-8">
+          <p class="text-blue-800 font-medium">💡 Pro Tip: The best time for AC maintenance is during spring, before the hot summer season when you'll need your AC most.</p>
+        </div>
+        
+        <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">Monthly AC Maintenance Tasks</h2>
+        <p class="mb-4">These are simple tasks you can do yourself every month:</p>
+        
+        <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">1. Replace or Clean Air Filters</h3>
+        <p class="mb-4">Dirty filters are the #1 cause of AC problems. Check your filters monthly and replace them when they're dirty. In dusty areas like Rawalpindi and Islamabad, you might need to change them more frequently.</p>
+        
+        <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">2. Check Thermostat Settings</h3>
+        <p class="mb-4">Ensure your thermostat is working correctly and set to the right temperature. Consider upgrading to a programmable thermostat to save energy.</p>
+        
+        <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">3. Clear Debris Around Outdoor Unit</h3>
+        <p class="mb-6">Remove leaves, grass, and debris from around your outdoor unit. Maintain at least 2 feet of clearance on all sides for proper airflow.</p>
+        
+        <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">Quarterly Professional Maintenance</h2>
+        <p class="mb-4">Every 3 months, have a professional technician perform these tasks:</p>
+        
+        <ul class="list-disc pl-6 mb-8 space-y-2">
+          <li>Deep clean evaporator and condenser coils</li>
+          <li>Check refrigerant levels and pressure</li>
+          <li>Inspect electrical connections and tighten if needed</li>
+          <li>Lubricate moving parts</li>
+          <li>Check and clean condensate drain</li>
+          <li>Test system controls and safety devices</li>
+          <li>Measure airflow and temperature</li>
+        </ul>
+        
+        <div class="bg-red-50 border-l-4 border-red-400 p-6 my-8">
+          <p class="text-red-800 font-medium">⚠️ Warning: Never attempt to handle refrigerant or electrical components yourself. These tasks require professional expertise and specialized tools.</p>
+        </div>
+        
+        <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">Signs Your AC Needs Professional Attention</h2>
+        <p class="mb-4">Contact a professional immediately if you notice:</p>
+        
+        <ul class="list-disc pl-6 mb-8 space-y-2">
+          <li>Unusual noises (grinding, squealing, or banging)</li>
+          <li>Strange odors coming from vents</li>
+          <li>Weak airflow or warm air blowing</li>
+          <li>High humidity levels indoors</li>
+          <li>Frequent cycling on and off</li>
+          <li>Ice formation on the unit</li>
+          <li>Sudden increase in energy bills</li>
+        </ul>
+        
+        <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">Local Climate Considerations</h2>
+        <p class="mb-4">In Rawalpindi and Islamabad's climate:</p>
+        
+        <ul class="list-disc pl-6 mb-8 space-y-2">
+          <li><strong>Dust and Pollution:</strong> Change filters more frequently due to high dust levels</li>
+          <li><strong>Monsoon Season:</strong> Check drainage systems before and after monsoon</li>
+          <li><strong>Extreme Summer Heat:</strong> Schedule pre-summer maintenance in March/April</li>
+          <li><strong>Power Fluctuations:</strong> Install voltage stabilizers to protect your AC</li>
+        </ul>
+        
+        <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">Cost-Saving Maintenance Tips</h2>
+        
+        <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">1. Keep Indoor Temperature Reasonable</h3>
+        <p class="mb-4">Set your thermostat to 24-26°C (75-78°F) for optimal efficiency. Every degree lower can increase energy consumption by 6-8%.</p>
+        
+        <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">2. Use Ceiling Fans</h3>
+        <p class="mb-4">Ceiling fans help circulate cool air, allowing you to set the thermostat a few degrees higher while maintaining comfort.</p>
+        
+        <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">3. Seal Air Leaks</h3>
+        <p class="mb-6">Check windows, doors, and ductwork for air leaks. Seal any gaps to prevent cool air from escaping.</p>
+        
+        <div class="bg-green-50 border-l-4 border-green-400 p-6 my-8">
+          <p class="text-green-800 font-medium">✅ Regular maintenance can save you up to PKR 15,000 annually in energy costs and prevent expensive emergency repairs!</p>
+        </div>
+        
+        <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">When to Replace vs. Repair</h2>
+        <p class="mb-4">Consider replacement if your AC:</p>
+        
+        <ul class="list-disc pl-6 mb-8 space-y-2">
+          <li>Is more than 10-15 years old</li>
+          <li>Needs frequent expensive repairs</li>
+          <li>Uses R-22 refrigerant (being phased out)</li>
+          <li>Has poor energy efficiency ratings</li>
+          <li>Repair costs exceed 50% of replacement cost</li>
+        </ul>
+        
+        <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">Conclusion</h2>
+        <p class="mb-6">Regular AC maintenance is an investment that pays for itself through energy savings, fewer repairs, and extended equipment life. While some tasks can be done yourself, professional maintenance is essential for optimal performance and safety.</p>
+        
+        <p class="mb-6">Don't wait for your AC to break down in the middle of summer. Schedule regular maintenance and enjoy reliable, efficient cooling year-round.</p>
+      </div>
+    `,
+    excerpt: 'Learn essential AC maintenance tips to keep your air conditioning system running efficiently, save money on energy bills, and prevent costly repairs.',
+    featured_image: 'https://images.unsplash.com/photo-1621905252507-b35492cc74b4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+    author: 'Ahmad Ali',
+    author_avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80',
+    published_at: '2024-01-15',
+    reading_time: '8 min read',
+    category: 'AC Maintenance',
+    tags: ['AC Maintenance', 'Energy Saving', 'Home Improvement', 'HVAC Tips'],
+    views: 1245,
+    likes: 89
   };
+
+  const relatedPosts = [
+    {
+      id: '2',
+      title: 'How to Choose the Right AC Size for Your Room',
+      slug: 'choose-right-ac-size',
+      image: 'https://images.unsplash.com/photo-1580595999172-787970a962d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+      reading_time: '5 min read'
+    },
+    {
+      id: '3',
+      title: 'AC Energy Saving Tips for Summer',
+      slug: 'ac-energy-saving-tips',
+      image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+      reading_time: '6 min read'
+    },
+    {
+      id: '4',
+      title: 'Common AC Problems and Solutions',
+      slug: 'common-ac-problems',
+      image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+      reading_time: '7 min read'
+    }
+  ];
 
   const handleShare = (platform: string) => {
     const url = window.location.href;
-    const title = post?.title || '';
+    const title = blogPost.title;
     
-    let shareUrl = '';
     switch (platform) {
       case 'whatsapp':
-        shareUrl = `https://wa.me/?text=${encodeURIComponent(title + ' - ' + url)}`;
+        window.open(`https://wa.me/?text=${encodeURIComponent(title + ' - ' + url)}`, '_blank');
         break;
       case 'facebook':
-        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
         break;
       case 'twitter':
-        shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`, '_blank');
         break;
-    }
-    
-    if (shareUrl) {
-      window.open(shareUrl, '_blank');
     }
   };
 
-  const handleGetQuote = () => {
-    const message = `Hi! I read your blog post "${post?.title}" and I'm interested in your AC services. Can you provide more information?`;
+  const handleBookService = () => {
+    window.location.href = '/booking';
+  };
+
+  const handleContactWhatsApp = () => {
+    const message = `Hi! I read your blog post "${blogPost.title}" and I'm interested in AC maintenance services. Can you help me?`;
     const whatsappUrl = `https://wa.me/923125242182?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-white dark:bg-gray-900 pt-24">
-        <div className="w-full px-4 mx-auto">
-          <div className="max-w-4xl mx-auto">
-            <div className="animate-pulse">
-              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded mb-4"></div>
-              <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded mb-8"></div>
-              <div className="space-y-4">
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!post) {
-    return (
-      <div className="min-h-screen bg-white dark:bg-gray-900 pt-24">
-        <div className="w-full px-4 mx-auto">
-          <div className="max-w-4xl mx-auto text-center py-16">
-            <h1 className="text-3xl font-bold mb-4">Blog Post Not Found</h1>
-            <p className="text-gray-600 dark:text-gray-400 mb-8">
-              The blog post you're looking for doesn't exist or has been removed.
-            </p>
-            <Link to="/blog" className="btn-primary">
-              Back to Blog
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
+      {/* Back Navigation */}
+      <div className="pt-20 pb-4 px-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="container mx-auto max-w-4xl">
+          <Link 
+            to="/blog" 
+            className="inline-flex items-center text-brand-blue hover:text-brand-blue/80 transition-colors font-medium"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Blog
+          </Link>
+        </div>
+      </div>
+
       {/* Hero Section */}
-      <section className="pt-24 pb-8">
-        <div className="w-full px-4 mx-auto">
-          <div className="max-w-4xl mx-auto">
-            {/* Back Button */}
-            <Link 
-              to="/blog" 
-              className="inline-flex items-center text-brand-blue hover:text-brand-blue/80 mb-8 transition-colors"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Blog
-            </Link>
-            
-            {/* Post Header */}
-            <div className="mb-8">
-              <div className="flex flex-wrap items-center gap-4 mb-4">
-                <Badge className="bg-brand-blue text-white">
-                  {post.category}
-                </Badge>
-                {post.featured && (
-                  <Badge className="bg-brand-red text-white">
-                    Featured
-                  </Badge>
-                )}
-                {post.tags && post.tags.map((tag, index) => (
-                  <Badge key={index} variant="outline">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-              
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-gray-900 dark:text-white leading-tight">
-                {post.title}
-              </h1>
-              
-              {post.excerpt && (
-                <p className="text-xl text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
-                  {post.excerpt}
-                </p>
-              )}
-              
-              {/* Post Meta */}
-              <div className="flex flex-wrap items-center gap-6 text-gray-600 dark:text-gray-400">
-                <div className="flex items-center">
-                  <User className="h-4 w-4 mr-2" />
-                  <span>{post.author}</span>
-                </div>
-                <div className="flex items-center">
-                  <Calendar className="h-4 w-4 mr-2" />
-                  <span>{new Date(post.created_at).toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                  })}</span>
-                </div>
-                <div className="flex items-center">
-                  <Clock className="h-4 w-4 mr-2" />
-                  <span>{post.read_time} min read</span>
-                </div>
-              </div>
+      <article className="container mx-auto max-w-4xl px-4 py-8">
+        {/* Post Meta */}
+        <div className="mb-6">
+          <Badge className="mb-4 bg-brand-blue text-white">
+            {blogPost.category}
+          </Badge>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+            {blogPost.title}
+          </h1>
+          
+          <div className="flex flex-wrap items-center gap-6 text-gray-600 dark:text-gray-400 mb-6">
+            <div className="flex items-center">
+              <img 
+                src={blogPost.author_avatar} 
+                alt={blogPost.author}
+                className="w-10 h-10 rounded-full mr-3"
+              />
+              <span className="font-medium text-gray-900 dark:text-white">{blogPost.author}</span>
             </div>
+            <div className="flex items-center">
+              <Calendar className="h-4 w-4 mr-2" />
+              {new Date(blogPost.published_at).toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              })}
+            </div>
+            <div className="flex items-center">
+              <Clock className="h-4 w-4 mr-2" />
+              {blogPost.reading_time}
+            </div>
+            <div className="flex items-center">
+              <Eye className="h-4 w-4 mr-2" />
+              {blogPost.views} views
+            </div>
+            <div className="flex items-center">
+              <ThumbsUp className="h-4 w-4 mr-2" />
+              {blogPost.likes} likes
+            </div>
+          </div>
+
+          {/* Tags */}
+          <div className="flex flex-wrap gap-2 mb-6">
+            {blogPost.tags.map((tag, index) => (
+              <Badge key={index} variant="outline" className="text-gray-600 border-gray-300">
+                {tag}
+              </Badge>
+            ))}
           </div>
         </div>
-      </section>
 
-      {/* Featured Image */}
-      {post.image_url && (
-        <section className="pb-12">
-          <div className="w-full px-4 mx-auto">
-            <div className="max-w-5xl mx-auto">
-              <div className="aspect-video overflow-hidden rounded-xl shadow-2xl">
-                <img 
-                  src={post.image_url} 
-                  alt={post.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
+        {/* Featured Image */}
+        <div className="mb-8 rounded-lg overflow-hidden shadow-lg">
+          <img 
+            src={blogPost.featured_image} 
+            alt={blogPost.title}
+            className="w-full h-64 md:h-96 object-cover"
+          />
+        </div>
+
+        {/* Share Buttons */}
+        <div className="flex items-center justify-between mb-8 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+          <span className="font-medium text-gray-900 dark:text-white">Share this article:</span>
+          <div className="flex gap-3">
+            <Button 
+              size="sm" 
+              variant="outline"
+              onClick={() => handleShare('whatsapp')}
+              className="text-green-600 border-green-600 hover:bg-green-50"
+            >
+              WhatsApp
+            </Button>
+            <Button 
+              size="sm" 
+              variant="outline"
+              onClick={() => handleShare('facebook')}
+              className="text-blue-600 border-blue-600 hover:bg-blue-50"
+            >
+              Facebook
+            </Button>
+            <Button 
+              size="sm" 
+              variant="outline"
+              onClick={() => handleShare('twitter')}
+              className="text-sky-600 border-sky-600 hover:bg-sky-50"
+            >
+              Twitter
+            </Button>
           </div>
-        </section>
-      )}
+        </div>
 
-      {/* Main Content */}
-      <section className="pb-16">
-        <div className="w-full px-4 mx-auto">
-          <div className="max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
-              {/* Blog Content */}
-              <div className="lg:col-span-3">
-                <div className="prose prose-lg dark:prose-invert max-w-none">
-                  <div 
-                    dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br>') }}
-                    className="text-gray-700 dark:text-gray-300 leading-relaxed"
+        {/* Post Content */}
+        <div 
+          className="prose prose-lg max-w-none mb-12"
+          dangerouslySetInnerHTML={{ __html: blogPost.content }}
+        />
+
+        {/* CTA Section */}
+        <div className="bg-gradient-to-r from-brand-blue to-brand-red rounded-lg p-8 text-center text-white mb-12">
+          <h3 className="text-2xl font-bold mb-4">Need Professional AC Maintenance?</h3>
+          <p className="text-lg mb-6 text-blue-100">
+            Don't let your AC break down when you need it most. Our certified technicians provide comprehensive AC maintenance services in Rawalpindi and Islamabad.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button 
+              size="lg" 
+              className="bg-white text-brand-blue hover:bg-gray-100"
+              onClick={handleBookService}
+            >
+              <Calendar className="mr-2 h-5 w-5" />
+              Book AC Maintenance
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="border-white text-white hover:bg-white hover:text-brand-blue"
+              onClick={handleContactWhatsApp}
+            >
+              <MessageCircle className="mr-2 h-5 w-5" />
+              Get Quote on WhatsApp
+            </Button>
+          </div>
+        </div>
+
+        {/* Related Posts */}
+        <div className="mb-12">
+          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+            <BookOpen className="h-6 w-6 mr-2 text-brand-blue" />
+            Related Articles
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {relatedPosts.map((post) => (
+              <Link 
+                key={post.id}
+                to={`/blog/${post.slug}`}
+                className="group"
+              >
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                  <img 
+                    src={post.image} 
+                    alt={post.title}
+                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                </div>
-                
-                {/* Share Buttons */}
-                <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
-                  <h3 className="text-lg font-semibold mb-4">Share this article</h3>
-                  <div className="flex gap-3">
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => handleShare('whatsapp')}
-                      className="border-green-500 text-green-500 hover:bg-green-500 hover:text-white"
-                    >
-                      <MessageCircle className="h-4 w-4 mr-2" />
-                      WhatsApp
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => handleShare('facebook')}
-                      className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
-                    >
-                      <Share2 className="h-4 w-4 mr-2" />
-                      Facebook
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => handleShare('twitter')}
-                      className="border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-white"
-                    >
-                      <Share2 className="h-4 w-4 mr-2" />
-                      Twitter
-                    </Button>
+                  <div className="p-4">
+                    <h4 className="font-semibold text-gray-900 dark:text-white group-hover:text-brand-blue transition-colors mb-2">
+                      {post.title}
+                    </h4>
+                    <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                      <Clock className="h-3 w-3 mr-1" />
+                      {post.reading_time}
+                    </div>
                   </div>
                 </div>
-              </div>
-              
-              {/* Sidebar */}
-              <div className="lg:col-span-1">
-                <div className="sticky top-24 space-y-6">
-                  {/* CTA Card */}
-                  <Card className="bg-gradient-to-br from-brand-blue to-brand-red text-white border-0">
-                    <CardContent className="p-6 text-center">
-                      <h3 className="font-bold text-lg mb-3">Need AC Service?</h3>
-                      <p className="text-blue-100 mb-4 text-sm">
-                        Get professional AC installation, repair, and maintenance services.
-                      </p>
-                      <div className="space-y-2">
-                        <Button 
-                          className="w-full bg-white text-brand-blue hover:bg-gray-100"
-                          onClick={handleGetQuote}
-                        >
-                          <MessageCircle className="mr-2 h-4 w-4" />
-                          Get Quote
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          className="w-full border-white text-white hover:bg-white hover:text-brand-blue"
-                          asChild
-                        >
-                          <Link to="/booking">
-                            Book Service
-                          </Link>
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                  
-                  {/* Contact Card */}
-                  <Card>
-                    <CardContent className="p-6">
-                      <h3 className="font-bold mb-4">Emergency Service</h3>
-                      <div className="space-y-3">
-                        <div className="flex items-center">
-                          <Phone className="h-4 w-4 text-brand-red mr-2" />
-                          <div>
-                            <a href="tel:+923125242182" className="font-medium text-brand-red hover:underline">
-                              +92 312 5242182
-                            </a>
-                            <p className="text-xs text-gray-500">24/7 Available</p>
-                          </div>
-                        </div>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                          Quick response for urgent AC repairs in Rawalpindi & Islamabad
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Author Bio */}
+        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
+          <div className="flex items-start gap-4">
+            <img 
+              src={blogPost.author_avatar} 
+              alt={blogPost.author}
+              className="w-16 h-16 rounded-full"
+            />
+            <div>
+              <h4 className="font-bold text-lg text-gray-900 dark:text-white mb-2">{blogPost.author}</h4>
+              <p className="text-gray-600 dark:text-gray-400 mb-3">
+                AC maintenance expert with over 10 years of experience in HVAC systems. Specializes in energy-efficient cooling solutions for residential and commercial properties in Pakistan.
+              </p>
+              <div className="flex gap-3">
+                <Button size="sm" variant="outline">
+                  <User className="h-3 w-3 mr-1" />
+                  View Profile
+                </Button>
+                <Button size="sm" variant="outline">
+                  More Articles
+                  <ChevronRight className="h-3 w-3 ml-1" />
+                </Button>
               </div>
             </div>
           </div>
         </div>
-      </section>
-
-      {/* Related Posts */}
-      {relatedPosts.length > 0 && (
-        <section className="py-16 bg-gray-50 dark:bg-gray-800">
-          <div className="w-full px-4 mx-auto">
-            <div className="max-w-6xl mx-auto">
-              <h2 className="text-3xl font-bold mb-12 text-center">Related Articles</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {relatedPosts.map((relatedPost) => (
-                  <Card key={relatedPost.id} className="hover:shadow-lg transition-shadow">
-                    {relatedPost.image_url && (
-                      <div className="aspect-video overflow-hidden">
-                        <img 
-                          src={relatedPost.image_url} 
-                          alt={relatedPost.title}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    )}
-                    <CardContent className="p-6">
-                      <Badge className="mb-3 bg-brand-blue text-white">
-                        {relatedPost.category}
-                      </Badge>
-                      <h3 className="font-bold mb-2 line-clamp-2">
-                        <Link to={`/blog/${relatedPost.slug}`} className="hover:text-brand-blue transition-colors">
-                          {relatedPost.title}
-                        </Link>
-                      </h3>
-                      {relatedPost.excerpt && (
-                        <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-3 mb-4">
-                          {relatedPost.excerpt}
-                        </p>
-                      )}
-                      <div className="flex items-center text-xs text-gray-500">
-                        <Clock className="h-3 w-3 mr-1" />
-                        {relatedPost.read_time} min read
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Final CTA */}
-      <section className="py-16 bg-brand-blue text-white">
-        <div className="w-full px-4 mx-auto">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Ready to Book Your AC Service?
-            </h2>
-            <p className="text-xl mb-8 text-blue-100">
-              Don't wait for your AC to break down. Schedule professional maintenance and repairs today.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg" 
-                className="bg-brand-red hover:bg-brand-red/90 text-white"
-                asChild
-              >
-                <Link to="/booking">
-                  Book Service Now
-                </Link>
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="border-white text-white hover:bg-white hover:text-brand-blue"
-                onClick={handleGetQuote}
-              >
-                <MessageCircle className="mr-2 h-5 w-5" />
-                Get Free Quote
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+      </article>
     </div>
   );
 };

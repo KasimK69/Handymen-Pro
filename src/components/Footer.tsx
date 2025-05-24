@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Phone, Mail, MapPin, Clock, MessageCircle } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, MessageCircle, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const Footer = () => {
@@ -9,6 +9,10 @@ const Footer = () => {
     const message = "Hi! I'm interested in your AC services. Can you provide more information and pricing?";
     const whatsappUrl = `https://wa.me/923125242182?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
+  };
+
+  const handleExploreACs = () => {
+    window.location.href = '/ac-buy-and-sale';
   };
 
   return (
@@ -22,9 +26,17 @@ const Footer = () => {
                 <span className="text-brand-red">AC</span>Services
               </span>
             </div>
-            <p className="text-gray-400 mb-4">
+            <p className="text-gray-300 mb-4 leading-relaxed">
               Professional AC installation, repair, and maintenance services in Rawalpindi and Islamabad. Your comfort is our priority.
             </p>
+            <div className="flex items-center mb-2">
+              <Star className="h-4 w-4 text-yellow-400 mr-1" />
+              <Star className="h-4 w-4 text-yellow-400 mr-1" />
+              <Star className="h-4 w-4 text-yellow-400 mr-1" />
+              <Star className="h-4 w-4 text-yellow-400 mr-1" />
+              <Star className="h-4 w-4 text-yellow-400 mr-2" />
+              <span className="text-sm text-gray-300">4.9/5 Customer Rating</span>
+            </div>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-400 hover:text-brand-red transition-colors">
                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -46,59 +58,59 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
-              <li><Link to="/" className="text-gray-400 hover:text-white transition-colors">Home</Link></li>
-              <li><Link to="/services" className="text-gray-400 hover:text-white transition-colors">AC Services</Link></li>
-              <li><Link to="/ac-buy-and-sale" className="text-gray-400 hover:text-white transition-colors">AC Buy & Sale</Link></li>
-              <li><Link to="/blog" className="text-gray-400 hover:text-white transition-colors">Blog</Link></li>
-              <li><Link to="/contact" className="text-gray-400 hover:text-white transition-colors">Contact Us</Link></li>
-              <li><Link to="/booking" className="text-gray-400 hover:text-white transition-colors">Book Service</Link></li>
+            <h3 className="text-lg font-bold mb-6 text-white">Quick Links</h3>
+            <ul className="space-y-3">
+              <li><Link to="/" className="text-gray-300 hover:text-white transition-colors font-medium">Home</Link></li>
+              <li><Link to="/services" className="text-gray-300 hover:text-white transition-colors font-medium">AC Services</Link></li>
+              <li><Link to="/ac-buy-and-sale" className="text-gray-300 hover:text-white transition-colors font-medium">AC Buy & Sale</Link></li>
+              <li><Link to="/blog" className="text-gray-300 hover:text-white transition-colors font-medium">Blog</Link></li>
+              <li><Link to="/contact" className="text-gray-300 hover:text-white transition-colors font-medium">Contact Us</Link></li>
+              <li><Link to="/booking" className="text-gray-300 hover:text-white transition-colors font-medium">Book Service</Link></li>
             </ul>
           </div>
 
-          {/* Services */}
+          {/* AC Services */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Our Services</h3>
-            <ul className="space-y-2">
-              <li><span className="text-gray-400">AC Installation</span></li>
-              <li><span className="text-gray-400">AC Repair</span></li>
-              <li><span className="text-gray-400">AC Maintenance</span></li>
-              <li><span className="text-gray-400">AC Gas Refilling</span></li>
-              <li><span className="text-gray-400">AC Deep Cleaning</span></li>
-              <li><span className="text-gray-400">AC Replacement</span></li>
+            <h3 className="text-lg font-bold mb-6 text-white">Our AC Services</h3>
+            <ul className="space-y-3">
+              <li><span className="text-gray-300 font-medium">AC Installation</span></li>
+              <li><span className="text-gray-300 font-medium">AC Repair & Maintenance</span></li>
+              <li><span className="text-gray-300 font-medium">AC Gas Refilling</span></li>
+              <li><span className="text-gray-300 font-medium">AC Deep Cleaning</span></li>
+              <li><span className="text-gray-300 font-medium">Commercial AC Services</span></li>
+              <li><span className="text-gray-300 font-medium">Emergency AC Repair</span></li>
             </ul>
           </div>
 
           {/* Contact Info */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Contact Info</h3>
-            <div className="space-y-3">
+            <h3 className="text-lg font-bold mb-6 text-white">Contact Info</h3>
+            <div className="space-y-4">
               <div className="flex items-start">
                 <Phone className="h-5 w-5 text-brand-red mt-0.5 mr-3 flex-shrink-0" />
                 <div>
-                  <a href="tel:+923125242182" className="text-gray-400 hover:text-white transition-colors">
+                  <a href="tel:+923125242182" className="text-gray-300 hover:text-white transition-colors font-medium">
                     +92 312 5242182
                   </a>
-                  <p className="text-sm text-gray-500">24/7 Emergency Service</p>
+                  <p className="text-sm text-gray-400">24/7 Emergency Service</p>
                 </div>
               </div>
               <div className="flex items-start">
                 <Mail className="h-5 w-5 text-brand-red mt-0.5 mr-3 flex-shrink-0" />
-                <a href="mailto:info@acservices.pk" className="text-gray-400 hover:text-white transition-colors">
+                <a href="mailto:info@acservices.pk" className="text-gray-300 hover:text-white transition-colors font-medium">
                   info@acservices.pk
                 </a>
               </div>
               <div className="flex items-start">
                 <MapPin className="h-5 w-5 text-brand-red mt-0.5 mr-3 flex-shrink-0" />
-                <div className="text-gray-400">
+                <div className="text-gray-300 font-medium">
                   <p>Bahria Town, Phase 8</p>
                   <p>Rawalpindi, Pakistan</p>
                 </div>
               </div>
               <div className="flex items-start">
                 <Clock className="h-5 w-5 text-brand-red mt-0.5 mr-3 flex-shrink-0" />
-                <div className="text-gray-400">
+                <div className="text-gray-300 font-medium">
                   <p>Mon - Sat: 8:00 AM - 8:00 PM</p>
                   <p>Sunday: 9:00 AM - 6:00 PM</p>
                 </div>
@@ -108,42 +120,40 @@ const Footer = () => {
         </div>
 
         {/* CTA Section */}
-        <div className="border-t border-gray-800 pt-8 mb-8">
-          <div className="bg-gradient-to-r from-brand-blue to-brand-red rounded-lg p-6 text-center">
-            <h3 className="text-xl font-bold mb-2">Need AC Service Right Now?</h3>
-            <p className="mb-4 text-blue-100">Get instant quotes and same-day service in Rawalpindi & Islamabad</p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+        <div className="border-t border-gray-700 pt-8 mb-8">
+          <div className="bg-gradient-to-r from-brand-blue to-brand-red rounded-lg p-8 text-center">
+            <h3 className="text-2xl font-bold mb-3 text-white">Need AC Service or Looking for Quality AC Units?</h3>
+            <p className="mb-6 text-blue-100 text-lg">Get instant quotes for AC services or explore our premium AC buy & sale collection</p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
                 size="lg" 
-                className="bg-white text-brand-blue hover:bg-gray-100"
+                className="bg-white text-brand-blue hover:bg-gray-100 font-semibold shadow-lg"
                 onClick={handleGetQuote}
               >
                 <MessageCircle className="mr-2 h-5 w-5" />
-                Get Free Quote
+                Get AC Service Quote
               </Button>
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="border-white text-white hover:bg-white hover:text-brand-blue"
-                asChild
+                className="border-white text-white hover:bg-white hover:text-brand-blue font-semibold"
+                onClick={handleExploreACs}
               >
-                <Link to="/contact">
-                  Contact Us
-                </Link>
+                Explore AC Buy & Sale
               </Button>
             </div>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <div className="border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm mb-4 md:mb-0">
-            © 2024 AC Services. All rights reserved.
+            © 2024 AC Services. All rights reserved. | Professional AC Solutions in Rawalpindi & Islamabad
           </p>
           <div className="flex space-x-6 text-sm">
-            <a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a>
-            <a href="#" className="text-gray-400 hover:text-white transition-colors">Sitemap</a>
+            <a href="#" className="text-gray-400 hover:text-white transition-colors font-medium">Privacy Policy</a>
+            <a href="#" className="text-gray-400 hover:text-white transition-colors font-medium">Terms of Service</a>
+            <a href="#" className="text-gray-400 hover:text-white transition-colors font-medium">Sitemap</a>
           </div>
         </div>
       </div>
