@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,16 +27,18 @@ const Header = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  const isActive = (path: string) => location.pathname === path;
+
   return (
     <header 
       className={cn(
         'fixed top-0 left-0 w-full z-50 transition-all duration-300',
         isScrolled 
-          ? 'bg-white dark:bg-gray-900 shadow-md py-4' 
-          : 'bg-transparent py-6'
+          ? 'bg-white dark:bg-gray-900 shadow-lg py-3' 
+          : 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm py-4'
       )}
     >
-      <div className="container mx-auto flex justify-between items-center">
+      <div className="w-full px-4 mx-auto flex justify-between items-center max-w-7xl">
         <Link to="/" className="flex items-center">
           <span className="text-2xl font-heading font-bold text-brand-blue">
             <span className="text-brand-red">AC</span>Services
@@ -46,17 +49,17 @@ const Header = () => {
         <div className="hidden md:flex items-center">
           <a href="tel:+923125242182" className="mr-8 flex items-center text-gray-700 dark:text-gray-200 hover:text-brand-red transition-colors">
             <Phone className="h-4 w-4 mr-2" />
-            <span>+92 312 5242182</span>
+            <span className="font-medium">+92 312 5242182</span>
           </a>
         </div>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-1">
-          <NavLink to="/">Home</NavLink>
-          <NavLink to="/services">AC Services</NavLink>
-          <NavLink to="/ac-buy-and-sale">AC Buy & Sale</NavLink>
-          <NavLink to="/blog">Blog</NavLink>
-          <NavLink to="/contact">Contact</NavLink>
+          <NavLink to="/" isActive={isActive('/')}>Home</NavLink>
+          <NavLink to="/services" isActive={isActive('/services')}>AC Services</NavLink>
+          <NavLink to="/ac-buy-and-sale" isActive={isActive('/ac-buy-and-sale')}>AC Buy & Sale</NavLink>
+          <NavLink to="/blog" isActive={isActive('/blog')}>Blog</NavLink>
+          <NavLink to="/contact" isActive={isActive('/contact')}>Contact</NavLink>
           <Button variant="default" className="ml-4 bg-brand-red hover:bg-brand-red/90" asChild>
             <Link to="/booking" className="flex items-center">
               Book Now
@@ -108,11 +111,11 @@ const Header = () => {
             </Button>
           </div>
           <nav className="flex flex-col space-y-6">
-            <MobileNavLink to="/" onClick={() => setIsMobileMenuOpen(false)}>Home</MobileNavLink>
-            <MobileNavLink to="/services" onClick={() => setIsMobileMenuOpen(false)}>AC Services</MobileNavLink>
-            <MobileNavLink to="/ac-buy-and-sale" onClick={() => setIsMobileMenuOpen(false)}>AC Buy & Sale</MobileNavLink>
-            <MobileNavLink to="/blog" onClick={() => setIsMobileMenuOpen(false)}>Blog</MobileNavLink>
-            <MobileNavLink to="/contact" onClick={() => setIsMobileMenuOpen(false)}>Contact</MobileNavLink>
+            <MobileNavLink to="/" onClick={() => setIsMobileMenuOpen(false)} isActive={isActive('/')}>Home</MobileNavLink>
+            <MobileNavLink to="/services" onClick={() => setIsMobileMenuOpen(false)} isActive={isActive('/services')}>AC Services</MobileNavLink>
+            <MobileNavLink to="/ac-buy-and-sale" onClick={() => setIsMobileMenuOpen(false)} isActive={isActive('/ac-buy-and-sale')}>AC Buy & Sale</MobileNavLink>
+            <MobileNavLink to="/blog" onClick={() => setIsMobileMenuOpen(false)} isActive={isActive('/blog')}>Blog</MobileNavLink>
+            <MobileNavLink to="/contact" onClick={() => setIsMobileMenuOpen(false)} isActive={isActive('/contact')}>Contact</MobileNavLink>
             <Link 
               to="/booking" 
               className="btn-primary flex justify-center items-center mt-4"
@@ -141,23 +144,30 @@ const Header = () => {
   );
 };
 
-const NavLink = ({ to, children }: { to: string; children: React.ReactNode }) => (
+const NavLink = ({ to, children, isActive }: { to: string; children: React.ReactNode; isActive: boolean }) => (
   <Link 
     to={to}
-    className="px-3 py-2 text-gray-700 hover:text-brand-red dark:text-gray-200 dark:hover:text-brand-red font-medium transition-colors"
+    className={cn(
+      "px-4 py-2 text-gray-700 hover:text-brand-red dark:text-gray-200 dark:hover:text-brand-red font-medium transition-colors rounded-md relative",
+      isActive && "text-brand-red bg-brand-red/10"
+    )}
   >
     {children}
   </Link>
 );
 
-const MobileNavLink = ({ to, onClick, children }: { 
+const MobileNavLink = ({ to, onClick, children, isActive }: { 
   to: string; 
   onClick?: () => void;
   children: React.ReactNode;
+  isActive: boolean;
 }) => (
   <Link 
     to={to}
-    className="text-xl font-medium text-gray-800 dark:text-gray-200 hover:text-brand-red dark:hover:text-brand-red transition-colors"
+    className={cn(
+      "text-xl font-medium text-gray-800 dark:text-gray-200 hover:text-brand-red dark:hover:text-brand-red transition-colors py-2",
+      isActive && "text-brand-red"
+    )}
     onClick={onClick}
   >
     {children}

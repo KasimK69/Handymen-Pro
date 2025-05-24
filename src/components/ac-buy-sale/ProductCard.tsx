@@ -1,10 +1,9 @@
 
 import React from 'react';
-import { BadgeCheck, MessageSquare, Info } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { Eye, MessageCircle, Calendar } from 'lucide-react';
 import { ACUnit } from '@/types/acUnit';
 
 interface ProductCardProps {
@@ -14,91 +13,65 @@ interface ProductCardProps {
   formatPrice: (price: number) => string;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ 
-  product, 
+const ProductCard: React.FC<ProductCardProps> = ({
+  product,
   onImageClick,
   onWhatsAppContact,
   formatPrice
 }) => {
+  const handleBookInstallation = () => {
+    window.location.href = '/booking';
+  };
+
   return (
-    <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-all duration-300 group">
-      <div className="relative">
-        {product.discounted && (
-          <Badge className="absolute top-4 right-4 z-10 bg-brand-red hover:bg-brand-red">
-            {product.discountPercentage}% OFF
+    <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 group border-0 shadow-lg">
+      <div className="relative aspect-square overflow-hidden cursor-pointer" onClick={onImageClick}>
+        <img 
+          src={product.images[0]} 
+          alt={product.name}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        />
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+          <Eye className="h-8 w-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        </div>
+        {product.condition === 'new' && (
+          <Badge className="absolute top-3 left-3 bg-green-500 text-white">
+            New
           </Badge>
         )}
-        
-        <AspectRatio ratio={4/3} className="overflow-hidden cursor-pointer">
-          <img 
-            src={product.images[0]} 
-            alt={product.name} 
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-            loading="lazy"
-            onClick={onImageClick}
-          />
-        </AspectRatio>
+        <Badge className="absolute top-3 right-3 bg-brand-blue text-white">
+          {product.brand}
+        </Badge>
       </div>
       
       <CardContent className="p-6">
-        <div className="flex items-start justify-between mb-2 gap-2">
-          <Badge variant="outline" className="bg-gray-100 dark:bg-gray-700">
-            {product.condition === 'new' ? 'New' : 'Used'}
-          </Badge>
-          
-          <Badge variant="outline" className="bg-gray-100 dark:bg-gray-700">
-            {product.brand}
-          </Badge>
-        </div>
-        
-        <h3 className="text-xl font-bold mb-2">{product.name}</h3>
-        
         <div className="mb-4">
-          <span className="text-2xl font-bold text-brand-blue">
-            {product.discounted 
-              ? formatPrice(product.price * (1 - (product.discountPercentage || 0) / 100))
-              : formatPrice(product.price)}
-          </span>
-          {product.discounted && (
-            <span className="text-lg text-gray-500 line-through ml-2">
-              {formatPrice(product.price)}
-            </span>
-          )}
+          <h3 className="text-lg font-bold mb-2 text-gray-900 dark:text-white line-clamp-2">
+            {product.name}
+          </h3>
+          <p className="text-2xl font-bold text-brand-blue mb-2">
+            {formatPrice(product.price)}
+          </p>
+          <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">
+            {product.description}
+          </p>
         </div>
         
-        <div className="space-y-2 mb-4">
-          {product.features.slice(0, 3).map((feature, index) => (
-            <div key={index} className="flex items-start">
-              <BadgeCheck className="w-4 h-4 text-brand-blue mt-1 mr-2 shrink-0" />
-              <span className="text-sm text-gray-600 dark:text-gray-400">{feature}</span>
-            </div>
-          ))}
-          {product.features.length > 3 && (
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="text-sm text-brand-blue hover:text-brand-blue pl-0 flex items-center" 
-              onClick={onImageClick}
-            >
-              <Info className="h-4 w-4 mr-1" />
-              +{product.features.length - 3} more features
-            </Button>
-          )}
-        </div>
-        
-        <div className="grid grid-cols-2 gap-2">
+        <div className="space-y-2">
           <Button 
-            className="w-full bg-brand-blue hover:bg-brand-blue/90" 
-            onClick={onImageClick}
+            className="w-full bg-brand-red hover:bg-brand-red/90 text-white"
+            onClick={handleBookInstallation}
           >
-            View Details
+            <Calendar className="mr-2 h-4 w-4" />
+            Book AC Installation
           </Button>
           <Button 
-            className="w-full bg-green-600 hover:bg-green-700 flex items-center justify-center" 
+            variant="outline" 
+            className="w-full border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white"
             onClick={onWhatsAppContact}
           >
-            <MessageSquare className="mr-2 h-4 w-4" />
-            Contact Us
+            <MessageCircle className="mr-2 h-4 w-4" />
+            Request Quote
           </Button>
         </div>
       </CardContent>
