@@ -40,11 +40,11 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AdminAuthProvider>
-        <CartProvider>
-          <TooltipProvider>
-            <Toaster />
-            <BrowserRouter>
+      <CartProvider>
+        <TooltipProvider>
+          <Toaster />
+          <BrowserRouter>
+            <AdminAuthProvider>
               <div className="min-h-screen bg-background flex flex-col">
                 <ScrollToTop />
                 
@@ -91,10 +91,10 @@ function App() {
                   } />
                 </Routes>
               </div>
-            </BrowserRouter>
-          </TooltipProvider>
-        </CartProvider>
-      </AdminAuthProvider>
+            </AdminAuthProvider>
+          </BrowserRouter>
+        </TooltipProvider>
+      </CartProvider>
     </QueryClientProvider>
   );
 }
