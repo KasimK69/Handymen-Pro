@@ -1,238 +1,145 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import ServiceModal from '@/components/services/ServiceModal';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, Wrench, Settings, Droplets, Wind, MessageCircle } from 'lucide-react';
+import { supabase } from "@/integrations/supabase/client";
 
 interface Service {
   id: string;
-  title: string;
+  name: string;
+  slug: string;
   description: string;
-  icon: string;
-  image: string;
-  details?: string;
-  features?: string[];
-  images?: string[];
+  short_description: string | null;
+  image_url: string | null;
+  icon: string | null;
+  category: string;
+  price_range: string | null;
+  features: string[] | null;
+  status: string;
+  featured: boolean;
+  sort_order: number;
 }
 
-const services: Service[] = [
-  {
-    id: 'ac-installation',
-    title: 'AC Installation',
-    description: 'Professional installation services for all AC brands and models with expert setup and configuration.',
-    icon: '❄️',
-    image: 'https://images.unsplash.com/photo-1581275299888-536227aac860?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-    details: 'Our certified technicians provide comprehensive AC installation services for all brands and models. We ensure proper positioning, secure mounting, and optimal configuration to maximize cooling efficiency and minimize energy consumption.',
-    features: [
-      'Free pre-installation site assessment',
-      'Proper unit sizing and capacity calculation',
-      'Professional mounting and securing',
-      'Electrical connection and safety testing',
-      'System calibration and testing',
-      'Cleanup and removal of packaging materials'
-    ],
-    images: [
-      'https://images.unsplash.com/photo-1581275299888-536227aac860?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1613274554329-70f997f5789f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1622390631668-5cdeb9e20e95?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1504198266287-1659872e6590?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80'
-    ]
-  },
-  {
-    id: 'ac-repair',
-    title: 'AC Repair',
-    description: 'Fast and reliable repair services to fix any AC issues and restore optimal cooling performance.',
-    icon: '🔧',
-    image: 'https://images.unsplash.com/photo-1621905251918-48416bd8575a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-    details: 'Our expert technicians quickly diagnose and repair all types of AC issues, from minor problems to major malfunctions. We use advanced diagnostic tools and carry genuine parts to ensure lasting repairs.',
-    features: [
-      'Same-day emergency repairs',
-      'Comprehensive system diagnostic',
-      'Genuine replacement parts',
-      'Repair of all major brands and models',
-      'Post-repair performance testing',
-      '90-day warranty on all repairs'
-    ],
-    images: [
-      'https://images.unsplash.com/photo-1621905251918-48416bd8575a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1599696848652-f0ff23bc911f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1574269910231-bc508bcb68d6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80'
-    ]
-  },
-  {
-    id: 'gas-refill',
-    title: 'AC Gas Refill',
-    description: 'Expert refrigerant refill services to ensure your AC maintains maximum cooling efficiency.',
-    icon: '💨',
-    image: 'https://images.unsplash.com/photo-1617992462188-361a6e46f47d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-    details: 'Our professional gas refill service ensures your AC system operates at peak efficiency. We check for leaks, repair if necessary, and refill with the correct type and amount of refrigerant for your specific unit.',
-    features: [
-      'Leak detection and repair',
-      'Environmentally friendly handling of refrigerants',
-      'Precise refrigerant measurement and filling',
-      'System pressure testing',
-      'Performance optimization',
-      'Usage of quality refrigerants only'
-    ],
-    images: [
-      'https://images.unsplash.com/photo-1617992462188-361a6e46f47d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1599696850648-820dec8f689d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1541690983760-fcbcbfe770e4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80'
-    ]
-  },
-  {
-    id: 'ac-maintenance',
-    title: 'AC Maintenance',
-    description: 'Regular maintenance services to keep your AC running efficiently and extend its lifespan.',
-    icon: '🛠️',
-    image: 'https://images.unsplash.com/photo-1621905252507-1a1a6bc3eee7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-    details: "Regular maintenance is the key to extending your AC system's lifespan and preventing costly breakdowns. Our comprehensive maintenance service includes cleaning, inspection, and tuning to ensure optimal performance.",
-    features: [
-      'Filter cleaning or replacement',
-      'Coil cleaning (evaporator and condenser)',
-      'Checking refrigerant levels',
-      'Inspecting electrical components',
-      'Thermostat calibration',
-      'Comprehensive 20-point inspection'
-    ],
-    images: [
-      'https://images.unsplash.com/photo-1621905252507-1a1a6bc3eee7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1600566752229-250ed79470f8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1617968763460-d5189212c822?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1599696848906-82213ba65b0a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80'
-    ]
-  },
-  {
-    id: 'ac-troubleshooting',
-    title: 'AC Troubleshooting',
-    description: 'Expert diagnostics to identify and resolve complex AC issues for optimal performance.',
-    icon: '🔍',
-    image: 'https://images.unsplash.com/photo-1595877244574-e90ce41a1e5a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-    details: 'Our skilled technicians use advanced diagnostic tools and their extensive experience to identify and resolve even the most complex AC issues. We can troubleshoot unusual noises, inconsistent cooling, water leaks, and more.',
-    features: [
-      'Advanced electronic diagnostics',
-      'Thermal imaging inspection',
-      'Air flow measurement and analysis',
-      'Electrical component testing',
-      'Control system diagnostics',
-      'Detailed problem reports with recommendations'
-    ],
-    images: [
-      'https://images.unsplash.com/photo-1595877244574-e90ce41a1e5a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1624396963238-df0e48367ccf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80'
-    ]
-  },
-  {
-    id: 'commercial-ac',
-    title: 'Commercial AC Services',
-    description: 'Specialized solutions for businesses with minimal disruption to operations.',
-    icon: '🏢',
-    image: 'https://images.unsplash.com/photo-1495434942214-9b582186bad0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-    details: 'Our commercial AC services are tailored to meet the needs of businesses of all sizes. We understand the importance of maintaining a comfortable environment for employees and customers while minimizing disruption to your operations.',
-    features: [
-      'After-hours servicing option',
-      'Specialized commercial equipment expertise',
-      'Preventative maintenance contracts',
-      'Energy efficiency assessments',
-      'Rapid response emergency service',
-      'Custom solutions for specific business needs'
-    ],
-    images: [
-      'https://images.unsplash.com/photo-1495434942214-9b582186bad0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1497366811353-6870744d04b2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1581092160607-ee22731c9c9c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80'
-    ]
-  }
-];
+const iconMap: { [key: string]: React.ComponentType<any> } = {
+  wrench: Wrench,
+  settings: Settings,
+  droplets: Droplets,
+  wind: Wind,
+};
 
 const Services = () => {
-  const [selectedService, setSelectedService] = useState<Service | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const openServiceModal = (service: Service) => {
-    setSelectedService(service);
-    setIsModalOpen(true);
+  useEffect(() => {
+    fetchServices();
+  }, []);
+
+  const fetchServices = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('services')
+        .select('*')
+        .eq('status', 'active')
+        .eq('featured', true)
+        .order('sort_order', { ascending: true })
+        .limit(4);
+      
+      if (error) throw error;
+      setServices(data || []);
+    } catch (error) {
+      console.error('Error fetching services:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const closeServiceModal = () => {
-    setIsModalOpen(false);
+  const getIconComponent = (iconName: string | null) => {
+    if (!iconName || !iconMap[iconName]) {
+      return Wrench;
+    }
+    return iconMap[iconName];
+  };
+
+  const contactWhatsApp = (serviceName: string) => {
+    const message = `Hi! I'm interested in your ${serviceName}. Can you provide more details?`;
+    const whatsappUrl = `https://wa.me/923001234567?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
   };
 
   return (
-    <section className="section-padding bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="section-title">Our AC Services</h2>
-          <p className="section-subtitle max-w-2xl mx-auto">
-            Expert AC installation, repair, and maintenance services delivered by certified professionals
+    <section className="py-16 bg-white dark:bg-gray-900">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 dark:text-white">
+            Our <span className="text-brand-blue">Professional Services</span>
+          </h2>
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            From installation to maintenance, we provide comprehensive AC services to keep your home comfortable year-round.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {services.map((service) => (
-            <ServiceCard 
-              key={service.id} 
-              service={service}
-              onClick={() => openServiceModal(service)} 
-            />
-          ))}
-        </div>
+        {loading ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[...Array(4)].map((_, index) => (
+              <div key={index} className="animate-pulse">
+                <div className="bg-gray-200 dark:bg-gray-700 h-48 rounded-lg mb-4"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded"></div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            {services.map((service) => {
+              const IconComponent = getIconComponent(service.icon);
+              return (
+                <Card key={service.id} className="hover:shadow-lg transition-all duration-300 group border-0 shadow-md">
+                  <CardHeader className="text-center">
+                    <div className="mx-auto rounded-full bg-brand-blue/10 p-4 w-16 h-16 flex items-center justify-center mb-4 group-hover:bg-brand-blue group-hover:text-white transition-all">
+                      <IconComponent className="h-8 w-8 text-brand-blue group-hover:text-white" />
+                    </div>
+                    <CardTitle className="text-lg group-hover:text-brand-blue transition-colors">
+                      {service.name}
+                    </CardTitle>
+                    <CardDescription className="text-sm">
+                      {service.short_description || service.description.substring(0, 60) + '...'}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="pt-0 text-center">
+                    {service.price_range && (
+                      <p className="text-brand-blue font-semibold mb-3">{service.price_range}</p>
+                    )}
+                    <div className="space-y-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full group-hover:bg-brand-blue group-hover:text-white group-hover:border-brand-blue transition-all"
+                        onClick={() => contactWhatsApp(service.name)}
+                      >
+                        <MessageCircle className="h-4 w-4 mr-2" />
+                        Get Quote
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        )}
 
-        <div className="mt-16 text-center">
-          <Button size="lg" variant="outline" className="border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white" asChild>
+        <div className="text-center">
+          <Button asChild className="bg-brand-blue hover:bg-brand-blue/90 group">
             <Link to="/services">
               View All Services
-              <ArrowRight className="ml-2 h-4 w-4" />
+              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </Button>
         </div>
       </div>
-
-      {selectedService && (
-        <ServiceModal 
-          isOpen={isModalOpen} 
-          onClose={closeServiceModal} 
-          service={selectedService} 
-        />
-      )}
     </section>
-  );
-};
-
-const ServiceCard = ({ service, onClick }: { service: Service; onClick: () => void }) => {
-  return (
-    <Card className="group overflow-hidden border-none shadow-lg hover:shadow-xl transition-all duration-300">
-      <div className="relative h-52 overflow-hidden">
-        <img 
-          src={service.image} 
-          alt={service.title} 
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-          loading="lazy"
-        />
-        <div className="absolute top-4 left-4 bg-white dark:bg-gray-900 rounded-full p-3 shadow-md">
-          <span className="text-2xl" role="img" aria-label={service.title}>{service.icon}</span>
-        </div>
-      </div>
-      <CardContent className="p-6">
-        <h3 className="text-xl font-bold mb-2">{service.title}</h3>
-        <p className="text-gray-600 dark:text-gray-400 mb-4">{service.description}</p>
-        <Button 
-          variant="link" 
-          className="flex items-center text-brand-red hover:text-brand-red/80 font-medium transition-colors p-0"
-          onClick={onClick}
-        >
-          Learn More
-          <ArrowRight className="ml-2 h-4 w-4" />
-        </Button>
-      </CardContent>
-    </Card>
   );
 };
 
