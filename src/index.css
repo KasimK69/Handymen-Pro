@@ -76,6 +76,9 @@
 
   body {
     @apply bg-background text-foreground font-sans;
+    width: 100%;
+    margin: 0;
+    padding: 0;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -84,6 +87,11 @@
 
   .section-padding {
     @apply py-16 md:py-24;
+  }
+
+  .container {
+    @apply w-full px-4 mx-auto;
+    max-width: none !important;
   }
 }
 

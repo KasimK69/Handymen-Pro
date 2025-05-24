@@ -55,10 +55,10 @@ const SmartAdport = () => {
   }, []);
 
   return (
-    <section className="py-8 bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto">
+    <section className="py-8 bg-gray-50 dark:bg-gray-900 w-full">
+      <div className="w-full px-4">
         <div 
-          className={`rounded-lg p-6 shadow-lg overflow-hidden relative ${offers[currentOffer].bgColor} animate-fade-in`}
+          className={`rounded-lg p-6 shadow-lg overflow-hidden relative max-w-7xl mx-auto ${offers[currentOffer].bgColor} animate-fade-in`}
           key={offers[currentOffer].id}
         >
           <div className="flex flex-col md:flex-row items-center justify-between">

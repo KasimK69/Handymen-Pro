@@ -70,19 +70,19 @@ const Services = () => {
   };
 
   return (
-    <section className="py-16 bg-white dark:bg-gray-900">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+    <section className="py-16 bg-white dark:bg-gray-900 w-full">
+      <div className="w-full px-4">
+        <div className="text-center mb-12 max-w-4xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 dark:text-white">
             Our <span className="text-brand-blue">Professional Services</span>
           </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 dark:text-gray-400">
             From installation to maintenance, we provide comprehensive AC services to keep your home comfortable year-round.
           </p>
         </div>
 
         {loading ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
             {[...Array(4)].map((_, index) => (
               <div key={index} className="animate-pulse">
                 <div className="bg-gray-200 dark:bg-gray-700 h-48 rounded-lg mb-4"></div>
@@ -92,7 +92,7 @@ const Services = () => {
             ))}
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 max-w-7xl mx-auto">
             {services.map((service) => {
               const IconComponent = getIconComponent(service.icon);
               return (

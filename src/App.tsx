@@ -20,6 +20,7 @@ import Contact from "./pages/Contact";
 import Booking from "./pages/Booking";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
+import AcBuyAndSale from "./pages/AcBuyAndSale";
 
 import AdminLayout from "./components/admin/AdminLayout";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
@@ -45,7 +46,7 @@ function App() {
           <Toaster />
           <BrowserRouter>
             <AdminAuthProvider>
-              <div className="min-h-screen bg-background flex flex-col">
+              <div className="min-h-screen bg-background flex flex-col w-full">
                 <ScrollToTop />
                 
                 <Routes>
@@ -71,7 +72,7 @@ function App() {
                   <Route path="/*" element={
                     <>
                       <Header />
-                      <main className="flex-grow">
+                      <main className="flex-grow w-full">
                         <Routes>
                           <Route path="/" element={<Index />} />
                           <Route path="/about" element={<About />} />
@@ -81,6 +82,7 @@ function App() {
                           <Route path="/blog/:slug" element={<BlogPost />} />
                           <Route path="/contact" element={<Contact />} />
                           <Route path="/booking" element={<Booking />} />
+                          <Route path="/ac-buy-and-sale" element={<AcBuyAndSale />} />
                           <Route path="*" element={<NotFound />} />
                         </Routes>
                       </main>
