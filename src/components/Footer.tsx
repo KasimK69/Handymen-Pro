@@ -16,11 +16,11 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 text-white relative overflow-hidden">
+    <footer className="bg-gradient-to-br from-slate-800 via-blue-800 to-slate-900 text-white relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0">
         <div className="absolute top-10 left-10 opacity-10">
-          <AirVent className="h-24 w-24 text-brand-blue" />
+          <AirVent className="h-24 w-24 text-brand-blue animate-pulse" />
         </div>
         <div className="absolute top-20 right-20 opacity-10">
           <Snowflake className="h-16 w-16 text-brand-red animate-spin" style={{ animationDuration: '8s' }} />
@@ -35,16 +35,19 @@ const Footer = () => {
           {/* Company Info */}
           <div>
             <div className="flex items-center mb-6">
-              <div className="w-12 h-12 bg-brand-blue rounded-full flex items-center justify-center mr-3">
+              <div className="w-12 h-12 bg-brand-blue rounded-full flex items-center justify-center mr-3 shadow-lg">
                 <AirVent className="h-7 w-7 text-white" />
               </div>
-              <span className="text-2xl font-heading font-bold">
-                <span className="text-brand-red">AC</span>
-                <span className="text-white">Services</span>
-              </span>
+              <div className="flex flex-col">
+                <span className="text-xl font-heading font-bold">
+                  <span className="text-brand-blue">AC</span>
+                  <span className="text-white">Services</span>
+                </span>
+                <span className="text-xs text-gray-300">& Repairs</span>
+              </div>
             </div>
             <p className="text-gray-300 mb-6 leading-relaxed">
-              Leading AC buy & sale platform in Islamabad and Rawalpindi. Premium air conditioners with professional installation, repair, and maintenance services.
+              Leading AC services & repairs platform in Islamabad and Rawalpindi. Premium air conditioners with professional installation, repair, and maintenance services.
             </p>
             <div className="flex items-center mb-4">
               <Star className="h-4 w-4 text-yellow-400 mr-1" />
@@ -60,28 +63,28 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-bold mb-6 text-white">Quick Links</h3>
             <ul className="space-y-3">
-              <li><Link to="/" className="text-gray-300 hover:text-brand-red transition-colors font-medium flex items-center"><span className="mr-2">🏠</span>Home</Link></li>
-              <li><Link to="/services" className="text-gray-300 hover:text-brand-red transition-colors font-medium flex items-center"><span className="mr-2">🔧</span>AC Services</Link></li>
-              <li><Link to="/ac-buy-and-sale" className="text-gray-300 hover:text-brand-red transition-colors font-medium flex items-center"><span className="mr-2">❄️</span>AC Buy & Sale</Link></li>
-              <li><Link to="/blog" className="text-gray-300 hover:text-brand-red transition-colors font-medium flex items-center"><span className="mr-2">📰</span>AC Tips Blog</Link></li>
-              <li><Link to="/contact" className="text-gray-300 hover:text-brand-red transition-colors font-medium flex items-center"><span className="mr-2">📞</span>Contact Us</Link></li>
-              <li><Link to="/booking" className="text-gray-300 hover:text-brand-red transition-colors font-medium flex items-center"><span className="mr-2">📋</span>Get Quote</Link></li>
+              <li><Link to="/" className="text-gray-300 hover:text-brand-blue transition-colors font-medium flex items-center"><span className="mr-2">🏠</span>Home</Link></li>
+              <li><Link to="/services" className="text-gray-300 hover:text-brand-blue transition-colors font-medium flex items-center"><span className="mr-2">🔧</span>AC Services</Link></li>
+              <li><Link to="/ac-buy-and-sale" className="text-gray-300 hover:text-brand-blue transition-colors font-medium flex items-center"><span className="mr-2">❄️</span>AC Buy & Sale</Link></li>
+              <li><Link to="/blog" className="text-gray-300 hover:text-brand-blue transition-colors font-medium flex items-center"><span className="mr-2">📰</span>AC Tips Blog</Link></li>
+              <li><Link to="/contact" className="text-gray-300 hover:text-brand-blue transition-colors font-medium flex items-center"><span className="mr-2">📞</span>Contact Us</Link></li>
+              <li><Link to="/booking" className="text-gray-300 hover:text-brand-blue transition-colors font-medium flex items-center"><span className="mr-2">📋</span>Get Quote</Link></li>
             </ul>
           </div>
 
-          {/* AC Buy & Sale */}
+          {/* AC Services */}
           <div>
             <h3 className="text-xl font-bold mb-6 text-white flex items-center">
               <AirVent className="h-5 w-5 mr-2" />
-              AC Buy & Sale
+              AC Services
             </h3>
             <ul className="space-y-3">
-              <li><span className="text-gray-300 font-medium">Premium New AC Units</span></li>
-              <li><span className="text-gray-300 font-medium">Quality Used ACs</span></li>
-              <li><span className="text-gray-300 font-medium">AC Installation Service</span></li>
+              <li><span className="text-gray-300 font-medium">AC Installation & Setup</span></li>
               <li><span className="text-gray-300 font-medium">AC Repair & Maintenance</span></li>
-              <li><span className="text-gray-300 font-medium">AC Trade-in Program</span></li>
-              <li><span className="text-gray-300 font-medium">Emergency AC Support</span></li>
+              <li><span className="text-gray-300 font-medium">Gas Refilling Service</span></li>
+              <li><span className="text-gray-300 font-medium">AC Cleaning & Servicing</span></li>
+              <li><span className="text-gray-300 font-medium">Premium AC Buy & Sale</span></li>
+              <li><span className="text-gray-300 font-medium">24/7 Emergency Support</span></li>
             </ul>
           </div>
 
@@ -90,7 +93,7 @@ const Footer = () => {
             <h3 className="text-xl font-bold mb-6 text-white">Contact Info</h3>
             <div className="space-y-4">
               <div className="flex items-start">
-                <Phone className="h-5 w-5 text-brand-red mt-0.5 mr-3 flex-shrink-0" />
+                <Phone className="h-5 w-5 text-brand-blue mt-0.5 mr-3 flex-shrink-0" />
                 <div>
                   <a href="tel:+923125242182" className="text-gray-300 hover:text-white transition-colors font-medium">
                     +92 312 5242182
@@ -99,13 +102,13 @@ const Footer = () => {
                 </div>
               </div>
               <div className="flex items-start">
-                <Mail className="h-5 w-5 text-brand-red mt-0.5 mr-3 flex-shrink-0" />
+                <Mail className="h-5 w-5 text-brand-blue mt-0.5 mr-3 flex-shrink-0" />
                 <a href="mailto:info@acservices.pk" className="text-gray-300 hover:text-white transition-colors font-medium">
                   info@acservices.pk
                 </a>
               </div>
               <div className="flex items-start">
-                <MapPin className="h-5 w-5 text-brand-red mt-0.5 mr-3 flex-shrink-0" />
+                <MapPin className="h-5 w-5 text-brand-blue mt-0.5 mr-3 flex-shrink-0" />
                 <div className="text-gray-300 font-medium">
                   <p>Bahria Town, Phase 8</p>
                   <p>Rawalpindi, Pakistan</p>
@@ -113,7 +116,7 @@ const Footer = () => {
                 </div>
               </div>
               <div className="flex items-start">
-                <Clock className="h-5 w-5 text-brand-red mt-0.5 mr-3 flex-shrink-0" />
+                <Clock className="h-5 w-5 text-brand-blue mt-0.5 mr-3 flex-shrink-0" />
                 <div className="text-gray-300 font-medium">
                   <p>Mon - Sat: 8:00 AM - 8:00 PM</p>
                   <p>Sunday: 9:00 AM - 6:00 PM</p>
@@ -124,7 +127,7 @@ const Footer = () => {
         </div>
 
         {/* CTA Section */}
-        <div className="border-t border-gray-700 pt-8 mb-8">
+        <div className="border-t border-gray-600 pt-8 mb-8">
           <div className="bg-gradient-to-r from-brand-blue via-purple-600 to-brand-red rounded-xl p-8 text-center relative overflow-hidden">
             <div className="absolute inset-0 bg-white/5 backdrop-blur-sm"></div>
             <div className="relative z-10">
@@ -134,8 +137,8 @@ const Footer = () => {
                   <Snowflake className="h-6 w-6 text-white animate-pulse" />
                 </div>
               </div>
-              <h3 className="text-2xl md:text-3xl font-bold mb-3 text-white">Need AC Services or Looking for Quality AC Units?</h3>
-              <p className="mb-6 text-blue-100 text-lg">Get instant quotes for AC services or explore our premium AC buy & sale collection in Islamabad & Rawalpindi</p>
+              <h3 className="text-2xl md:text-3xl font-bold mb-3 text-white">Need AC Services or Premium AC Units?</h3>
+              <p className="mb-6 text-blue-100 text-lg">Get instant quotes for AC services or explore our premium AC collection in Islamabad & Rawalpindi</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
                   size="lg" 
@@ -152,7 +155,7 @@ const Footer = () => {
                   onClick={handleExploreACs}
                 >
                   <AirVent className="mr-2 h-5 w-5" />
-                  Explore AC Buy & Sale
+                  Explore Premium ACs
                 </Button>
               </div>
             </div>
@@ -160,9 +163,9 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <div className="border-t border-gray-600 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm mb-4 md:mb-0">
-            © 2024 AC Services. All rights reserved. | Premium AC Buy & Sale Solutions in Islamabad & Rawalpindi
+            © 2024 AC Services & Repairs. All rights reserved. | Premium AC Solutions in Islamabad & Rawalpindi
           </p>
           <div className="flex space-x-6 text-sm">
             <a href="#" className="text-gray-400 hover:text-white transition-colors font-medium">Privacy Policy</a>

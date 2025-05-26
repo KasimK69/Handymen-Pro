@@ -52,7 +52,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onTabChange, onOpenSellingFor
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-5xl md:text-7xl font-bold mb-6"
+            className="text-5xl md:text-7xl font-bold mb-6 text-center"
           >
             Premium <span className="text-yellow-300">AC Buy & Sale</span>
           </motion.h1>
@@ -61,7 +61,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onTabChange, onOpenSellingFor
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-xl md:text-2xl mb-8 opacity-90 leading-relaxed"
+            className="text-xl md:text-2xl mb-8 opacity-90 leading-relaxed text-center"
           >
             Discover the best air conditioners in <strong>Islamabad & Rawalpindi</strong>. From brand new energy-efficient models to quality used units with professional installation and support.
           </motion.p>

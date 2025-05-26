@@ -39,14 +39,19 @@ const Header = () => {
       )}
     >
       <div className="w-full px-4 mx-auto flex justify-between items-center max-w-7xl">
-        <Link to="/" className="flex items-center space-x-2">
-          <div className="w-10 h-10 bg-brand-blue rounded-full flex items-center justify-center">
-            <AirVent className="h-6 w-6 text-white" />
+        <Link to="/" className="flex items-center space-x-3">
+          <div className="w-12 h-12 bg-brand-blue rounded-full flex items-center justify-center shadow-lg">
+            <AirVent className="h-7 w-7 text-white" />
           </div>
-          <span className="text-2xl font-heading font-bold text-gray-900 dark:text-white">
-            <span className="text-brand-red">AC</span>
-            <span className="text-brand-blue">Services</span>
-          </span>
+          <div className="flex flex-col">
+            <span className="text-xl font-heading font-bold text-gray-900 dark:text-white">
+              <span className="text-brand-blue">AC</span>
+              <span className="text-brand-red">Services</span>
+            </span>
+            <span className="text-xs text-gray-600 dark:text-gray-400 font-medium">
+              & Repairs
+            </span>
+          </div>
         </Link>
 
         {/* Contact Info - Desktop */}
@@ -101,14 +106,19 @@ const Header = () => {
       >
         <div className="flex flex-col h-full p-6">
           <div className="flex justify-between items-center mb-8">
-            <Link to="/" className="flex items-center space-x-2" onClick={() => setIsMobileMenuOpen(false)}>
-              <div className="w-10 h-10 bg-brand-blue rounded-full flex items-center justify-center">
-                <AirVent className="h-6 w-6 text-white" />
+            <Link to="/" className="flex items-center space-x-3" onClick={() => setIsMobileMenuOpen(false)}>
+              <div className="w-12 h-12 bg-brand-blue rounded-full flex items-center justify-center shadow-lg">
+                <AirVent className="h-7 w-7 text-white" />
               </div>
-              <span className="text-2xl font-heading font-bold text-gray-900 dark:text-white">
-                <span className="text-brand-red">AC</span>
-                <span className="text-brand-blue">Services</span>
-              </span>
+              <div className="flex flex-col">
+                <span className="text-xl font-heading font-bold text-gray-900 dark:text-white">
+                  <span className="text-brand-blue">AC</span>
+                  <span className="text-brand-red">Services</span>
+                </span>
+                <span className="text-xs text-gray-600 dark:text-gray-400 font-medium">
+                  & Repairs
+                </span>
+              </div>
             </Link>
             <Button 
               variant="ghost" 
