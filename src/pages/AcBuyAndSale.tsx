@@ -34,13 +34,13 @@ const AcBuyAndSale: React.FC = () => {
 
   const handleWhatsAppContact = (unit: ACUnit): void => {
     const phoneNumber = '+923125242182';
-    const message = `Hello, I'm interested in this AC: ${unit.name} (${formatPrice(unit.price)})`;
+    const message = `Hello! I'm interested in buying this AC: ${unit.name} (${formatPrice(unit.price)}). Can you provide more details about availability and installation?`;
     const whatsappUrl = `https://wa.me/${phoneNumber.replace('+', '')}?text=${encodeURIComponent(message)}`;
     
     window.open(whatsappUrl, '_blank');
     toast({
       title: "Opening WhatsApp",
-      description: "Connecting you with our sales team.",
+      description: "Connecting you with our AC sales team.",
     });
   };
 
@@ -114,7 +114,7 @@ const AcBuyAndSale: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen pt-20">
       <HeroSection 
         onTabChange={setSelectedTab}
         onOpenSellingForm={() => setIsSellingFormOpen(true)}

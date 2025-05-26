@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone } from 'lucide-react';
+import { Menu, X, Phone, AirVent } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -34,14 +34,18 @@ const Header = () => {
       className={cn(
         'fixed top-0 left-0 w-full z-50 transition-all duration-300',
         isScrolled 
-          ? 'bg-white dark:bg-gray-900 shadow-xl py-3 border-b border-gray-200 dark:border-gray-700' 
-          : 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm py-4'
+          ? 'bg-white dark:bg-gray-900 shadow-xl py-2 border-b border-gray-200 dark:border-gray-700' 
+          : 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm py-3'
       )}
     >
       <div className="w-full px-4 mx-auto flex justify-between items-center max-w-7xl">
-        <Link to="/" className="flex items-center">
-          <span className="text-2xl font-heading font-bold text-brand-blue">
-            <span className="text-brand-red">AC</span>Services
+        <Link to="/" className="flex items-center space-x-2">
+          <div className="w-10 h-10 bg-brand-blue rounded-full flex items-center justify-center">
+            <AirVent className="h-6 w-6 text-white" />
+          </div>
+          <span className="text-2xl font-heading font-bold text-gray-900 dark:text-white">
+            <span className="text-brand-red">AC</span>
+            <span className="text-brand-blue">Services</span>
           </span>
         </Link>
 
@@ -60,9 +64,9 @@ const Header = () => {
           <NavLink to="/ac-buy-and-sale" isActive={isActive('/ac-buy-and-sale')}>AC Buy & Sale</NavLink>
           <NavLink to="/blog" isActive={isActive('/blog')}>Blog</NavLink>
           <NavLink to="/contact" isActive={isActive('/contact')}>Contact</NavLink>
-          <Button variant="default" className="ml-4 bg-brand-red hover:bg-brand-red/90 font-semibold" asChild>
+          <Button variant="default" className="ml-4 bg-brand-red hover:bg-brand-red/90 font-semibold text-white" asChild>
             <Link to="/booking" className="flex items-center">
-              Book Now
+              Get Quote
             </Link>
           </Button>
         </nav>
@@ -97,9 +101,13 @@ const Header = () => {
       >
         <div className="flex flex-col h-full p-6">
           <div className="flex justify-between items-center mb-8">
-            <Link to="/" className="flex items-center" onClick={() => setIsMobileMenuOpen(false)}>
-              <span className="text-2xl font-heading font-bold text-brand-blue">
-                <span className="text-brand-red">AC</span>Services
+            <Link to="/" className="flex items-center space-x-2" onClick={() => setIsMobileMenuOpen(false)}>
+              <div className="w-10 h-10 bg-brand-blue rounded-full flex items-center justify-center">
+                <AirVent className="h-6 w-6 text-white" />
+              </div>
+              <span className="text-2xl font-heading font-bold text-gray-900 dark:text-white">
+                <span className="text-brand-red">AC</span>
+                <span className="text-brand-blue">Services</span>
               </span>
             </Link>
             <Button 
@@ -123,7 +131,7 @@ const Header = () => {
               className="btn-primary flex justify-center items-center mt-4 bg-brand-red hover:bg-brand-red/90 text-white py-3 px-6 rounded-lg font-semibold"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Book Now
+              Get Quote
             </Link>
           </nav>
           <div className="mt-auto pt-8">
