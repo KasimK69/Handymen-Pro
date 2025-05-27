@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -33,6 +32,7 @@ import AdminBookings from "./pages/admin/Bookings";
 import AdminCustomers from "./pages/admin/Customers";
 import AdminSmartAdport from "./pages/admin/SmartAdport";
 import AdminSettings from "./pages/admin/Settings";
+import ProductsAdmin from "./pages/admin/ProductsAdmin";
 
 import "./App.css";
 
@@ -59,6 +59,7 @@ function App() {
                   }>
                     <Route path="dashboard" element={<Dashboard />} />
                     <Route path="services" element={<AdminServices />} />
+                    <Route path="products" element={<ProductsAdmin />} />
                     <Route path="blog" element={<AdminBlog />} />
                     <Route path="media" element={<AdminMedia />} />
                     <Route path="testimonials" element={<AdminTestimonials />} />

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Star, Eye, MessageSquare, ArrowRight, Snowflake, AirVent, Info } from 'lucide-react';
+import { Star, Eye, MessageSquare, ArrowRight, Snowflake, AirVent, Info, ShoppingCart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import {
   Dialog,
@@ -34,7 +34,7 @@ interface ACUnit {
 const premiumACs: ACUnit[] = [
   {
     id: '1',
-    name: 'Pro Inverter AC - 1.5 Ton',
+    name: 'Samsung Pro Inverter AC - 1.5 Ton',
     brand: 'Samsung',
     price: 135000,
     originalPrice: 150000,
@@ -47,7 +47,7 @@ const premiumACs: ACUnit[] = [
   },
   {
     id: '2',
-    name: 'Eco Inverter AC - 1 Ton',
+    name: 'LG Eco Inverter AC - 1 Ton',
     brand: 'LG',
     price: 115000,
     rating: 4.7,
@@ -58,7 +58,7 @@ const premiumACs: ACUnit[] = [
   },
   {
     id: '3',
-    name: 'Ultra Cool AC - 2 Ton',
+    name: 'Haier Ultra Cool AC - 2 Ton',
     brand: 'Haier',
     price: 175000,
     originalPrice: 190000,
@@ -71,7 +71,7 @@ const premiumACs: ACUnit[] = [
   },
   {
     id: '4',
-    name: 'Standard AC - 1.5 Ton',
+    name: 'Gree Standard AC - 1.5 Ton',
     brand: 'Gree',
     price: 95000,
     rating: 4.5,
@@ -95,6 +95,16 @@ const PremiumACSection = () => {
 
   const handleWhatsAppInquiry = (ac: ACUnit) => {
     const message = `Hi! I'm interested in the ${ac.name} (${ac.brand}) priced at ${formatPrice(ac.price)}. Can you provide more details and availability?`;
+    const whatsappUrl = `https://wa.me/923125242182?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
+  const handleBuyNow = (ac: ACUnit) => {
+    const message = `I want to buy: ${ac.name} (${ac.brand})
+Price: ${formatPrice(ac.price)}
+Features: ${ac.features.join(', ')}
+
+Please confirm availability and arrange delivery.`;
     const whatsappUrl = `https://wa.me/923125242182?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
@@ -140,21 +150,24 @@ Please contact me with more details.`;
 
   return (
     <>
-      <section className="py-20 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+      <section className="py-24 bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:to-gray-800">
         <div className="container mx-auto px-4">
           {/* Header */}
-          <div className="text-center mb-16">
+          <div className="text-center mb-20">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="flex items-center justify-center mb-6"
+              className="flex items-center justify-center mb-8"
             >
-              <div className="flex items-center space-x-3">
-                <div className="p-3 bg-brand-blue/10 rounded-full">
-                  <AirVent className="h-8 w-8 text-brand-blue" />
+              <div className="flex items-center space-x-4">
+                <div className="p-4 bg-gradient-to-r from-brand-blue to-brand-red rounded-full shadow-lg">
+                  <AirVent className="h-12 w-12 text-white" />
                 </div>
-                <Snowflake className="h-6 w-6 text-brand-red animate-spin" style={{ animationDuration: '3s' }} />
+                <div className="text-5xl font-bold text-brand-blue">+</div>
+                <div className="p-4 bg-gradient-to-r from-brand-red to-orange-500 rounded-full shadow-lg">
+                  <ShoppingCart className="h-12 w-12 text-white" />
+                </div>
               </div>
             </motion.div>
             
@@ -162,43 +175,23 @@ Please contact me with more details.`;
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 text-center"
+              className="text-5xl md:text-7xl font-bold text-gray-900 dark:text-white mb-8"
             >
-              Premium <span className="text-brand-blue">AC Buy & Sale</span>
+              Premium <span className="bg-gradient-to-r from-brand-blue to-brand-red bg-clip-text text-transparent">AC Buy & Sale</span>
             </motion.h2>
             
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-8 text-center"
+              className="text-2xl text-gray-600 dark:text-gray-400 max-w-4xl mx-auto mb-12"
             >
-              Discover our curated collection of premium air conditioners. From brand new energy-efficient models to well-maintained used units, find the perfect AC for your space.
+              Discover our curated collection of premium air conditioners. From brand new energy-efficient models to well-maintained used units.
             </motion.p>
-            
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center"
-            >
-              <Button asChild size="lg" className="bg-brand-blue hover:bg-brand-blue/90 text-white">
-                <Link to="/ac-buy-and-sale">
-                  <Eye className="mr-2 h-5 w-5" />
-                  Browse All ACs
-                </Link>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="border-brand-red text-brand-red hover:bg-brand-red hover:text-white">
-                <Link to="/contact">
-                  <MessageSquare className="mr-2 h-5 w-5" />
-                  Sell Your AC
-                </Link>
-              </Button>
-            </motion.div>
           </div>
 
           {/* Featured AC Units */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
             {premiumACs.map((ac, index) => (
               <motion.div
                 key={ac.id}
@@ -206,76 +199,75 @@ Please contact me with more details.`;
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 * index }}
               >
-                <Card className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg overflow-hidden">
+                <Card className="group hover:shadow-2xl transition-all duration-500 border-0 shadow-lg overflow-hidden bg-white dark:bg-gray-800 hover:scale-105">
                   <div className="relative overflow-hidden">
                     <img 
                       src={ac.image} 
                       alt={ac.name}
-                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                     {ac.discount && (
-                      <Badge className="absolute top-3 left-3 bg-brand-red text-white">
+                      <Badge className="absolute top-4 left-4 bg-red-500 text-white text-lg px-3 py-1">
                         {ac.discount}% OFF
                       </Badge>
                     )}
-                    <Badge className={`absolute top-3 right-3 ${ac.condition === 'new' ? 'bg-green-500' : 'bg-amber-500'} text-white`}>
+                    <Badge className={`absolute top-4 right-4 text-white text-sm px-3 py-1 ${ac.condition === 'new' ? 'bg-green-500' : 'bg-amber-500'}`}>
                       {ac.condition === 'new' ? 'New' : 'Used'}
                     </Badge>
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
-                      <Eye className="h-8 w-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
                   
                   <CardContent className="p-6">
-                    <div className="mb-4">
-                      <Badge variant="outline" className="mb-2 text-brand-blue border-brand-blue">
+                    <div className="mb-6">
+                      <Badge variant="outline" className="mb-3 text-brand-blue border-brand-blue text-sm px-3 py-1">
                         {ac.brand}
                       </Badge>
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2">
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 line-clamp-2">
                         {ac.name}
                       </h3>
-                      <div className="flex items-center mb-3">
+                      <div className="flex items-center mb-4">
                         {[...Array(5)].map((_, i) => (
                           <Star 
                             key={i} 
-                            className={`h-4 w-4 ${i < Math.floor(ac.rating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
+                            className={`h-5 w-5 ${i < Math.floor(ac.rating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
                           />
                         ))}
-                        <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">{ac.rating}</span>
+                        <span className="ml-2 text-sm font-semibold text-gray-600 dark:text-gray-400">{ac.rating}</span>
                       </div>
-                      <div className="mb-3">
+                      <div className="mb-4">
                         {ac.originalPrice ? (
                           <div>
-                            <span className="text-2xl font-bold text-brand-blue">{formatPrice(ac.price)}</span>
-                            <span className="ml-2 text-sm text-gray-500 line-through">{formatPrice(ac.originalPrice)}</span>
+                            <span className="text-3xl font-bold text-brand-blue">{formatPrice(ac.price)}</span>
+                            <span className="ml-2 text-lg text-gray-500 line-through">{formatPrice(ac.originalPrice)}</span>
                           </div>
                         ) : (
-                          <span className="text-2xl font-bold text-brand-blue">{formatPrice(ac.price)}</span>
+                          <span className="text-3xl font-bold text-brand-blue">{formatPrice(ac.price)}</span>
                         )}
                       </div>
-                      <div className="space-y-1 mb-4">
+                      <div className="space-y-2 mb-6">
                         {ac.features.slice(0, 2).map((feature, idx) => (
-                          <div key={idx} className="text-xs text-gray-600 dark:text-gray-400">
-                            • {feature}
+                          <div key={idx} className="text-sm text-gray-600 dark:text-gray-400 flex items-center">
+                            <div className="w-2 h-2 bg-brand-blue rounded-full mr-2"></div>
+                            {feature}
                           </div>
                         ))}
                       </div>
                     </div>
                     
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       <Button 
-                        className="w-full bg-green-600 hover:bg-green-700 text-white"
-                        onClick={() => handleWhatsAppInquiry(ac)}
+                        className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-3 text-lg font-semibold shadow-lg"
+                        onClick={() => handleBuyNow(ac)}
                       >
-                        <MessageSquare className="mr-2 h-4 w-4" />
-                        WhatsApp Us
+                        <ShoppingCart className="mr-2 h-5 w-5" />
+                        Buy Now
                       </Button>
                       <Button 
                         variant="outline" 
-                        className="w-full border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white"
+                        className="w-full border-2 border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white py-3 text-lg font-semibold"
                         onClick={() => handleGetMoreInfo(ac)}
                       >
-                        <Info className="mr-2 h-4 w-4" />
+                        <Info className="mr-2 h-5 w-5" />
                         Get More Info
                       </Button>
                     </div>
@@ -292,18 +284,18 @@ Please contact me with more details.`;
             transition={{ duration: 0.6, delay: 0.8 }}
             className="text-center"
           >
-            <div className="bg-gradient-to-r from-brand-blue to-brand-red rounded-2xl p-8 text-white">
-              <h3 className="text-2xl md:text-3xl font-bold mb-4 text-center">
+            <div className="bg-gradient-to-r from-brand-blue via-purple-600 to-brand-red rounded-3xl p-12 text-white shadow-2xl">
+              <h3 className="text-4xl md:text-5xl font-bold mb-6">
                 Looking for More Options?
               </h3>
-              <p className="text-lg mb-6 opacity-90 text-center">
+              <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
                 Explore our complete collection of premium air conditioners with detailed specifications and expert recommendations.
               </p>
               <div className="flex justify-center">
-                <Button asChild size="lg" className="bg-white text-brand-blue hover:bg-gray-100">
+                <Button asChild size="lg" className="bg-white text-brand-blue hover:bg-gray-100 py-4 px-8 text-xl font-bold shadow-lg">
                   <Link to="/ac-buy-and-sale">
                     View Complete AC Collection
-                    <ArrowRight className="ml-2 h-5 w-5" />
+                    <ArrowRight className="ml-3 h-6 w-6" />
                   </Link>
                 </Button>
               </div>
@@ -316,41 +308,44 @@ Please contact me with more details.`;
       <Dialog open={isInfoModalOpen} onOpenChange={setIsInfoModalOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Get AC Information</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-2xl font-bold">Get AC Information</DialogTitle>
+            <DialogDescription className="text-lg">
               Please provide your contact details to receive detailed information about the {selectedAC?.name}.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div>
-              <Label htmlFor="name">Name *</Label>
+              <Label htmlFor="name" className="text-lg font-semibold">Name *</Label>
               <Input
                 id="name"
                 value={userInfo.name}
                 onChange={(e) => setUserInfo(prev => ({ ...prev, name: e.target.value }))}
                 placeholder="Your full name"
+                className="mt-2 py-3"
               />
             </div>
             <div>
-              <Label htmlFor="phone">Phone Number *</Label>
+              <Label htmlFor="phone" className="text-lg font-semibold">Phone Number *</Label>
               <Input
                 id="phone"
                 value={userInfo.phone}
                 onChange={(e) => setUserInfo(prev => ({ ...prev, phone: e.target.value }))}
                 placeholder="+92 xxx xxxxxxx"
+                className="mt-2 py-3"
               />
             </div>
             <div>
-              <Label htmlFor="email">Email (Optional)</Label>
+              <Label htmlFor="email" className="text-lg font-semibold">Email (Optional)</Label>
               <Input
                 id="email"
                 type="email"
                 value={userInfo.email}
                 onChange={(e) => setUserInfo(prev => ({ ...prev, email: e.target.value }))}
                 placeholder="your@email.com"
+                className="mt-2 py-3"
               />
             </div>
-            <Button onClick={handleSubmitInfo} className="w-full bg-brand-blue hover:bg-brand-blue/90">
+            <Button onClick={handleSubmitInfo} className="w-full bg-brand-blue hover:bg-brand-blue/90 py-4 text-lg font-semibold">
               Send My Information
             </Button>
           </div>
