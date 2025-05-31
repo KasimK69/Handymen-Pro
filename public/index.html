@@ -11,6 +11,46 @@
     <meta property="og:description" content="Professional AC services & repairs with premium AC buy & sale. Expert installation in Islamabad & Rawalpindi." />
     <meta property="og:type" content="website" />
     <meta name="keywords" content="AC services Islamabad, air conditioner Pakistan, AC repair Rawalpindi, AC installation, premium AC units, AC buy sale" />
+    
+    <!-- SPA redirect script for handling client-side routing on Vercel -->
+    <script>
+      // This script handles SPA routing for direct URL access
+      (function() {
+        // Check if we're coming from a redirect
+        const url = window.location.href;
+        const hasRedirectParam = url.includes('?/') || url.includes('&/') || url.includes('?p=/');
+        
+        if (hasRedirectParam) {
+          // Extract the path from the URL
+          let path = '';
+          if (url.includes('?/')) {
+            path = url.split('?/')[1].split('&')[0];
+          } else if (url.includes('&/')) {
+            path = url.split('&/')[1].split('&')[0];
+          } else if (url.includes('?p=/')) {
+            path = url.split('?p=/')[1].split('&')[0];
+          }
+          
+          // Replace encoded characters
+          path = path.replace(/~and~/g, '&');
+          
+          // Store the path for the app to use after loading
+          sessionStorage.setItem('redirectPath', '/' + path);
+          
+          // Clean up the URL
+          window.history.replaceState(null, null, '/' + path);
+        }
+        
+        // Store the current path if we're not on the home page
+        if (window.location.pathname !== '/' && 
+            window.location.pathname !== '/index.html' && 
+            !window.location.pathname.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|json)$/)) {
+          
+          // Store the current URL path for after the app loads
+          sessionStorage.setItem('redirectPath', window.location.pathname);
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

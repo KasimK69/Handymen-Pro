@@ -1,0 +1,5 @@
+{
+  "version": 2,
+  "regions": ["iad1"],
+  "matcher": ["/((?!api/|_next/|_static/|_vercel|[\\w-]+\\.\\w+).*)"]
+}
