@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import { CartProvider } from "@/context/CartContext";
 import { AdminAuthProvider } from "@/context/AdminAuthContext";
 import Header from "@/components/Header";
@@ -33,10 +33,33 @@ import AdminCustomers from "./pages/admin/Customers";
 import AdminSmartAdport from "./pages/admin/SmartAdport";
 import AdminSettings from "./pages/admin/Settings";
 import ProductsAdmin from "./pages/admin/ProductsAdmin";
+import { useEffect, useState } from "react";
 
 import "./App.css";
 
 const queryClient = new QueryClient();
+
+// Component to handle redirects from WhatsApp or direct URL access
+const RedirectHandler = () => {
+  const navigate = useNavigate();
+  const [hasRedirected, setHasRedirected] = useState(false);
+
+  useEffect(() => {
+    // Check if there's a stored redirect path
+    const redirectPath = sessionStorage.getItem('redirectPath');
+    
+    if (redirectPath && !hasRedirected) {
+      // Clear the stored path
+      sessionStorage.removeItem('redirectPath');
+      // Set flag to prevent infinite redirects
+      setHasRedirected(true);
+      // Navigate to the stored path
+      navigate(redirectPath, { replace: true });
+    }
+  }, [navigate, hasRedirected]);
+
+  return null;
+};
 
 function App() {
   return (
@@ -46,6 +69,9 @@ function App() {
           <Toaster />
           <BrowserRouter>
             <AdminAuthProvider>
+              {/* Handle redirects from WhatsApp or direct URL access */}
+              <RedirectHandler />
+              
               <div className="min-h-screen bg-background flex flex-col w-full">
                 <ScrollToTop />
                 
