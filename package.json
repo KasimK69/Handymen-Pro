@@ -9,7 +9,7 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "vercel-build": "vite build && cp dist/index.html dist/404.html"
+    "vercel-build": "vite build && node vercel-build.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
