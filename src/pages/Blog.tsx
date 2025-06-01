@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -30,8 +29,8 @@ interface BlogPost {
 
 const Blog = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedTag, setSelectedTag] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedTag, setSelectedTag] = useState('all');
 
   const blogPosts: BlogPost[] = [
     {
@@ -120,8 +119,8 @@ const Blog = () => {
   const filteredPosts = blogPosts.filter(post => {
     const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          post.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = !selectedCategory || post.category === selectedCategory;
-    const matchesTag = !selectedTag || post.tags.includes(selectedTag);
+    const matchesCategory = selectedCategory === 'all' || post.category === selectedCategory;
+    const matchesTag = selectedTag === 'all' || post.tags.includes(selectedTag);
     
     return matchesSearch && matchesCategory && matchesTag;
   });
@@ -179,7 +178,7 @@ const Blog = () => {
                   <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Categories</SelectItem>
+                  <SelectItem value="all">All Categories</SelectItem>
                   {categories.map(category => (
                     <SelectItem key={category} value={category}>{category}</SelectItem>
                   ))}
@@ -190,7 +189,7 @@ const Blog = () => {
                   <SelectValue placeholder="All Tags" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Tags</SelectItem>
+                  <SelectItem value="all">All Tags</SelectItem>
                   {allTags.map(tag => (
                     <SelectItem key={tag} value={tag}>{tag}</SelectItem>
                   ))}
@@ -200,8 +199,8 @@ const Blog = () => {
                 variant="outline" 
                 onClick={() => {
                   setSearchTerm('');
-                  setSelectedCategory('');
-                  setSelectedTag('');
+                  setSelectedCategory('all');
+                  setSelectedTag('all');
                 }}
                 className="py-3 border-gray-200 hover:bg-gray-50"
               >
@@ -362,8 +361,8 @@ const Blog = () => {
               <Button 
                 onClick={() => {
                   setSearchTerm('');
-                  setSelectedCategory('');
-                  setSelectedTag('');
+                  setSelectedCategory('all');
+                  setSelectedTag('all');
                 }}
                 className="bg-gradient-to-r from-[#8843F2] to-[#FF467E] hover:from-[#7335E8] hover:to-[#F03A6E]"
               >
