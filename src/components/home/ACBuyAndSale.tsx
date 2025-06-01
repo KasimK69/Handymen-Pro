@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Star, Eye, MessageSquare, ArrowRight, Snowflake, AirVent } from 'lucide-react';
+import { Star, Eye, MessageSquare, ArrowRight, AirVent, ShoppingCart, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface ACUnit {
@@ -18,34 +18,40 @@ interface ACUnit {
   condition: 'new' | 'used';
   features: string[];
   discount?: number;
+  tonnage: string;
+  energyRating: string;
 }
 
 const featuredACs: ACUnit[] = [
   {
     id: '1',
-    name: 'Pro Inverter AC - 1.5 Ton',
+    name: 'Inverter Split AC',
     brand: 'Samsung',
     price: 135000,
     originalPrice: 150000,
-    rating: 4.8,
+    rating: 4.9,
     image: 'https://images.unsplash.com/photo-1625961332071-f1673bcbcda4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
     condition: 'new',
-    features: ['Energy Efficient', 'Smart Control', 'Fast Cooling', '5 Year Warranty'],
-    discount: 10
+    features: ['Energy Efficient', 'Smart WiFi Control', 'Fast Cooling', '5 Year Warranty'],
+    discount: 10,
+    tonnage: '1.5 Ton',
+    energyRating: '5 Star'
   },
   {
     id: '2',
-    name: 'Eco Inverter AC - 1 Ton',
+    name: 'Eco Inverter AC',
     brand: 'LG',
     price: 115000,
-    rating: 4.7,
+    rating: 4.8,
     image: 'https://images.unsplash.com/photo-1580595999172-787970a962d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
     condition: 'new',
-    features: ['Low Power Consumption', 'Dual Protection', 'WiFi Enabled', '3 Year Warranty']
+    features: ['Low Power Consumption', 'Dual Protection', 'WiFi Enabled', '3 Year Warranty'],
+    tonnage: '1 Ton',
+    energyRating: '4 Star'
   },
   {
     id: '3',
-    name: 'Ultra Cool AC - 2 Ton',
+    name: 'Ultra Cool AC',
     brand: 'Haier',
     price: 175000,
     originalPrice: 190000,
@@ -53,17 +59,21 @@ const featuredACs: ACUnit[] = [
     image: 'https://images.unsplash.com/photo-1581275326027-70a6b944649a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
     condition: 'new',
     features: ['Heavy Duty Cooling', 'Turbo Mode', 'Self Cleaning', '7 Year Warranty'],
-    discount: 8
+    discount: 8,
+    tonnage: '2 Ton',
+    energyRating: '5 Star'
   },
   {
     id: '4',
-    name: 'Standard AC - 1.5 Ton',
+    name: 'Standard Window AC',
     brand: 'Gree',
     price: 95000,
-    rating: 4.5,
+    rating: 4.6,
     image: 'https://images.unsplash.com/photo-1563351672-62b74891a28a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
     condition: 'used',
-    features: ['Good Condition', 'Regular Service Done', 'Affordable Price', '1 Year Warranty']
+    features: ['Good Condition', 'Regular Service Done', 'Affordable Price', '1 Year Warranty'],
+    tonnage: '1.5 Ton',
+    energyRating: '3 Star'
   }
 ];
 
@@ -71,149 +81,211 @@ const ACBuyAndSale = () => {
   const formatPrice = (price: number) => `PKR ${price.toLocaleString()}`;
 
   const handleWhatsAppInquiry = (ac: ACUnit) => {
-    const message = `Hi! I'm interested in the ${ac.name} (${ac.brand}) priced at ${formatPrice(ac.price)}. Can you provide more details?`;
+    const message = `Hi! I'm interested in buying this AC:
+
+🔸 Model: ${ac.name} (${ac.brand})
+🔸 Tonnage: ${ac.tonnage}
+🔸 Price: ${formatPrice(ac.price)}
+🔸 Condition: ${ac.condition === 'new' ? 'Brand New' : 'Used'}
+🔸 Energy Rating: ${ac.energyRating}
+
+Key Features:
+${ac.features.map(feature => `• ${feature}`).join('\n')}
+
+Please provide more details and confirm availability. Thank you!`;
+    
     const whatsappUrl = `https://wa.me/923125242182?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
   return (
-    <section className="py-20 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
-      <div className="container mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="flex items-center justify-center mb-6"
-          >
-            <div className="flex items-center space-x-3">
-              <div className="p-3 bg-brand-blue/10 rounded-full">
-                <AirVent className="h-8 w-8 text-brand-blue" />
-              </div>
-              <Snowflake className="h-6 w-6 text-brand-red animate-spin" style={{ animationDuration: '3s' }} />
-            </div>
-          </motion.div>
+    <section className="py-20 bg-gradient-to-br from-gray-50 via-blue-50/30 to-white relative overflow-hidden">
+      {/* Background Animation */}
+      <div className="absolute inset-0 opacity-5">
+        <motion.div 
+          className="absolute top-20 left-10"
+          animate={{ 
+            rotate: 360,
+            scale: [1, 1.1, 1]
+          }}
+          transition={{ 
+            rotate: { duration: 30, repeat: Infinity, ease: "linear" },
+            scale: { duration: 6, repeat: Infinity, ease: "easeInOut" }
+          }}
+        >
+          <AirVent className="h-32 w-32 text-blue-600" />
+        </motion.div>
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-16"
+        >
+          <div className="flex items-center justify-center mb-6">
+            <motion.div
+              whileHover={{ scale: 1.1, rotate: 10 }}
+              className="p-4 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full shadow-xl"
+            >
+              <AirVent className="h-10 w-10 text-white" />
+            </motion.div>
+          </div>
           
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6"
-          >
-            Premium <span className="text-brand-blue">AC Buy & Sale</span>
-          </motion.h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            Premium <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-800">AC Buy & Sale</span>
+          </h2>
           
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-8"
-          >
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8 leading-relaxed">
             Discover our curated collection of premium air conditioners. From brand new energy-efficient models to well-maintained used units, find the perfect AC for your space.
-          </motion.p>
+          </p>
           
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-          >
-            <Button asChild size="lg" className="bg-brand-blue hover:bg-brand-blue/90 text-white">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild size="lg" className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white shadow-lg group">
               <Link to="/ac-buy-and-sale">
-                <Eye className="mr-2 h-5 w-5" />
+                <Eye className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
                 Browse All ACs
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="border-brand-red text-brand-red hover:bg-brand-red hover:text-white">
+            <Button asChild variant="outline" size="lg" className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white group">
               <Link to="/contact">
-                <MessageSquare className="mr-2 h-5 w-5" />
+                <MessageSquare className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
                 Sell Your AC
               </Link>
             </Button>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
 
-        {/* Featured AC Units */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        {/* Featured AC Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
           {featuredACs.map((ac, index) => (
             <motion.div
               key={ac.id}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 * index }}
+              transition={{ 
+                duration: 0.6, 
+                delay: 0.2 * index,
+                type: "spring",
+                stiffness: 100
+              }}
+              whileHover={{ y: -10 }}
+              className="group"
             >
-              <Card className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg overflow-hidden">
-                <div className="relative overflow-hidden">
+              <Card className="overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 bg-white/80 backdrop-blur-sm">
+                <div className="relative overflow-hidden h-48">
                   <img 
                     src={ac.image} 
                     alt={ac.name}
-                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   />
-                  {ac.discount && (
-                    <Badge className="absolute top-3 left-3 bg-brand-red text-white">
-                      {ac.discount}% OFF
+                  
+                  {/* Overlays */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  
+                  {/* Badges */}
+                  <div className="absolute top-3 left-3 flex flex-col gap-2">
+                    {ac.discount && (
+                      <Badge className="bg-red-500 hover:bg-red-600 text-white font-semibold">
+                        {ac.discount}% OFF
+                      </Badge>
+                    )}
+                    <Badge className={`font-semibold ${ac.condition === 'new' ? 'bg-green-500 hover:bg-green-600' : 'bg-orange-500 hover:bg-orange-600'} text-white`}>
+                      {ac.condition === 'new' ? 'Brand New' : 'Used'}
                     </Badge>
-                  )}
-                  <Badge className={`absolute top-3 right-3 ${ac.condition === 'new' ? 'bg-green-500' : 'bg-amber-500'} text-white`}>
-                    {ac.condition === 'new' ? 'New' : 'Used'}
-                  </Badge>
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
-                    <Eye className="h-8 w-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  </div>
+                  
+                  <div className="absolute top-3 right-3">
+                    <Badge variant="outline" className="bg-white/90 text-blue-700 border-blue-200 font-semibold">
+                      {ac.brand}
+                    </Badge>
+                  </div>
+
+                  {/* Quick View Button */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <Button 
+                      className="bg-white/20 backdrop-blur-md text-white border border-white/30 hover:bg-white/30"
+                      onClick={() => handleWhatsAppInquiry(ac)}
+                    >
+                      <Eye className="h-4 w-4 mr-2" />
+                      Quick View
+                    </Button>
                   </div>
                 </div>
                 
                 <CardContent className="p-6">
                   <div className="mb-4">
-                    <Badge variant="outline" className="mb-2 text-brand-blue border-brand-blue">
-                      {ac.brand}
-                    </Badge>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2">
+                    <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-1 group-hover:text-blue-600 transition-colors">
                       {ac.name}
                     </h3>
+                    
+                    {/* Rating */}
                     <div className="flex items-center mb-3">
-                      {[...Array(5)].map((_, i) => (
-                        <Star 
-                          key={i} 
-                          className={`h-4 w-4 ${i < Math.floor(ac.rating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
-                        />
-                      ))}
-                      <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">{ac.rating}</span>
+                      <div className="flex mr-2">
+                        {[...Array(5)].map((_, i) => (
+                          <Star 
+                            key={i} 
+                            className={`h-4 w-4 ${i < Math.floor(ac.rating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-sm font-medium text-gray-600">{ac.rating}</span>
                     </div>
-                    <div className="mb-3">
+
+                    {/* Specifications */}
+                    <div className="flex items-center gap-4 mb-3 text-sm text-gray-600">
+                      <div className="flex items-center">
+                        <Zap className="h-3 w-3 mr-1 text-green-600" />
+                        {ac.energyRating}
+                      </div>
+                      <div className="flex items-center">
+                        <AirVent className="h-3 w-3 mr-1 text-blue-600" />
+                        {ac.tonnage}
+                      </div>
+                    </div>
+                    
+                    {/* Price */}
+                    <div className="mb-4">
                       {ac.originalPrice ? (
-                        <div>
-                          <span className="text-2xl font-bold text-brand-blue">{formatPrice(ac.price)}</span>
-                          <span className="ml-2 text-sm text-gray-500 line-through">{formatPrice(ac.originalPrice)}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-2xl font-bold text-blue-600">{formatPrice(ac.price)}</span>
+                          <span className="text-sm text-gray-500 line-through">{formatPrice(ac.originalPrice)}</span>
                         </div>
                       ) : (
-                        <span className="text-2xl font-bold text-brand-blue">{formatPrice(ac.price)}</span>
+                        <span className="text-2xl font-bold text-blue-600">{formatPrice(ac.price)}</span>
                       )}
                     </div>
+                    
+                    {/* Features */}
                     <div className="space-y-1 mb-4">
                       {ac.features.slice(0, 2).map((feature, idx) => (
-                        <div key={idx} className="text-xs text-gray-600 dark:text-gray-400">
-                          • {feature}
+                        <div key={idx} className="text-xs text-gray-600 flex items-center">
+                          <div className="w-1.5 h-1.5 bg-blue-600 rounded-full mr-2"></div>
+                          {feature}
                         </div>
                       ))}
                     </div>
                   </div>
                   
+                  {/* Action Buttons */}
                   <div className="space-y-2">
                     <Button 
-                      className="w-full bg-green-600 hover:bg-green-700 text-white"
+                      className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white group"
                       onClick={() => handleWhatsAppInquiry(ac)}
                     >
-                      <MessageSquare className="mr-2 h-4 w-4" />
+                      <ShoppingCart className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform" />
                       Buy This AC
                     </Button>
                     <Button 
                       variant="outline" 
-                      className="w-full border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-white"
+                      className="w-full border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white group"
                       asChild
                     >
                       <Link to={`/ac-buy-and-sale?ac=${ac.id}`}>
-                        Get AC Information
+                        <MessageSquare className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform" />
+                        Get Details
                       </Link>
                     </Button>
                   </div>
@@ -223,26 +295,46 @@ const ACBuyAndSale = () => {
           ))}
         </div>
 
-        {/* Call to Action */}
+        {/* Call to Action Section */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
+          transition={{ duration: 0.8, delay: 1 }}
           className="text-center"
         >
-          <div className="bg-gradient-to-r from-brand-blue to-brand-red rounded-2xl p-8 text-white">
-            <h3 className="text-2xl md:text-3xl font-bold mb-4">
-              Looking for More Options?
-            </h3>
-            <p className="text-lg mb-6 opacity-90">
-              Explore our complete collection of premium air conditioners with detailed specifications and expert recommendations.
-            </p>
-            <Button asChild size="lg" className="bg-white text-brand-blue hover:bg-gray-100">
-              <Link to="/ac-buy-and-sale">
-                View Complete AC Collection
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
+          <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 rounded-3xl p-8 md:p-12 text-white relative overflow-hidden">
+            {/* Background Effects */}
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-transparent"></div>
+            <motion.div 
+              className="absolute -top-6 -right-6 w-32 h-32 bg-white/10 rounded-full"
+              animate={{ 
+                scale: [1, 1.2, 1],
+                rotate: 360 
+              }}
+              transition={{ 
+                scale: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+                rotate: { duration: 20, repeat: Infinity, ease: "linear" }
+              }}
+            />
+            
+            <div className="relative z-10">
+              <h3 className="text-3xl md:text-4xl font-bold mb-4">
+                Looking for More Options?
+              </h3>
+              <p className="text-lg md:text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+                Explore our complete collection of premium air conditioners with detailed specifications, expert reviews, and unbeatable prices.
+              </p>
+              <Button 
+                asChild 
+                size="lg" 
+                className="bg-white text-blue-600 hover:bg-gray-100 font-semibold text-lg px-8 py-3 group"
+              >
+                <Link to="/ac-buy-and-sale">
+                  View Complete AC Collection
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </Button>
+            </div>
           </div>
         </motion.div>
       </div>

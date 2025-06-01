@@ -1,9 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, AirVent } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Menu, Phone, Mail, AirVent, Snowflake } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -12,190 +13,193 @@ const Header = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 10) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 50);
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const isActive = (path: string) => location.pathname === path;
+  const navItems = [
+    { name: 'Home', path: '/' },
+    { name: 'AC Services', path: '/services' },
+    { name: 'AC Buy & Sale', path: '/ac-buy-and-sale' },
+    { name: 'Blog', path: '/blog' },
+    { name: 'Contact', path: '/contact' },
+  ];
 
   return (
-    <header 
-      className={cn(
-        'fixed top-0 left-0 w-full z-50 transition-all duration-300',
-        isScrolled 
-          ? 'bg-white dark:bg-gray-900 shadow-2xl py-2 border-b border-gray-200 dark:border-gray-700' 
-          : 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg py-3'
-      )}
-    >
-      <div className="w-full px-4 mx-auto flex justify-between items-center max-w-7xl">
-        <Link to="/" className="flex items-center space-x-3">
-          <div className="w-14 h-14 bg-gradient-to-r from-brand-blue to-brand-red rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow">
-            <AirVent className="h-8 w-8 text-white" />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-2xl font-heading font-bold text-gray-900 dark:text-white">
-              <span className="text-brand-blue">AC</span>
-              <span className="text-brand-red">Services</span>
-            </span>
-            <span className="text-sm text-gray-600 dark:text-gray-400 font-semibold">
-              & Repairs
-            </span>
-          </div>
-        </Link>
-
-        {/* Contact Info - Desktop */}
-        <div className="hidden md:flex items-center">
-          <a href="tel:+923125242182" className="mr-8 flex items-center text-gray-800 dark:text-gray-200 hover:text-brand-red transition-colors font-semibold text-lg">
-            <div className="p-2 bg-brand-red/10 rounded-full mr-3">
-              <Phone className="h-5 w-5 text-brand-red" />
-            </div>
-            <span className="font-bold">+92 312 5242182</span>
-          </a>
-        </div>
-
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-2">
-          <NavLink to="/" isActive={isActive('/')}>Home</NavLink>
-          <NavLink to="/services" isActive={isActive('/services')}>AC Services</NavLink>
-          <NavLink to="/ac-buy-and-sale" isActive={isActive('/ac-buy-and-sale')}>AC Buy & Sale</NavLink>
-          <NavLink to="/blog" isActive={isActive('/blog')}>Blog</NavLink>
-          <NavLink to="/contact" isActive={isActive('/contact')}>Contact</NavLink>
-          <Button variant="default" className="ml-4 bg-gradient-to-r from-brand-red to-red-600 hover:from-brand-red/90 hover:to-red-600/90 font-bold text-white shadow-lg hover:shadow-xl transition-all px-6 py-2" asChild>
-            <Link to="/booking" className="flex items-center">
-              Get Quote
-            </Link>
-          </Button>
-        </nav>
-
-        {/* Mobile Menu Button */}
-        <div className="flex items-center md:hidden">
-          <a href="tel:+923125242182" className="mr-4 p-3 rounded-full bg-brand-red/10 text-brand-red hover:bg-brand-red hover:text-white transition-all">
-            <Phone className="h-6 w-6" />
-          </a>
-          <Button 
-            variant="ghost" 
-            size="icon"
-            onClick={toggleMobileMenu}
-            aria-label="Toggle Menu"
-            className="text-gray-800 dark:text-gray-200 p-3"
-          >
-            {isMobileMenuOpen ? (
-              <X className="h-7 w-7" />
-            ) : (
-              <Menu className="h-7 w-7" />
-            )}
-          </Button>
-        </div>
-      </div>
-
-      {/* Mobile Navigation */}
-      <div 
-        className={cn(
-          "fixed inset-0 bg-white dark:bg-gray-900 z-40 transform transition-transform duration-300 ease-in-out md:hidden",
-          isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
-        )}
+    <>
+      <motion.header 
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          isScrolled 
+            ? 'bg-white/95 backdrop-blur-md shadow-lg' 
+            : 'bg-white/90 backdrop-blur-sm'
+        }`}
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.6 }}
       >
-        <div className="flex flex-col h-full p-6">
-          <div className="flex justify-between items-center mb-8">
-            <Link to="/" className="flex items-center space-x-3" onClick={() => setIsMobileMenuOpen(false)}>
-              <div className="w-14 h-14 bg-gradient-to-r from-brand-blue to-brand-red rounded-full flex items-center justify-center shadow-lg">
-                <AirVent className="h-8 w-8 text-white" />
+        {/* Top Contact Bar */}
+        <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-2 px-4">
+          <div className="container mx-auto flex justify-between items-center text-sm">
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-1">
+                <Phone className="h-3 w-3" />
+                <span>+92 312 5242182</span>
               </div>
-              <div className="flex flex-col">
-                <span className="text-2xl font-heading font-bold text-gray-900 dark:text-white">
-                  <span className="text-brand-blue">AC</span>
-                  <span className="text-brand-red">Services</span>
-                </span>
-                <span className="text-sm text-gray-600 dark:text-gray-400 font-semibold">
-                  & Repairs
-                </span>
+              <div className="hidden md:flex items-center space-x-1">
+                <Mail className="h-3 w-3" />
+                <span>info@acservices.pk</span>
               </div>
-            </Link>
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={toggleMobileMenu}
-              aria-label="Close Menu"
-              className="text-gray-800 dark:text-gray-200 p-3"
-            >
-              <X className="h-7 w-7" />
-            </Button>
-          </div>
-          <nav className="flex flex-col space-y-6">
-            <MobileNavLink to="/" onClick={() => setIsMobileMenuOpen(false)} isActive={isActive('/')}>Home</MobileNavLink>
-            <MobileNavLink to="/services" onClick={() => setIsMobileMenuOpen(false)} isActive={isActive('/services')}>AC Services</MobileNavLink>
-            <MobileNavLink to="/ac-buy-and-sale" onClick={() => setIsMobileMenuOpen(false)} isActive={isActive('/ac-buy-and-sale')}>AC Buy & Sale</MobileNavLink>
-            <MobileNavLink to="/blog" onClick={() => setIsMobileMenuOpen(false)} isActive={isActive('/blog')}>Blog</MobileNavLink>
-            <MobileNavLink to="/contact" onClick={() => setIsMobileMenuOpen(false)} isActive={isActive('/contact')}>Contact</MobileNavLink>
-            <Link 
-              to="/booking" 
-              className="bg-gradient-to-r from-brand-red to-red-600 hover:from-brand-red/90 hover:to-red-600/90 text-white py-4 px-6 rounded-lg font-bold text-center mt-4 shadow-lg"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Get Quote
-            </Link>
-          </nav>
-          <div className="mt-auto pt-8">
-            <div className="flex flex-col bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
-              <div className="flex items-center mb-4">
-                <div className="p-3 bg-brand-red/10 rounded-full mr-3">
-                  <Phone className="h-6 w-6 text-brand-red" />
-                </div>
-                <a href="tel:+923125242182" className="font-bold text-xl text-gray-800 dark:text-gray-200">+92 312 5242182</a>
-              </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 font-semibold">
-                Bahria Town, Phase 8, Rawalpindi
-              </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                Serving Rawalpindi & Islamabad
-              </p>
+            </div>
+            <div className="text-xs">
+              🌡️ 24/7 Emergency AC Services Available
             </div>
           </div>
         </div>
-      </div>
-    </header>
+
+        {/* Main Navigation */}
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <Link to="/" className="flex items-center space-x-3 group">
+              <motion.div 
+                className="relative"
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full flex items-center justify-center shadow-lg relative overflow-hidden">
+                  <AirVent className="h-7 w-7 text-white z-10" />
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-br from-blue-400 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                  />
+                  <Snowflake className="absolute top-1 right-1 h-3 w-3 text-blue-200 animate-pulse" />
+                </div>
+              </motion.div>
+              <div className="hidden sm:block">
+                <h1 className="text-xl font-bold leading-tight">
+                  <span className="text-blue-600">AC</span>
+                  <span className="text-gray-800"> Services</span>
+                </h1>
+                <p className="text-xs text-gray-500 -mt-1">& Repairs Pakistan</p>
+              </div>
+            </Link>
+
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex items-center space-x-1">
+              {navItems.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 relative group ${
+                    location.pathname === item.path
+                      ? 'text-blue-600 bg-blue-50'
+                      : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
+                  }`}
+                >
+                  {item.name}
+                  <span className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-blue-600 transition-all duration-200 group-hover:w-full ${
+                    location.pathname === item.path ? 'w-full' : ''
+                  }`} />
+                </Link>
+              ))}
+            </nav>
+
+            {/* CTA Buttons */}
+            <div className="hidden md:flex items-center space-x-3">
+              <Button 
+                asChild
+                variant="outline" 
+                size="sm"
+                className="border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
+              >
+                <Link to="/booking">Book Service</Link>
+              </Button>
+              <Button 
+                asChild
+                size="sm"
+                className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white shadow-lg"
+              >
+                <a 
+                  href="https://wa.me/923125242182?text=Hi! I need AC service assistance. Can you help me?"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  WhatsApp Us
+                </a>
+              </Button>
+            </div>
+
+            {/* Mobile Menu */}
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="sm" className="lg:hidden">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-80">
+                <div className="flex flex-col space-y-4 mt-8">
+                  <div className="flex items-center space-x-3 pb-4 border-b">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full flex items-center justify-center">
+                      <AirVent className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-blue-600">AC Services</h3>
+                      <p className="text-xs text-gray-500">& Repairs Pakistan</p>
+                    </div>
+                  </div>
+                  
+                  {navItems.map((item) => (
+                    <Link
+                      key={item.name}
+                      to={item.path}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`block px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                        location.pathname === item.path
+                          ? 'text-blue-600 bg-blue-50'
+                          : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
+                      }`}
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                  
+                  <div className="pt-4 space-y-3">
+                    <Button 
+                      asChild
+                      variant="outline" 
+                      className="w-full border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <Link to="/booking">Book AC Service</Link>
+                    </Button>
+                    <Button 
+                      asChild
+                      className="w-full bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <a 
+                        href="https://wa.me/923125242182?text=Hi! I need AC service assistance. Can you help me?"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        WhatsApp Us Now
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
+      </motion.header>
+      
+      {/* Spacer */}
+      <div className="h-20"></div>
+    </>
   );
 };
-
-const NavLink = ({ to, children, isActive }: { to: string; children: React.ReactNode; isActive: boolean }) => (
-  <Link 
-    to={to}
-    className={cn(
-      "px-4 py-3 text-gray-800 hover:text-brand-red dark:text-gray-200 dark:hover:text-brand-red font-bold transition-all rounded-lg relative text-lg",
-      isActive && "text-brand-red bg-brand-red/10 shadow-sm"
-    )}
-  >
-    {children}
-  </Link>
-);
-
-const MobileNavLink = ({ to, onClick, children, isActive }: { 
-  to: string; 
-  onClick?: () => void;
-  children: React.ReactNode;
-  isActive: boolean;
-}) => (
-  <Link 
-    to={to}
-    className={cn(
-      "text-2xl font-bold text-gray-800 dark:text-gray-200 hover:text-brand-red dark:hover:text-brand-red transition-colors py-3 border-b border-gray-200 dark:border-gray-700",
-      isActive && "text-brand-red"
-    )}
-    onClick={onClick}
-  >
-    {children}
-  </Link>
-);
 
 export default Header;

@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -21,18 +22,18 @@ import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import AcBuyAndSale from "./pages/AcBuyAndSale";
 
-import AdminLayout from "./components/admin/AdminLayout";
+import AdminLayout from "./pages/admin/Admin";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
 import Dashboard from "./pages/admin/Dashboard";
 import AdminServices from "./pages/admin/Services";
-import AdminBlog from "./pages/admin/Blog";
+import AdminBlog from "./pages/admin/BlogPosts";
 import AdminMedia from "./pages/admin/Media";
 import AdminTestimonials from "./pages/admin/Testimonials";
 import AdminBookings from "./pages/admin/Bookings";
 import AdminCustomers from "./pages/admin/Customers";
 import AdminSmartAdport from "./pages/admin/SmartAdport";
 import AdminSettings from "./pages/admin/Settings";
-import ProductsAdmin from "./pages/admin/ProductsAdmin";
+import ProductsAdmin from "./pages/admin/Products";
 import { useEffect, useState } from "react";
 
 import "./App.css";
@@ -76,8 +77,10 @@ function App() {
                 <ScrollToTop />
                 
                 <Routes>
-                  {/* Admin Routes */}
+                  {/* Admin Login Route */}
                   <Route path="/admin" element={<Admin />} />
+                  
+                  {/* Protected Admin Routes */}
                   <Route path="/admin/*" element={
                     <ProtectedRoute>
                       <AdminLayout />
@@ -86,7 +89,7 @@ function App() {
                     <Route path="dashboard" element={<Dashboard />} />
                     <Route path="services" element={<AdminServices />} />
                     <Route path="products" element={<ProductsAdmin />} />
-                    <Route path="blog" element={<AdminBlog />} />
+                    <Route path="blog-posts" element={<AdminBlog />} />
                     <Route path="media" element={<AdminMedia />} />
                     <Route path="testimonials" element={<AdminTestimonials />} />
                     <Route path="bookings" element={<AdminBookings />} />

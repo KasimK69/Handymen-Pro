@@ -1,43 +1,32 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { AirVent, Phone, Mail, MapPin, Clock, Snowflake, Star, MessageCircle, ThermometerSnowflake, Wind, Zap, Shield, Wrench, CheckCircle2 } from 'lucide-react';
+import { AirVent, Phone, Mail, MapPin, Clock, Star, MessageCircle, CheckCircle2, Wrench, Shield, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gradient-to-br from-gray-900 via-blue-900 to-gray-800 text-white relative overflow-hidden">
+    <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-blue-900 text-white relative overflow-hidden">
       {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
+      <div className="absolute inset-0 opacity-5">
         <motion.div 
           className="absolute top-10 left-10"
           animate={{ rotate: 360 }}
           transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
         >
-          <AirVent className="h-32 w-32 text-white" />
+          <AirVent className="h-24 w-24 text-white" />
         </motion.div>
         <motion.div 
           className="absolute top-20 right-20"
-          animate={{ rotate: 360, scale: [1, 1.1, 1] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          animate={{ rotate: -360, scale: [1, 1.1, 1] }}
+          transition={{ 
+            rotate: { duration: 25, repeat: Infinity, ease: "linear" },
+            scale: { duration: 8, repeat: Infinity, ease: "easeInOut" }
+          }}
         >
-          <ThermometerSnowflake className="h-24 w-24 text-white" />
-        </motion.div>
-        <motion.div 
-          className="absolute bottom-20 left-1/4"
-          animate={{ y: [0, -15, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <Wind className="h-28 w-28 text-white opacity-50" />
-        </motion.div>
-        <motion.div 
-          className="absolute bottom-10 right-1/3"
-          animate={{ scale: [1, 1.2, 1] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <Snowflake className="h-20 w-20 text-white" />
+          <AirVent className="h-20 w-20 text-white opacity-30" />
         </motion.div>
       </div>
 
@@ -53,7 +42,7 @@ const Footer = () => {
             <div className="flex items-center space-x-3">
               <motion.div 
                 whileHover={{ scale: 1.1, rotate: 10 }}
-                className="w-14 h-14 bg-gradient-to-r from-brand-blue to-brand-red rounded-full flex items-center justify-center shadow-lg relative"
+                className="w-14 h-14 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full flex items-center justify-center shadow-lg relative"
               >
                 <AirVent className="h-8 w-8 text-white" />
                 <motion.div 
@@ -64,14 +53,14 @@ const Footer = () => {
               </motion.div>
               <div>
                 <h3 className="text-2xl font-bold">
-                  <span className="text-brand-blue">AC</span>
-                  <span className="text-brand-red">Services</span>
+                  <span className="text-blue-400">AC</span>
+                  <span className="text-white"> Services</span>
                 </h3>
-                <p className="text-sm text-gray-400">& Repairs</p>
+                <p className="text-sm text-gray-400">& Repairs Pakistan</p>
               </div>
             </div>
             <p className="text-gray-300 leading-relaxed">
-              Professional AC services, repairs, and premium air conditioner sales in Islamabad & Rawalpindi. Your comfort is our priority.
+              Professional AC services, repairs, and premium air conditioner sales in Islamabad & Rawalpindi. Your comfort is our priority with 24/7 emergency support.
             </p>
             <div className="flex items-center space-x-2">
               <div className="flex">
@@ -86,7 +75,7 @@ const Footer = () => {
                   </motion.div>
                 ))}
               </div>
-              <span className="text-sm text-gray-400">4.9/5 Rating • 500+ Happy Customers</span>
+              <span className="text-sm text-gray-400">4.9/5 • 500+ Happy Customers</span>
             </div>
           </motion.div>
 
@@ -99,7 +88,7 @@ const Footer = () => {
           >
             <h4 className="text-xl font-bold text-white relative inline-block">
               Quick Links
-              <span className="absolute -bottom-1 left-0 w-1/3 h-1 bg-gradient-to-r from-brand-blue to-transparent rounded"></span>
+              <span className="absolute -bottom-1 left-0 w-1/3 h-1 bg-gradient-to-r from-blue-400 to-transparent rounded"></span>
             </h4>
             <ul className="space-y-3">
               {[
@@ -117,9 +106,9 @@ const Footer = () => {
                 >
                   <Link 
                     to={link.path} 
-                    className="text-gray-300 hover:text-brand-blue transition-colors duration-300 flex items-center group"
+                    className="text-gray-300 hover:text-blue-400 transition-colors duration-300 flex items-center group"
                   >
-                    <span className="text-brand-blue mr-3 group-hover:scale-125 transition-transform">{link.icon}</span>
+                    <span className="text-blue-400 mr-3 group-hover:scale-125 transition-transform">{link.icon}</span>
                     {link.name}
                   </Link>
                 </motion.li>
@@ -136,25 +125,25 @@ const Footer = () => {
           >
             <h4 className="text-xl font-bold text-white relative inline-block">
               Our Services
-              <span className="absolute -bottom-1 left-0 w-1/3 h-1 bg-gradient-to-r from-brand-red to-transparent rounded"></span>
+              <span className="absolute -bottom-1 left-0 w-1/3 h-1 bg-gradient-to-r from-blue-400 to-transparent rounded"></span>
             </h4>
             <ul className="space-y-3">
               {[
-                { name: 'AC Installation', icon: <AirVent className="h-4 w-4" /> },
+                { name: 'AC Installation & Setup', icon: <AirVent className="h-4 w-4" /> },
                 { name: 'AC Repair & Maintenance', icon: <Wrench className="h-4 w-4" /> },
                 { name: 'Premium AC Sales', icon: <Star className="h-4 w-4" /> },
-                { name: 'AC Gas Refilling', icon: <Wind className="h-4 w-4" /> },
-                { name: 'Emergency AC Service', icon: <Zap className="h-4 w-4" /> },
-                { name: 'AC Consultation', icon: <MessageCircle className="h-4 w-4" /> }
+                { name: 'AC Gas Refilling', icon: <Zap className="h-4 w-4" /> },
+                { name: '24/7 Emergency Service', icon: <Shield className="h-4 w-4" /> },
+                { name: 'Free AC Consultation', icon: <MessageCircle className="h-4 w-4" /> }
               ].map((service, index) => (
                 <motion.li 
                   key={service.name} 
-                  className="text-gray-300 flex items-center group"
+                  className="text-gray-300 flex items-center group cursor-pointer hover:text-blue-400 transition-colors"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.1 * index + 0.3, duration: 0.3 }}
                 >
-                  <span className="text-brand-red mr-3 group-hover:scale-125 transition-transform">{service.icon}</span>
+                  <span className="text-blue-400 mr-3 group-hover:scale-125 transition-transform">{service.icon}</span>
                   {service.name}
                 </motion.li>
               ))}
@@ -174,28 +163,29 @@ const Footer = () => {
             </h4>
             <div className="space-y-4">
               <motion.div 
-                className="flex items-start space-x-3 group"
+                className="flex items-start space-x-3 group cursor-pointer"
                 whileHover={{ x: 5 }}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4, duration: 0.3 }}
               >
-                <div className="h-10 w-10 rounded-full bg-blue-900 flex items-center justify-center group-hover:bg-brand-blue transition-colors duration-300">
+                <div className="h-10 w-10 rounded-full bg-blue-800 flex items-center justify-center group-hover:bg-blue-600 transition-colors duration-300">
                   <Phone className="h-5 w-5 text-white flex-shrink-0" />
                 </div>
                 <div>
                   <p className="text-white font-semibold">+92 312 5242182</p>
-                  <p className="text-gray-400 text-sm">24/7 Emergency Service</p>
+                  <p className="text-gray-400 text-sm">24/7 Emergency AC Service</p>
                 </div>
               </motion.div>
+              
               <motion.div 
-                className="flex items-start space-x-3 group"
+                className="flex items-start space-x-3 group cursor-pointer"
                 whileHover={{ x: 5 }}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.5, duration: 0.3 }}
               >
-                <div className="h-10 w-10 rounded-full bg-blue-900 flex items-center justify-center group-hover:bg-brand-blue transition-colors duration-300">
+                <div className="h-10 w-10 rounded-full bg-blue-800 flex items-center justify-center group-hover:bg-blue-600 transition-colors duration-300">
                   <Mail className="h-5 w-5 text-white flex-shrink-0" />
                 </div>
                 <div>
@@ -203,14 +193,15 @@ const Footer = () => {
                   <p className="text-gray-400 text-sm">Get free consultation</p>
                 </div>
               </motion.div>
+              
               <motion.div 
-                className="flex items-start space-x-3 group"
+                className="flex items-start space-x-3 group cursor-pointer"
                 whileHover={{ x: 5 }}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.6, duration: 0.3 }}
               >
-                <div className="h-10 w-10 rounded-full bg-blue-900 flex items-center justify-center group-hover:bg-brand-blue transition-colors duration-300">
+                <div className="h-10 w-10 rounded-full bg-blue-800 flex items-center justify-center group-hover:bg-blue-600 transition-colors duration-300">
                   <MapPin className="h-5 w-5 text-white flex-shrink-0" />
                 </div>
                 <div>
@@ -218,43 +209,42 @@ const Footer = () => {
                   <p className="text-gray-400 text-sm">Rawalpindi, Pakistan</p>
                 </div>
               </motion.div>
+              
               <motion.div 
-                className="flex items-start space-x-3 group"
+                className="flex items-start space-x-3 group cursor-pointer"
                 whileHover={{ x: 5 }}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.7, duration: 0.3 }}
               >
-                <div className="h-10 w-10 rounded-full bg-blue-900 flex items-center justify-center group-hover:bg-brand-blue transition-colors duration-300">
+                <div className="h-10 w-10 rounded-full bg-blue-800 flex items-center justify-center group-hover:bg-blue-600 transition-colors duration-300">
                   <Clock className="h-5 w-5 text-white flex-shrink-0" />
                 </div>
                 <div>
                   <p className="text-white">Mon - Sun: 8:00 AM - 10:00 PM</p>
-                  <p className="text-gray-400 text-sm">Emergency: 24/7</p>
+                  <p className="text-gray-400 text-sm">Emergency: 24/7 Available</p>
                 </div>
               </motion.div>
             </div>
           </motion.div>
         </div>
 
-        {/* Action Button */}
+        {/* CTA Section */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5, type: "spring" }}
+          transition={{ duration: 0.8, delay: 0.5 }}
           className="mt-16 text-center"
         >
-          <div className="bg-gradient-to-r from-brand-blue via-blue-600 to-brand-red rounded-2xl p-8 shadow-2xl relative overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 rounded-2xl p-8 shadow-2xl relative overflow-hidden">
             {/* Animated Background Elements */}
             <motion.div 
-              className="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full -mt-32 -mr-32"
+              className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mt-20 -mr-20"
               animate={{ scale: [1, 1.2, 1], rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            />
-            <motion.div 
-              className="absolute bottom-0 left-0 w-40 h-40 bg-white opacity-10 rounded-full -mb-20 -ml-20"
-              animate={{ scale: [1, 1.3, 1], rotate: -360 }}
-              transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+              transition={{ 
+                scale: { duration: 8, repeat: Infinity, ease: "easeInOut" },
+                rotate: { duration: 20, repeat: Infinity, ease: "linear" }
+              }}
             />
             
             <div className="relative z-10">
@@ -263,9 +253,9 @@ const Footer = () => {
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: 0.8, type: "spring" }}
-                  className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center"
+                  className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm"
                 >
-                  <ThermometerSnowflake className="h-10 w-10 text-white" />
+                  <AirVent className="h-10 w-10 text-white" />
                 </motion.div>
               </div>
               
