@@ -22,7 +22,7 @@ import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import AcBuyAndSale from "./pages/AcBuyAndSale";
 
-import AdminLayout from "./pages/admin/Admin";
+import AdminLayout from "./components/admin/AdminLayout";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
 import Dashboard from "./pages/admin/Dashboard";
 import AdminServices from "./pages/admin/Services";

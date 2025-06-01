@@ -1,85 +1,141 @@
-import React from 'react';
-import { Outlet, NavLink, useLocation, Navigate } from 'react-router-dom';
-import { Package, BookOpen, Settings, Home, LogOut } from 'lucide-react';
+
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { AirVent } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { useAdminAuth } from '@/context/AdminAuthContext';
+import { Loader2, Lock, AirVent } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-const AdminLayout = () => {
-  const location = useLocation();
-  const isAuthenticated = true; // In a real app, this would come from an auth context
+const Admin = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+  const { login, isLoading, isAuthenticated } = useAdminAuth();
+  const navigate = useNavigate();
 
-  // If not authenticated, redirect to login
-  if (!isAuthenticated) {
-    return <Navigate to="/admin/login" replace />;
-  }
+  useEffect(() => {
+    // If already authenticated, redirect to dashboard
+    if (isAuthenticated) {
+      navigate('/admin/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
 
-  const navItems = [
-    { path: '/admin/products', label: 'Products', icon: <Package className="h-5 w-5" /> },
-    { path: '/admin/blog-posts', label: 'Blog Posts', icon: <BookOpen className="h-5 w-5" /> },
-    { path: '/admin/settings', label: 'Settings', icon: <Settings className="h-5 w-5" /> },
-  ];
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const success = await login(email, password);
+    if (success) {
+      navigate('/admin/dashboard');
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex">
-      {/* Sidebar */}
-      <div className="w-64 bg-white dark:bg-gray-800 shadow-md flex flex-col">
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-r from-brand-blue to-brand-red rounded-full flex items-center justify-center shadow-lg">
-              <AirVent className="h-6 w-6 text-white" />
+    <section className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 min-h-screen py-24">
+      <div className="container mx-auto px-4">
+        <motion.div 
+          className="max-w-md mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-xl overflow-hidden"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="h-2 bg-gradient-to-r from-brand-blue to-brand-red"></div>
+          <div className="p-8">
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center justify-center p-3 bg-brand-blue/10 rounded-full mb-4">
+                <AirVent className="h-8 w-8 text-brand-blue" />
+              </div>
+              <h1 className="text-2xl font-bold inline-flex items-center justify-center">
+                <span className="mr-2 text-gray-900 dark:text-gray-100">AC</span>
+                <span className="text-brand-red">Admin</span>
+              </h1>
+              <div className="h-1 w-12 bg-brand-red mx-auto mt-2"></div>
             </div>
-            <div>
-              <h3 className="text-lg font-bold">
-                <span className="text-brand-blue">AC</span>
-                <span className="text-brand-red">Services</span>
-              </h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Admin Panel</p>
+            
+            <h2 className="text-2xl font-bold mb-2 text-center">Admin Login</h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-8 text-center">
+              Please log in to access the AC Services admin dashboard.
+            </p>
+            
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium mb-2">
+                  Email
+                </label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="admin@example.com"
+                  disabled={isLoading}
+                  required
+                  className="border-gray-300"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium mb-2">
+                  Password
+                </label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  disabled={isLoading}
+                  required
+                  className="border-gray-300"
+                />
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <input
+                    id="remember"
+                    type="checkbox"
+                    className="h-4 w-4 mr-2 text-brand-blue focus:ring-brand-blue"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                  />
+                  <label htmlFor="remember" className="text-sm">
+                    Remember me
+                  </label>
+                </div>
+                <a href="#" className="text-sm text-brand-red hover:underline">
+                  Forgot password?
+                </a>
+              </div>
+              
+              <Button 
+                type="submit" 
+                className="w-full bg-brand-blue hover:bg-brand-blue/90"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Signing In...
+                  </>
+                ) : (
+                  <>
+                    <Lock className="mr-2 h-4 w-4" />
+                    Sign In
+                  </>
+                )}
+              </Button>
+            </form>
+            
+            <div className="mt-6">
+              <p className="text-center text-sm text-gray-600 dark:text-gray-400">
+                Demo credentials: admin@example.com / admin123
+              </p>
             </div>
           </div>
-        </div>
-        
-        <div className="flex-1 py-6 px-4 space-y-1">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={({ isActive }) =>
-                `flex items-center px-4 py-3 rounded-lg transition-colors ${
-                  isActive
-                    ? 'bg-brand-blue text-white'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                }`
-              }
-            >
-              {item.icon}
-              <span className="ml-3">{item.label}</span>
-            </NavLink>
-          ))}
-        </div>
-        
-        <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-          <Button asChild variant="outline" className="w-full justify-start">
-            <NavLink to="/" className="flex items-center">
-              <Home className="h-5 w-5 mr-3" />
-              Back to Website
-            </NavLink>
-          </Button>
-          <Button variant="ghost" className="w-full justify-start mt-2 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20">
-            <LogOut className="h-5 w-5 mr-3" />
-            Logout
-          </Button>
-        </div>
+        </motion.div>
       </div>
-      
-      {/* Main Content */}
-      <div className="flex-1 overflow-auto">
-        <div className="p-6">
-          <Outlet />
-        </div>
-      </div>
-    </div>
+    </section>
   );
 };
 
-export default AdminLayout;
+export default Admin;
