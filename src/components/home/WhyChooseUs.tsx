@@ -1,116 +1,113 @@
 
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { CheckCircle, Clock, Shield, Star, Users, Wrench } from 'lucide-react';
+import { Shield, Clock, Users, Award, Wrench, Headphones } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const benefits = [
-  {
-    icon: <CheckCircle className="h-8 w-8 text-[#4CC9F0]" />,
-    title: 'Expert Technicians',
-    description: 'Certified AC specialists with 10+ years of experience in installation, repair, and maintenance services.'
-  },
-  {
-    icon: <Clock className="h-8 w-8 text-[#8843F2]" />,
-    title: '24/7 Emergency Service',
-    description: 'Round-the-clock emergency AC repair services. We respond within 2 hours for urgent cooling needs.'
-  },
-  {
-    icon: <Shield className="h-8 w-8 text-[#FF467E]" />,
-    title: 'Quality Guarantee',
-    description: 'All our services come with warranty protection and 100% satisfaction guarantee on workmanship.'
-  },
-  {
-    icon: <Star className="h-8 w-8 text-[#4CC9F0]" />,
-    title: 'Premium Brands',
-    description: 'We work with top AC brands like Samsung, LG, Daikin, and Haier for quality and reliability.'
-  },
-  {
-    icon: <Users className="h-8 w-8 text-[#8843F2]" />,
-    title: '5000+ Happy Customers',
-    description: 'Trusted by thousands of satisfied customers across Pakistan with 4.9/5 average rating.'
-  },
-  {
-    icon: <Wrench className="h-8 w-8 text-[#FF467E]" />,
-    title: 'Complete AC Solutions',
-    description: 'From installation to maintenance, repair to AC buying/selling - we handle all your cooling needs.'
-  }
-];
-
 const WhyChooseUs = () => {
+  const benefits = [
+    {
+      icon: Shield,
+      title: 'Quality Assured',
+      description: 'All AC units are thoroughly tested for quality and performance before listing.',
+      color: 'from-green-400 to-green-600'
+    },
+    {
+      icon: Clock,
+      title: 'Fast Delivery',
+      description: 'Free delivery within 24-48 hours in Rawalpindi and Islamabad areas.',
+      color: 'from-blue-400 to-blue-600'
+    },
+    {
+      icon: Users,
+      title: 'Expert Installation',
+      description: 'Professional installation by certified technicians included with every purchase.',
+      color: 'from-purple-400 to-purple-600'
+    },
+    {
+      icon: Award,
+      title: 'Warranty Coverage',
+      description: 'Comprehensive warranty on all new AC units with dedicated service support.',
+      color: 'from-yellow-400 to-yellow-600'
+    },
+    {
+      icon: Wrench,
+      title: '24/7 Service',
+      description: 'Round-the-clock maintenance and repair services for all AC brands.',
+      color: 'from-red-400 to-red-600'
+    },
+    {
+      icon: Headphones,
+      title: 'Customer Support',
+      description: 'Dedicated customer support team available to assist you anytime.',
+      color: 'from-indigo-400 to-indigo-600'
+    }
+  ];
+
+  const stats = [
+    { number: '10+', label: 'Years Experience' },
+    { number: '5000+', label: 'Happy Customers' },
+    { number: '24/7', label: 'Service Available' },
+    { number: '4.9★', label: 'Customer Rating' }
+  ];
+
   return (
-    <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
+    <section className="py-20 bg-gradient-to-br from-[#2D3559] via-[#4CC9F0] to-[#8843F2]">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 font-['Inter']">
-            Why Choose <span className="bg-gradient-to-r from-[#8843F2] to-[#FF467E] bg-clip-text text-transparent">AC Services</span>?
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white font-['Inter']">
+            Why Choose <span className="bg-gradient-to-r from-[#FF467E] to-white bg-clip-text text-transparent">AC Services</span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            We're Pakistan's leading AC service provider, committed to delivering exceptional cooling solutions 
-            with unmatched expertise and customer satisfaction.
+          <p className="text-xl text-white/90 max-w-3xl mx-auto leading-relaxed">
+            We deliver exceptional AC services with professionalism and expertise you can trust across Pakistan.
           </p>
-          <div className="w-24 h-1 bg-gradient-to-r from-[#8843F2] to-[#FF467E] mx-auto mt-8"></div>
+          <div className="w-24 h-1 bg-gradient-to-r from-[#FF467E] to-white mx-auto mt-8"></div>
         </motion.div>
 
         {/* Benefits Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           {benefits.map((benefit, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 * index }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              viewport={{ once: true }}
             >
-              <Card className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg bg-white hover:scale-105 h-full">
+              <Card className="bg-white/10 backdrop-blur-md border-white/20 hover:bg-white/20 transition-all duration-300 h-full">
                 <CardContent className="p-8 text-center">
-                  <div className="mb-6 flex justify-center">
-                    <div className="p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-full group-hover:from-[#8843F2]/10 group-hover:to-[#FF467E]/10 transition-all duration-300">
-                      {benefit.icon}
-                    </div>
+                  <div className={`w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-r ${benefit.color} flex items-center justify-center shadow-lg`}>
+                    <benefit.icon className="h-8 w-8 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold mb-4 text-[#2D3559] group-hover:text-[#8843F2] transition-colors duration-300 font-['Inter']">
-                    {benefit.title}
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed">
-                    {benefit.description}
-                  </p>
+                  <h3 className="text-xl font-bold text-white mb-4">{benefit.title}</h3>
+                  <p className="text-white/80 leading-relaxed">{benefit.description}</p>
                 </CardContent>
               </Card>
             </motion.div>
           ))}
         </div>
 
-        {/* Stats Section */}
+        {/* Statistics */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="mt-20 bg-gradient-to-r from-[#2D3559] to-[#4CC9F0] rounded-2xl p-12"
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          viewport={{ once: true }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-8"
         >
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center text-white">
-            <div>
-              <h4 className="text-4xl font-bold mb-2 font-['Inter']">10+</h4>
-              <p className="text-white/80">Years Experience</p>
+          {stats.map((stat, index) => (
+            <div key={index} className="text-center">
+              <div className="text-4xl md:text-5xl font-bold text-white mb-2">{stat.number}</div>
+              <div className="text-white/80 text-lg">{stat.label}</div>
             </div>
-            <div>
-              <h4 className="text-4xl font-bold mb-2 font-['Inter']">5000+</h4>
-              <p className="text-white/80">Happy Customers</p>
-            </div>
-            <div>
-              <h4 className="text-4xl font-bold mb-2 font-['Inter']">24/7</h4>
-              <p className="text-white/80">Emergency Service</p>
-            </div>
-            <div>
-              <h4 className="text-4xl font-bold mb-2 font-['Inter']">4.9★</h4>
-              <p className="text-white/80">Customer Rating</p>
-            </div>
-          </div>
+          ))}
         </motion.div>
       </div>
     </section>

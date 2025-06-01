@@ -1,8 +1,8 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AirVent, Snowflake, Star, ShoppingCart, PlusCircle } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { ShoppingCart, PlusCircle, TrendingUp, Users, Shield, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface HeroSectionProps {
@@ -12,147 +12,119 @@ interface HeroSectionProps {
 
 const HeroSection: React.FC<HeroSectionProps> = ({ onTabChange, onOpenSellingForm }) => {
   return (
-    <section className="relative bg-gradient-to-br from-brand-blue via-blue-600 to-brand-red text-white py-24 overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 opacity-20">
-          <AirVent className="h-32 w-32 text-white animate-pulse" />
-        </div>
-        <div className="absolute top-10 right-20 opacity-20">
-          <Snowflake className="h-24 w-24 text-white animate-spin" style={{ animationDuration: '8s' }} />
-        </div>
-        <div className="absolute bottom-20 left-1/4 opacity-20">
-          <AirVent className="h-28 w-28 text-white" />
-        </div>
-        <div className="absolute bottom-10 right-1/3 opacity-20">
-          <Snowflake className="h-20 w-20 text-white animate-pulse" />
-        </div>
+    <section className="relative py-20 bg-gradient-to-br from-[#2D3559] via-[#4CC9F0] to-[#8843F2] overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-20 left-20 w-32 h-32 bg-white rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-20 w-40 h-40 bg-white rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-white rounded-full blur-3xl"></div>
       </div>
-      
+
       <div className="container mx-auto px-4 relative z-10">
-        <div className="text-center max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="flex justify-center mb-8"
-          >
-            <div className="flex items-center space-x-4">
-              <div className="p-4 bg-white/10 backdrop-blur-sm rounded-full">
-                <AirVent className="h-12 w-12 text-white" />
-              </div>
-              <div className="text-4xl font-bold">+</div>
-              <div className="p-4 bg-white/10 backdrop-blur-sm rounded-full">
-                <ShoppingCart className="h-12 w-12 text-white" />
-              </div>
-            </div>
-          </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-16"
+        >
+          <Badge className="bg-white/20 text-white border-white/30 px-6 py-2 text-lg font-semibold mb-6">
+            Pakistan's #1 AC Marketplace
+          </Badge>
           
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-5xl md:text-7xl font-bold mb-6 text-center"
-          >
-            Premium <span className="text-yellow-300">AC Buy & Sale</span>
-          </motion.h1>
+          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 font-['Inter']">
+            Buy & Sell ACs
+            <br />
+            <span className="bg-gradient-to-r from-[#FF467E] to-white bg-clip-text text-transparent">
+              With Confidence
+            </span>
+          </h1>
           
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-xl md:text-2xl mb-8 opacity-90 leading-relaxed text-center"
-          >
-            Discover the best air conditioners in <strong>Islamabad & Rawalpindi</strong>. From brand new energy-efficient models to quality used units with professional installation and support.
-          </motion.p>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="flex items-center justify-center mb-8"
-          >
-            <div className="flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3">
-              <Star className="h-5 w-5 text-yellow-300 fill-yellow-300" />
-              <Star className="h-5 w-5 text-yellow-300 fill-yellow-300" />
-              <Star className="h-5 w-5 text-yellow-300 fill-yellow-300" />
-              <Star className="h-5 w-5 text-yellow-300 fill-yellow-300" />
-              <Star className="h-5 w-5 text-yellow-300 fill-yellow-300" />
-              <span className="ml-2 font-semibold">4.9/5 Rating • 500+ Happy Customers</span>
-            </div>
-          </motion.div>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-            className="flex justify-center mb-8"
-          >
-            <Tabs defaultValue="for-sale" onValueChange={(value) => onTabChange(value as 'for-sale' | 'wanted')}>
-              <TabsList className="grid grid-cols-2 w-full max-w-md bg-white/20 backdrop-blur-sm border-0">
-                <TabsTrigger 
-                  value="for-sale" 
-                  className="text-white data-[state=active]:bg-white data-[state=active]:text-brand-blue font-semibold"
-                >
-                  <ShoppingCart className="mr-2 h-4 w-4" />
-                  Buy ACs
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="wanted" 
-                  className="text-white data-[state=active]:bg-white data-[state=active]:text-brand-blue font-semibold"
-                >
-                  <PlusCircle className="mr-2 h-4 w-4" />
-                  Sell ACs
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </motion.div>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.0 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-          >
+          <p className="text-xl md:text-2xl text-white/90 max-w-4xl mx-auto mb-12 leading-relaxed">
+            Discover premium air conditioning units from verified sellers across Pakistan. 
+            Quality assured, competitive prices, and hassle-free transactions.
+          </p>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
             <Button 
-              size="lg" 
-              className="bg-white text-brand-blue hover:bg-gray-100 font-semibold shadow-xl"
+              size="lg"
               onClick={() => onTabChange('for-sale')}
+              className="bg-white text-[#2D3559] hover:bg-gray-100 px-8 py-4 text-lg font-bold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
             >
-              <ShoppingCart className="mr-2 h-5 w-5" />
-              Browse AC Collection
+              <ShoppingCart className="mr-3 h-6 w-6" />
+              Browse ACs for Sale
             </Button>
+            
             <Button 
-              size="lg" 
-              variant="outline" 
-              className="border-white text-white hover:bg-white hover:text-brand-blue font-semibold"
+              size="lg"
+              variant="outline"
               onClick={onOpenSellingForm}
+              className="border-2 border-white text-white hover:bg-white hover:text-[#2D3559] px-8 py-4 text-lg font-bold transition-all duration-300 hover:scale-105"
             >
-              <PlusCircle className="mr-2 h-5 w-5" />
+              <PlusCircle className="mr-3 h-6 w-6" />
               Sell Your AC
             </Button>
-          </motion.div>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.2 }}
-            className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-center"
-          >
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
-              <div className="text-2xl font-bold mb-2">500+</div>
-              <div className="text-sm opacity-90">ACs Sold</div>
+          </div>
+
+          {/* Statistics */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+            {[
+              { icon: Users, label: 'Active Users', value: '10,000+' },
+              { icon: ShoppingCart, label: 'ACs Sold', value: '5,000+' },
+              { icon: TrendingUp, label: 'Success Rate', value: '98%' },
+              { icon: Shield, label: 'Verified Sellers', value: '500+' }
+            ].map((stat, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="text-center"
+              >
+                <stat.icon className="h-8 w-8 text-white mx-auto mb-2" />
+                <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
+                <div className="text-white/80 text-sm">{stat.label}</div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Features Grid */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+        >
+          {[
+            {
+              icon: Shield,
+              title: 'Quality Assured',
+              description: 'All AC units are thoroughly tested for quality and performance before listing.',
+              color: 'from-green-400 to-green-600'
+            },
+            {
+              icon: Zap,
+              title: 'Fast Delivery',
+              description: 'Free delivery within 24-48 hours in Rawalpindi and Islamabad areas.',
+              color: 'from-yellow-400 to-yellow-600'
+            },
+            {
+              icon: Users,
+              title: 'Expert Installation',
+              description: 'Professional installation by certified technicians included with every purchase.',
+              color: 'from-blue-400 to-blue-600'
+            }
+          ].map((feature, index) => (
+            <div key={index} className="bg-white/10 backdrop-blur-md rounded-2xl p-6 text-center hover:bg-white/20 transition-all duration-300">
+              <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r ${feature.color} flex items-center justify-center`}>
+                <feature.icon className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
+              <p className="text-white/80 leading-relaxed">{feature.description}</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
-              <div className="text-2xl font-bold mb-2">24/7</div>
-              <div className="text-sm opacity-90">Support</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
-              <div className="text-2xl font-bold mb-2">Free</div>
-              <div className="text-sm opacity-90">Installation</div>
-            </div>
-          </motion.div>
-        </div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );
