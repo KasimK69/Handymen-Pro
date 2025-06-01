@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import Hero from '@/components/home/Hero';
 import SmartAdport from '@/components/home/SmartAdport';
-import PremiumACSection from '@/components/home/PremiumACSection';
+import PremiumACCollection from '@/components/home/PremiumACCollection';
+import WhyChooseUs from '@/components/home/WhyChooseUs';
 import Features from '@/components/home/Features';
 import Testimonials from '@/components/home/Testimonials';
 import CTA from '@/components/home/CTA';
@@ -35,7 +36,8 @@ const Home = () => {
     <>
       <Hero />
       <SmartAdport />
-      <PremiumACSection />
+      <PremiumACCollection />
+      <WhyChooseUs />
       <Features />
       <Testimonials />
       <MapLocation />
@@ -52,7 +54,7 @@ const Home = () => {
           >
             <Button 
               onClick={openInquiryForm}
-              className="fixed left-6 bottom-24 z-50 bg-brand-red hover:bg-brand-red/90 text-white shadow-lg flex items-center gap-2 px-4 py-6 rounded-full"
+              className="fixed left-6 bottom-24 z-50 bg-gradient-to-r from-[#FF467E] to-[#8843F2] hover:from-[#F03A6E] hover:to-[#7335E8] text-white shadow-lg flex items-center gap-2 px-4 py-6 rounded-full font-['Inter']"
             >
               <MessageSquare className="h-5 w-5" />
               <span className="font-medium">Request Service</span>

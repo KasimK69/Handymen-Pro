@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { MessageCircle, Phone, Mail, ArrowRight, AirVent, Star } from 'lucide-react';
+import { MessageCircle, Phone, Mail, ArrowRight, AirVent, Star, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const CTASection = () => {
@@ -21,7 +21,7 @@ Please help me choose the right AC for my needs. Thank you!`;
   };
 
   return (
-    <section className="py-20 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 relative overflow-hidden">
+    <section className="py-20 bg-gradient-to-br from-[#2D3559] via-[#8843F2] to-[#4CC9F0] relative overflow-hidden">
       {/* Background Animation */}
       <div className="absolute inset-0 opacity-10">
         <motion.div 
@@ -64,9 +64,9 @@ Please help me choose the right AC for my needs. Thank you!`;
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-4xl md:text-5xl font-bold mb-6"
+            className="text-4xl md:text-5xl font-bold mb-6 font-['Inter']"
           >
-            Ready to Experience <span className="text-yellow-300">Superior Comfort?</span>
+            Ready to Experience <span className="text-[#4CC9F0]">Superior Comfort?</span>
           </motion.h2>
 
           <motion.p
@@ -87,23 +87,23 @@ Please help me choose the right AC for my needs. Thank you!`;
           >
             <div className="text-center">
               <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Star className="h-8 w-8 text-yellow-300" />
+                <Star className="h-8 w-8 text-[#4CC9F0]" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">Expert Guidance</h3>
+              <h3 className="text-lg font-semibold mb-2 font-['Inter']">Expert Guidance</h3>
               <p className="text-sm opacity-80">Professional advice on AC selection and installation</p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <AirVent className="h-8 w-8 text-blue-300" />
+                <AirVent className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">Quality Products</h3>
+              <h3 className="text-lg font-semibold mb-2 font-['Inter']">Quality Products</h3>
               <p className="text-sm opacity-80">Premium AC brands with warranty and support</p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <MessageCircle className="h-8 w-8 text-green-300" />
+                <MessageCircle className="h-8 w-8 text-[#4CC9F0]" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">24/7 Support</h3>
+              <h3 className="text-lg font-semibold mb-2 font-['Inter']">24/7 Support</h3>
               <p className="text-sm opacity-80">Round-the-clock customer service and maintenance</p>
             </div>
           </motion.div>
@@ -122,7 +122,7 @@ Please help me choose the right AC for my needs. Thank you!`;
               <Button
                 onClick={handleGetConsultation}
                 size="lg"
-                className="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-600 text-white px-8 py-4 text-lg font-semibold shadow-lg group"
+                className="bg-gradient-to-r from-[#FF467E] to-[#8843F2] hover:from-[#F03A6E] hover:to-[#7335E8] text-white px-8 py-4 text-lg font-semibold shadow-lg group font-['Inter']"
               >
                 <MessageCircle className="mr-3 h-6 w-6 group-hover:scale-110 transition-transform" />
                 Get Free AC Consultation
@@ -138,7 +138,7 @@ Please help me choose the right AC for my needs. Thank you!`;
                 asChild
                 variant="outline"
                 size="lg"
-                className="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 text-lg font-semibold group"
+                className="border-2 border-white text-white hover:bg-white hover:text-[#2D3559] px-8 py-4 text-lg font-semibold group font-['Inter']"
               >
                 <a href="tel:+923125242182">
                   <Phone className="mr-3 h-6 w-6 group-hover:scale-110 transition-transform" />
@@ -165,7 +165,7 @@ Please help me choose the right AC for my needs. Thank you!`;
                 24/7 Emergency Service Available
               </div>
               <div className="flex items-center">
-                <Star className="h-4 w-4 mr-2 text-yellow-300 fill-current" />
+                <Star className="h-4 w-4 mr-2 text-[#4CC9F0] fill-current" />
                 4.9/5 Customer Rating
               </div>
             </div>
@@ -173,27 +173,6 @@ Please help me choose the right AC for my needs. Thank you!`;
         </motion.div>
       </div>
     </section>
-  );
-};
-
-// Missing Clock icon component
-const Clock = (props: React.SVGProps<SVGSVGElement>) => {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <polyline points="12,6 12,12 16,14" />
-    </svg>
   );
 };
 
