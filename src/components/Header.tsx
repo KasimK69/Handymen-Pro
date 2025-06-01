@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Phone, Mail, AirVent, Snowflake } from 'lucide-react';
+import { Menu, Phone, Mail, AirVent, Snowflake, Quote, Wrench } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Header = () => {
@@ -23,19 +23,24 @@ const Header = () => {
     { name: 'Home', path: '/' },
     { name: 'AC Buy & Sell', path: '/ac-buy-and-sale' },
     { name: 'Services', path: '/services' },
-    { name: 'Blogs', path: '/blog' },
+    { name: 'Blog', path: '/blog' },
+    { name: 'Contact', path: '/contact' },
   ];
 
-  const handleGetConsultation = () => {
-    const message = `Hello! I would like to get a free AC consultation. 
+  const handleGetQuote = () => {
+    window.location.href = '/get-quote';
+  };
 
-I'm interested in:
-- AC selection advice
-- Installation guidance  
-- Best models for my space
-- Pricing and warranty information
+  const handleGetService = () => {
+    const message = `Hello! I need AC service assistance. 
 
-Please help me choose the right AC for my needs. Thank you!`;
+I'm looking for:
+- Professional AC installation
+- Repair and maintenance
+- Emergency AC service
+- Expert consultation
+
+Please provide me with a quote and available service times. Thank you!`;
     
     const whatsappUrl = `https://wa.me/923125242182?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
@@ -46,35 +51,35 @@ Please help me choose the right AC for my needs. Thank you!`;
       <motion.header 
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled 
-            ? 'bg-white/95 backdrop-blur-md shadow-lg' 
-            : 'bg-white/90 backdrop-blur-sm'
+            ? 'bg-white/95 backdrop-blur-lg shadow-xl border-b border-gray-100' 
+            : 'bg-white/90 backdrop-blur-md'
         }`}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.6 }}
       >
         {/* Top Contact Bar */}
-        <div className="bg-gradient-to-r from-[#2D3559] to-[#4CC9F0] text-white py-2 px-4">
+        <div className="bg-gradient-to-r from-[#2D3559] via-[#8843F2] to-[#4CC9F0] text-white py-2.5 px-4">
           <div className="container mx-auto flex justify-between items-center text-sm">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-1">
-                <Phone className="h-3 w-3" />
-                <span>+92 312 5242182</span>
+            <div className="flex items-center space-x-6">
+              <div className="flex items-center space-x-2">
+                <Phone className="h-4 w-4" />
+                <span className="font-medium">+92 312 5242182</span>
               </div>
-              <div className="hidden md:flex items-center space-x-1">
-                <Mail className="h-3 w-3" />
+              <div className="hidden md:flex items-center space-x-2">
+                <Mail className="h-4 w-4" />
                 <span>info@acservices.pk</span>
               </div>
             </div>
-            <div className="text-xs">
-              ❄️ 24/7 Emergency AC Services Available
+            <div className="text-sm font-medium">
+              ❄️ 24/7 Emergency AC Services - Fast Response
             </div>
           </div>
         </div>
 
         {/* Main Navigation */}
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-18">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-3 group">
               <motion.div 
@@ -82,22 +87,22 @@ Please help me choose the right AC for my needs. Thank you!`;
                 whileHover={{ scale: 1.05 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
-                <div className="w-12 h-12 bg-gradient-to-br from-[#8843F2] to-[#FF467E] rounded-full flex items-center justify-center shadow-lg relative overflow-hidden">
-                  <AirVent className="h-7 w-7 text-white z-10" />
+                <div className="w-14 h-14 bg-gradient-to-br from-[#8843F2] to-[#FF467E] rounded-xl flex items-center justify-center shadow-lg relative overflow-hidden">
+                  <AirVent className="h-8 w-8 text-white z-10" />
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-br from-[#4CC9F0] to-[#8843F2] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                     animate={{ rotate: 360 }}
                     transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                   />
-                  <Snowflake className="absolute top-1 right-1 h-3 w-3 text-blue-200 animate-pulse" />
+                  <Snowflake className="absolute top-1 right-1 h-4 w-4 text-blue-200 animate-pulse" />
                 </div>
               </motion.div>
               <div className="hidden sm:block">
-                <h1 className="text-xl font-bold leading-tight font-['Inter']">
+                <h1 className="text-2xl font-bold leading-tight font-['Inter']">
                   <span className="text-[#2D3559]">AC</span>
-                  <span className="text-gray-800"> Services</span>
+                  <span className="text-[#8843F2]"> Services</span>
                 </h1>
-                <p className="text-xs text-gray-500 -mt-1">& Repairs Pakistan</p>
+                <p className="text-xs text-gray-600 -mt-1 font-medium">Professional AC Solutions Pakistan</p>
               </div>
             </Link>
 
@@ -107,9 +112,9 @@ Please help me choose the right AC for my needs. Thank you!`;
                 <Link
                   key={item.name}
                   to={item.path}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 relative group font-['Inter'] ${
+                  className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 relative group font-['Inter'] ${
                     location.pathname === item.path
-                      ? 'text-[#8843F2] bg-gradient-to-r from-[#8843F2]/10 to-[#FF467E]/10'
+                      ? 'text-[#8843F2] bg-gradient-to-r from-[#8843F2]/15 to-[#FF467E]/15'
                       : 'text-gray-700 hover:text-[#8843F2] hover:bg-gradient-to-r hover:from-[#8843F2]/10 hover:to-[#FF467E]/10'
                   }`}
                 >
@@ -121,14 +126,24 @@ Please help me choose the right AC for my needs. Thank you!`;
               ))}
             </nav>
 
-            {/* CTA Button */}
+            {/* CTA Buttons */}
             <div className="hidden md:flex items-center space-x-3">
               <Button 
-                onClick={handleGetConsultation}
+                onClick={handleGetService}
+                size="sm"
+                variant="outline"
+                className="border-[#8843F2] text-[#8843F2] hover:bg-[#8843F2] hover:text-white transition-all duration-300 font-['Inter'] font-medium px-4"
+              >
+                <Wrench className="mr-2 h-4 w-4" />
+                Get Service
+              </Button>
+              <Button 
+                onClick={handleGetQuote}
                 size="sm"
                 className="bg-gradient-to-r from-[#8843F2] to-[#FF467E] hover:from-[#7335E8] hover:to-[#F03A6E] text-white shadow-lg font-['Inter'] font-medium px-6"
               >
-                Get Free AC Consultation
+                <Quote className="mr-2 h-4 w-4" />
+                Get Quote
               </Button>
             </div>
 
@@ -142,12 +157,12 @@ Please help me choose the right AC for my needs. Thank you!`;
               <SheetContent side="right" className="w-80">
                 <div className="flex flex-col space-y-4 mt-8">
                   <div className="flex items-center space-x-3 pb-4 border-b">
-                    <div className="w-10 h-10 bg-gradient-to-br from-[#8843F2] to-[#FF467E] rounded-full flex items-center justify-center">
-                      <AirVent className="h-6 w-6 text-white" />
+                    <div className="w-12 h-12 bg-gradient-to-br from-[#8843F2] to-[#FF467E] rounded-xl flex items-center justify-center">
+                      <AirVent className="h-7 w-7 text-white" />
                     </div>
                     <div>
                       <h3 className="font-bold text-[#2D3559] font-['Inter']">AC Services</h3>
-                      <p className="text-xs text-gray-500">& Repairs Pakistan</p>
+                      <p className="text-xs text-gray-500">Professional Solutions</p>
                     </div>
                   </div>
                   
@@ -158,7 +173,7 @@ Please help me choose the right AC for my needs. Thank you!`;
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={`block px-4 py-3 rounded-lg text-sm font-medium transition-colors font-['Inter'] ${
                         location.pathname === item.path
-                          ? 'text-[#8843F2] bg-gradient-to-r from-[#8843F2]/10 to-[#FF467E]/10'
+                          ? 'text-[#8843F2] bg-gradient-to-r from-[#8843F2]/15 to-[#FF467E]/15'
                           : 'text-gray-700 hover:text-[#8843F2] hover:bg-gradient-to-r hover:from-[#8843F2]/10 hover:to-[#FF467E]/10'
                       }`}
                     >
@@ -169,12 +184,24 @@ Please help me choose the right AC for my needs. Thank you!`;
                   <div className="pt-4 space-y-3">
                     <Button 
                       onClick={() => {
-                        handleGetConsultation();
+                        handleGetService();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      variant="outline"
+                      className="w-full border-[#8843F2] text-[#8843F2] hover:bg-[#8843F2] hover:text-white font-['Inter'] font-medium"
+                    >
+                      <Wrench className="mr-2 h-4 w-4" />
+                      Get Service
+                    </Button>
+                    <Button 
+                      onClick={() => {
+                        handleGetQuote();
                         setIsMobileMenuOpen(false);
                       }}
                       className="w-full bg-gradient-to-r from-[#8843F2] to-[#FF467E] hover:from-[#7335E8] hover:to-[#F03A6E] text-white font-['Inter'] font-medium"
                     >
-                      Get Free AC Consultation
+                      <Quote className="mr-2 h-4 w-4" />
+                      Get Quote
                     </Button>
                   </div>
                 </div>
@@ -185,7 +212,7 @@ Please help me choose the right AC for my needs. Thank you!`;
       </motion.header>
       
       {/* Spacer */}
-      <div className="h-20"></div>
+      <div className="h-24"></div>
     </>
   );
 };
