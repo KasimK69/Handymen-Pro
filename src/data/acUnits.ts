@@ -17,6 +17,13 @@ export const acUnitsForSale: ACUnit[] = [
       '5-year comprehensive warranty',
       'Eco-friendly R32 refrigerant'
     ],
+    specifications: {
+      'Capacity': '1.5 Ton',
+      'Energy Rating': '5 Star',
+      'Compressor Type': 'Digital Inverter',
+      'Refrigerant': 'R32',
+      'Warranty': '5 Years'
+    },
     images: [
       'https://images.unsplash.com/photo-1625961332071-f1673bcbcda4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1631545806609-e6b76ea61e5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
@@ -24,6 +31,7 @@ export const acUnitsForSale: ACUnit[] = [
     ],
     condition: 'new',
     category: 'for-sale',
+    availability: 'in-stock',
     discounted: true,
     discountPercentage: 10,
     description: 'Premium Samsung Digital Inverter AC with cutting-edge technology for maximum energy efficiency and comfort. Features smart controls and rapid cooling capabilities perfect for Pakistani summers.'
@@ -42,12 +50,20 @@ export const acUnitsForSale: ACUnit[] = [
       'Ocean Black Protection',
       'Himalaya Cool technology'
     ],
+    specifications: {
+      'Capacity': '1 Ton',
+      'Energy Rating': '4 Star',
+      'Compressor Type': 'Inverter',
+      'Refrigerant': 'R32',
+      'Warranty': '3 Years'
+    },
     images: [
       'https://images.unsplash.com/photo-1580595999172-787970a962d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1596526131252-cbdaa2a51bb6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
     ],
     condition: 'new',
     category: 'for-sale',
+    availability: 'in-stock',
     discounted: false,
     discountPercentage: 0,
     description: 'LG Eco Inverter AC with superior energy efficiency and advanced cooling technology. Perfect for medium-sized rooms with smart home integration capabilities.'
@@ -67,12 +83,20 @@ export const acUnitsForSale: ACUnit[] = [
       'Turbo cooling mode',
       'Ultra-quiet operation'
     ],
+    specifications: {
+      'Capacity': '2 Ton',
+      'Energy Rating': '5 Star',
+      'Compressor Type': 'DC Inverter',
+      'Refrigerant': 'R410A',
+      'Warranty': '10 Years'
+    },
     images: [
       'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
     ],
     condition: 'new',
     category: 'for-sale',
+    availability: 'in-stock',
     discounted: true,
     discountPercentage: 10,
     description: 'Haier Pearl 2 Ton DC Inverter AC with advanced self-cleaning technology and copper condensers for maximum durability and performance in extreme heat.'
@@ -91,11 +115,19 @@ export const acUnitsForSale: ACUnit[] = [
       'Good working condition',
       'Suitable for small rooms'
     ],
+    specifications: {
+      'Capacity': '1 Ton',
+      'Energy Rating': '3 Star',
+      'Compressor Type': 'Standard',
+      'Refrigerant': 'R22',
+      'Warranty': '6 Months'
+    },
     images: [
       'https://images.unsplash.com/photo-1596526131252-cbdaa2a51bb6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
     ],
     condition: 'used',
     category: 'for-sale',
+    availability: 'in-stock',
     discounted: false,
     discountPercentage: 0,
     description: 'Well-maintained Orient 1 Ton Split AC in excellent working condition. Recently serviced and perfect for budget-conscious buyers looking for reliable cooling.'
@@ -114,12 +146,20 @@ export const acUnitsForSale: ACUnit[] = [
       'Golden fin technology',
       'Smart diagnosis'
     ],
+    specifications: {
+      'Capacity': '1.5 Ton',
+      'Energy Rating': '4 Star',
+      'Compressor Type': 'Inverter',
+      'Refrigerant': 'R32',
+      'Warranty': '5 Years'
+    },
     images: [
       'https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1625961332071-f1673bcbcda4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
     ],
     condition: 'new',
     category: 'for-sale',
+    availability: 'in-stock',
     discounted: false,
     discountPercentage: 0,
     description: 'Gree Crown 1.5 Ton Inverter AC with cold plasma technology for air purification and 3D airflow for uniform cooling throughout the room.'
@@ -139,12 +179,20 @@ export const acUnitsForSale: ACUnit[] = [
       'Streamer technology',
       'Ultra-efficient operation'
     ],
+    specifications: {
+      'Capacity': '2 Ton',
+      'Energy Rating': '5 Star',
+      'Compressor Type': 'Inverter',
+      'Refrigerant': 'R32',
+      'Warranty': '5 Years'
+    },
     images: [
       'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1580595999172-787970a962d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
     ],
     condition: 'new',
     category: 'for-sale',
+    availability: 'in-stock',
     discounted: true,
     discountPercentage: 12,
     description: 'Premium Daikin Emura 2 Ton AC with sleek design, intelligent sensors, and advanced Coanda airflow technology for superior comfort and aesthetics.'
@@ -165,9 +213,17 @@ export const acUnitsWanted: ACUnit[] = [
       'Energy efficient model',
       'Original warranty papers'
     ],
+    specifications: {
+      'Capacity': '1 Ton',
+      'Condition': 'Good',
+      'Age': 'Under 3 years',
+      'Technology': 'Inverter',
+      'Budget': 'Up to PKR 100,000'
+    },
     images: [''],
     condition: 'used',
     category: 'wanted',
+    availability: 'pre-order',
     discounted: false,
     discountPercentage: 0,
     description: 'Looking for a Samsung 1 Ton Inverter AC in good working condition. Prefer recent models with energy efficiency. Budget up to PKR 100,000.'
@@ -185,9 +241,17 @@ export const acUnitsWanted: ACUnit[] = [
       'Immediate purchase',
       'Cash payment ready'
     ],
+    specifications: {
+      'Capacity': '1.5 Ton',
+      'Condition': 'Working',
+      'Urgency': 'Immediate',
+      'Payment': 'Cash',
+      'Budget': 'Up to PKR 80,000'
+    },
     images: [''],
     condition: 'used',
     category: 'wanted',
+    availability: 'pre-order',
     discounted: false,
     discountPercentage: 0,
     description: 'Urgently need an LG 1.5 Ton AC for new office setup. Any working condition acceptable. Can pay cash immediately and arrange pickup.'
@@ -205,9 +269,17 @@ export const acUnitsWanted: ACUnit[] = [
       'Serious buyer only',
       'Can inspect before purchase'
     ],
+    specifications: {
+      'Capacity': '2 Ton',
+      'Technology': 'DC Inverter',
+      'Coil Type': 'Copper preferred',
+      'Condition': 'Good',
+      'Budget': 'Up to PKR 120,000'
+    },
     images: [''],
     condition: 'new',
     category: 'wanted',
+    availability: 'pre-order',
     discounted: false,
     discountPercentage: 0,
     description: 'Looking for a Haier 2 Ton DC Inverter AC for large bedroom. Prefer copper coil models with good energy efficiency. Serious buyer with immediate payment.'

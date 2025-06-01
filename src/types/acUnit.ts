@@ -5,6 +5,7 @@ export interface ACUnit {
   brand: string;
   description: string;
   price: number;
+  originalPrice?: number;
   images: string[];
   features: string[];
   specifications: Record<string, string>;
