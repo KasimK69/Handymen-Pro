@@ -1,162 +1,187 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Package, FileText, Users, Settings, TrendingUp, Eye, MessageSquare, Star } from 'lucide-react';
-import AdminProductsManager from '@/components/admin/AdminProductsManager';
-import AdminBlogManager from '@/components/admin/AdminBlogManager';
+import { Button } from '@/components/ui/button';
+import { useAdminAuth } from '@/context/AdminAuthContext';
+import { 
+  FileText, 
+  ShoppingCart, 
+  Settings, 
+  Users, 
+  BarChart3, 
+  Calendar,
+  LogOut,
+  Package
+} from 'lucide-react';
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
+  const { logout, isAuthenticated } = useAdminAuth();
+
+  React.useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/admin/login');
+    }
+  }, [isAuthenticated, navigate]);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/admin/login');
+  };
+
+  const dashboardCards = [
+    {
+      title: 'Blog Posts',
+      description: 'Manage blog content',
+      icon: FileText,
+      count: '12',
+      link: '/admin/blogs',
+      color: 'from-blue-500 to-blue-600'
+    },
+    {
+      title: 'AC Products',
+      description: 'Manage AC listings',
+      icon: Package,
+      count: '8',
+      link: '/admin/products',
+      color: 'from-green-500 to-green-600'
+    },
+    {
+      title: 'Services',
+      description: 'Manage services offered',
+      icon: Settings,
+      count: '6',
+      link: '/admin/services',
+      color: 'from-purple-500 to-purple-600'
+    },
+    {
+      title: 'Inquiries',
+      description: 'Customer inquiries',
+      icon: Users,
+      count: '24',
+      link: '/admin/inquiries',
+      color: 'from-orange-500 to-orange-600'
+    }
+  ];
+
+  if (!isAuthenticated) {
+    return null;
+  }
+
   return (
-    <div className="space-y-8">
-      {/* Dashboard Header */}
-      <div>
-        <h1 className="text-4xl font-bold text-[#2D3559] mb-2">AC Services Admin Dashboard</h1>
-        <p className="text-gray-600">Manage your AC services website content and listings</p>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total AC Products</CardTitle>
-            <Package className="h-4 w-4 text-[#8843F2]" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">12</div>
-            <p className="text-xs text-gray-600">+2 new this month</p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Blog Posts</CardTitle>
-            <FileText className="h-4 w-4 text-[#FF467E]" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">8</div>
-            <p className="text-xs text-gray-600">+3 published this week</p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Page Views</CardTitle>
-            <Eye className="h-4 w-4 text-[#4CC9F0]" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">2,543</div>
-            <p className="text-xs text-gray-600">+15% from last month</p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Inquiries</CardTitle>
-            <MessageSquare className="h-4 w-4 text-[#2D3559]" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">45</div>
-            <p className="text-xs text-gray-600">+8 this week</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Main Content Tabs */}
-      <Tabs defaultValue="products" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="products" className="flex items-center gap-2">
-            <Package className="h-4 w-4" />
-            AC Products
-          </TabsTrigger>
-          <TabsTrigger value="blog" className="flex items-center gap-2">
-            <FileText className="h-4 w-4" />
-            Blog Posts
-          </TabsTrigger>
-          <TabsTrigger value="services" className="flex items-center gap-2">
-            <Settings className="h-4 w-4" />
-            Services
-          </TabsTrigger>
-          <TabsTrigger value="analytics" className="flex items-center gap-2">
-            <TrendingUp className="h-4 w-4" />
-            Analytics
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="products">
-          <AdminProductsManager />
-        </TabsContent>
-
-        <TabsContent value="blog">
-          <AdminBlogManager />
-        </TabsContent>
-
-        <TabsContent value="services">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-2xl">Services Management</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-12">
-                <Settings className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                <h3 className="text-lg font-medium mb-2">Services Management</h3>
-                <p className="text-gray-500 mb-4">
-                  Manage your AC services, pricing, and descriptions
-                </p>
-                <p className="text-sm text-gray-400">Coming soon...</p>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="analytics">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Popular AC Products</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Samsung Digital Inverter AC</span>
-                    <span className="text-sm font-medium">156 views</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">LG Eco Inverter AC</span>
-                    <span className="text-sm font-medium">134 views</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Haier DC Inverter</span>
-                    <span className="text-sm font-medium">98 views</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Top Blog Posts</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">AC Maintenance Tips</span>
-                    <span className="text-sm font-medium">245 reads</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Best AC Models 2024</span>
-                    <span className="text-sm font-medium">198 reads</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Save Electricity with AC</span>
-                    <span className="text-sm font-medium">167 reads</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+    <div className="min-h-screen bg-gray-50">
+      <div className="p-4 md:p-8">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-4xl font-bold text-[#2D3559]">Admin Dashboard</h1>
+            <p className="text-gray-600 mt-2">Welcome to AC Services Admin Panel</p>
           </div>
-        </TabsContent>
-      </Tabs>
+          <Button
+            onClick={handleLogout}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <LogOut className="h-4 w-4" />
+            Logout
+          </Button>
+        </div>
+
+        {/* Dashboard Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {dashboardCards.map((card, index) => (
+            <Card 
+              key={index}
+              className="hover:shadow-lg transition-shadow cursor-pointer"
+              onClick={() => navigate(card.link)}
+            >
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <div className={`p-3 rounded-full bg-gradient-to-r ${card.color}`}>
+                    <card.icon className="h-6 w-6 text-white" />
+                  </div>
+                  <div className="text-2xl font-bold text-gray-700">{card.count}</div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <CardTitle className="text-lg mb-1">{card.title}</CardTitle>
+                <p className="text-sm text-gray-600">{card.description}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Quick Actions */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BarChart3 className="h-5 w-5" />
+              Quick Actions
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Button 
+                onClick={() => navigate('/admin/blogs')}
+                className="bg-gradient-to-r from-[#8843F2] to-[#FF467E] text-white"
+              >
+                <FileText className="mr-2 h-4 w-4" />
+                Create New Blog Post
+              </Button>
+              <Button 
+                onClick={() => navigate('/admin/products')}
+                variant="outline"
+              >
+                <Package className="mr-2 h-4 w-4" />
+                Add AC Product
+              </Button>
+              <Button 
+                onClick={() => navigate('/admin/services')}
+                variant="outline"
+              >
+                <Settings className="mr-2 h-4 w-4" />
+                Add New Service
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Recent Activity */}
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Calendar className="h-5 w-5" />
+              Recent Activity
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <FileText className="h-5 w-5 text-blue-500" />
+                <div>
+                  <p className="font-medium">New blog post published</p>
+                  <p className="text-sm text-gray-600">2 hours ago</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <Package className="h-5 w-5 text-green-500" />
+                <div>
+                  <p className="font-medium">AC product added to marketplace</p>
+                  <p className="text-sm text-gray-600">5 hours ago</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <Users className="h-5 w-5 text-orange-500" />
+                <div>
+                  <p className="font-medium">New customer inquiry received</p>
+                  <p className="text-sm text-gray-600">1 day ago</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };

@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import Hero from '@/components/home/Hero';
 import SmartAdport from '@/components/home/SmartAdport';
 import PremiumACCollection from '@/components/home/PremiumACCollection';
-import WhyChooseUs from '@/components/home/WhyChooseUs';
 import Features from '@/components/home/Features';
 import Testimonials from '@/components/home/Testimonials';
 import CTA from '@/components/home/CTA';
@@ -37,7 +36,6 @@ const Home = () => {
       <Hero />
       <SmartAdport />
       <PremiumACCollection />
-      <WhyChooseUs />
       <Features />
       <Testimonials />
       <MapLocation />
