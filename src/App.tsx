@@ -30,11 +30,11 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <SessionContextProvider supabaseClient={supabase}>
-      <AdminAuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <AdminAuthProvider>
             <Routes>
               {/* Admin Routes */}
               <Route path="/admin/login" element={<AdminLogin />} />
@@ -63,9 +63,9 @@ const App = () => (
                 </div>
               } />
             </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </AdminAuthProvider>
+          </AdminAuthProvider>
+        </BrowserRouter>
+      </TooltipProvider>
     </SessionContextProvider>
   </QueryClientProvider>
 );

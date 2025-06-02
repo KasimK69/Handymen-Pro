@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
-import { Plus, Edit, Trash2, Eye, Search } from 'lucide-react';
+import { Plus, Edit, Trash2, Search } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import AdminLayout from '@/components/admin/AdminLayout';
 
@@ -15,10 +15,12 @@ interface BlogPost {
   title: string;
   slug: string;
   content: string;
-  excerpt: string;
+  excerpt: string | null;
   image_url: string | null;
   status: string;
   featured: boolean;
+  author: string;
+  category: string;
   created_at: string;
 }
 
@@ -34,8 +36,10 @@ const AdminBlogs = () => {
     content: '',
     excerpt: '',
     image_url: '',
-    status: 'draft',
-    featured: false
+    status: 'active',
+    featured: false,
+    author: 'Admin',
+    category: 'General'
   });
 
   useEffect(() => {
@@ -45,7 +49,7 @@ const AdminBlogs = () => {
   const fetchBlogs = async () => {
     try {
       const { data, error } = await supabase
-        .from('blog_posts')
+        .from('blogs')
         .select('*')
         .order('created_at', { ascending: false });
       
@@ -71,7 +75,7 @@ const AdminBlogs = () => {
       
       if (editingBlog) {
         const { error } = await supabase
-          .from('blog_posts')
+          .from('blogs')
           .update({ ...formData, slug })
           .eq('id', editingBlog.id);
         
@@ -79,7 +83,7 @@ const AdminBlogs = () => {
         toast({ title: "Success", description: "Blog post updated successfully" });
       } else {
         const { error } = await supabase
-          .from('blog_posts')
+          .from('blogs')
           .insert({ ...formData, slug });
         
         if (error) throw error;
@@ -104,8 +108,10 @@ const AdminBlogs = () => {
       content: '',
       excerpt: '',
       image_url: '',
-      status: 'draft',
-      featured: false
+      status: 'active',
+      featured: false,
+      author: 'Admin',
+      category: 'General'
     });
     setIsCreating(false);
     setEditingBlog(null);
@@ -115,10 +121,12 @@ const AdminBlogs = () => {
     setFormData({
       title: blog.title,
       content: blog.content,
-      excerpt: blog.excerpt,
+      excerpt: blog.excerpt || '',
       image_url: blog.image_url || '',
       status: blog.status,
-      featured: blog.featured
+      featured: blog.featured,
+      author: blog.author,
+      category: blog.category
     });
     setEditingBlog(blog);
     setIsCreating(true);
@@ -129,7 +137,7 @@ const AdminBlogs = () => {
     
     try {
       const { error } = await supabase
-        .from('blog_posts')
+        .from('blogs')
         .delete()
         .eq('id', id);
       
@@ -148,7 +156,7 @@ const AdminBlogs = () => {
 
   const filteredBlogs = blogs.filter(blog =>
     blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    blog.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
+    (blog.excerpt && blog.excerpt.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   if (loading) {
@@ -254,7 +262,7 @@ const AdminBlogs = () => {
                     <h3 className="font-semibold text-[#2D3559]">{blog.title}</h3>
                     <p className="text-sm text-gray-600 mt-1">{blog.excerpt}</p>
                     <div className="flex items-center gap-2 mt-2">
-                      <Badge variant={blog.status === 'published' ? 'default' : 'secondary'}>
+                      <Badge variant={blog.status === 'active' ? 'default' : 'secondary'}>
                         {blog.status}
                       </Badge>
                       {blog.featured && <Badge variant="outline">Featured</Badge>}
