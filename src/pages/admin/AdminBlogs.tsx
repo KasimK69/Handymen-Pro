@@ -8,7 +8,6 @@ import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { Plus, Edit, Trash2, Search } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
-import AdminLayout from '@/components/admin/AdminLayout';
 
 interface BlogPost {
   id: string;
@@ -161,17 +160,17 @@ const AdminBlogs = () => {
 
   if (loading) {
     return (
-      <AdminLayout>
+      <div className="min-h-screen bg-gray-50">
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#8843F2]"></div>
         </div>
-      </AdminLayout>
+      </div>
     );
   }
 
   return (
-    <AdminLayout>
-      <div className="space-y-6">
+    <div className="min-h-screen bg-gray-50">
+      <div className="p-4 md:p-8 space-y-6">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold text-[#2D3559]">Blog Management</h1>
           <Button
@@ -282,7 +281,7 @@ const AdminBlogs = () => {
           </CardContent>
         </Card>
       </div>
-    </AdminLayout>
+    </div>
   );
 };
 
