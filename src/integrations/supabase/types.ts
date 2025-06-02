@@ -9,6 +9,72 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      ac_products: {
+        Row: {
+          brand: string
+          category: string
+          condition: string
+          contact_info: string | null
+          created_at: string
+          description: string | null
+          energy_rating: string | null
+          featured: boolean | null
+          features: string[] | null
+          id: string
+          images: string[] | null
+          location: string | null
+          name: string
+          original_price: number | null
+          price: number
+          status: string
+          tonnage: string | null
+          updated_at: string
+          views: number | null
+        }
+        Insert: {
+          brand: string
+          category?: string
+          condition?: string
+          contact_info?: string | null
+          created_at?: string
+          description?: string | null
+          energy_rating?: string | null
+          featured?: boolean | null
+          features?: string[] | null
+          id?: string
+          images?: string[] | null
+          location?: string | null
+          name: string
+          original_price?: number | null
+          price: number
+          status?: string
+          tonnage?: string | null
+          updated_at?: string
+          views?: number | null
+        }
+        Update: {
+          brand?: string
+          category?: string
+          condition?: string
+          contact_info?: string | null
+          created_at?: string
+          description?: string | null
+          energy_rating?: string | null
+          featured?: boolean | null
+          features?: string[] | null
+          id?: string
+          images?: string[] | null
+          location?: string | null
+          name?: string
+          original_price?: number | null
+          price?: number
+          status?: string
+          tonnage?: string | null
+          updated_at?: string
+          views?: number | null
+        }
+        Relationships: []
+      }
       blogs: {
         Row: {
           author: string
