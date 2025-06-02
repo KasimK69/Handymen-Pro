@@ -14,8 +14,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const AdminHeader = () => {
-  const { user, logout } = useAdminAuth();
+  const { logout } = useAdminAuth();
   const navigate = useNavigate();
+  
+  const handleLogout = () => {
+    logout();
+    navigate('/admin/login');
+  };
   
   return (
     <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm py-2 px-4">
@@ -43,9 +48,9 @@ const AdminHeader = () => {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-sm font-medium">
-                  {user?.name.charAt(0)}
+                  A
                 </div>
-                <span className="hidden md:inline">{user?.name}</span>
+                <span className="hidden md:inline">Admin</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
@@ -55,7 +60,7 @@ const AdminHeader = () => {
                 <span>Profile Settings</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={logout}>
+              <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Logout</span>
               </DropdownMenuItem>
