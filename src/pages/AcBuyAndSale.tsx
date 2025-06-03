@@ -115,7 +115,12 @@ const AcBuyAndSale: React.FC = () => {
 
   const updateViewCount = async (productId: string) => {
     try {
-      const { error } = await supabase.rpc('increment_views', { product_id: productId });
+      // Direct database update instead of RPC call to avoid TypeScript issues
+      const { error } = await supabase
+        .from('ac_products')
+        .update({ views: supabase.raw('views + 1') })
+        .eq('id', productId);
+      
       if (error) console.error('Error updating view count:', error);
     } catch (error) {
       console.error('Error updating view count:', error);
