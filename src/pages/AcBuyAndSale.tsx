@@ -1,7 +1,7 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from '@/hooks/use-toast';
-import { acUnitsForSale, acUnitsWanted } from '@/data/acUnits';
+import { supabase } from '@/integrations/supabase/client';
 import { ACUnit } from '@/types/acUnit';
 import HeroSection from '@/components/ac-buy-sale/HeroSection';
 import FeaturesSection from '@/components/ac-buy-sale/FeaturesSection';
@@ -16,6 +16,9 @@ const AcBuyAndSale: React.FC = () => {
   const [selectedUnit, setSelectedUnit] = useState<ACUnit | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isSellingFormOpen, setIsSellingFormOpen] = useState(false);
+  const [acUnitsForSale, setAcUnitsForSale] = useState<ACUnit[]>([]);
+  const [acUnitsWanted, setAcUnitsWanted] = useState<ACUnit[]>([]);
+  const [loading, setLoading] = useState(true);
   const [sellingFormData, setSellingFormData] = useState({
     name: '',
     price: '',
@@ -27,6 +30,64 @@ const AcBuyAndSale: React.FC = () => {
     images: ['', '', ''],
     location: '',
   });
+
+  useEffect(() => {
+    fetchACProducts();
+  }, []);
+
+  const fetchACProducts = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('ac_products')
+        .select('*')
+        .eq('status', 'active')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      // Convert database records to ACUnit format
+      const convertedData: ACUnit[] = (data || []).map(product => ({
+        id: product.id,
+        name: product.name,
+        brand: product.brand,
+        description: product.description || '',
+        price: Number(product.price),
+        originalPrice: product.original_price ? Number(product.original_price) : undefined,
+        images: product.images || [],
+        features: product.features || [],
+        specifications: {
+          tonnage: product.tonnage || '',
+          energyRating: product.energy_rating || '',
+        },
+        condition: product.condition as 'new' | 'used',
+        discounted: product.original_price ? Number(product.original_price) > Number(product.price) : false,
+        discountPercentage: product.original_price 
+          ? Math.round(((Number(product.original_price) - Number(product.price)) / Number(product.original_price)) * 100)
+          : undefined,
+        availability: 'in-stock' as const,
+        featured: product.featured || false,
+        rating: 4.5, // Default rating since not in DB yet
+        category: product.category as 'for-sale' | 'wanted',
+      }));
+
+      // Separate products by category
+      const forSale = convertedData.filter(product => product.category === 'for-sale' || product.category === undefined);
+      const wanted = convertedData.filter(product => product.category === 'wanted');
+
+      setAcUnitsForSale(forSale);
+      setAcUnitsWanted(wanted);
+    } catch (error) {
+      console.error('Error fetching AC products:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load AC products. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
   
   const formatPrice = (price: number): string => {
     return `PKR ${price.toLocaleString()}`;
@@ -47,6 +108,18 @@ const AcBuyAndSale: React.FC = () => {
   const handleOpenGallery = (unit: ACUnit): void => {
     setSelectedUnit(unit);
     setCurrentImageIndex(0);
+    
+    // Update view count
+    updateViewCount(unit.id);
+  };
+
+  const updateViewCount = async (productId: string) => {
+    try {
+      const { error } = await supabase.rpc('increment_views', { product_id: productId });
+      if (error) console.error('Error updating view count:', error);
+    } catch (error) {
+      console.error('Error updating view count:', error);
+    }
   };
 
   const handleCloseGallery = (): void => {
@@ -85,24 +158,66 @@ const AcBuyAndSale: React.FC = () => {
     }));
   };
 
-  const handleSubmitSelling = (e: React.FormEvent): void => {
+  const handleSubmitSelling = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
-    toast({
-      title: "AC Listing Submitted",
-      description: "Thank you! Your AC listing has been submitted for review. Our team will contact you shortly.",
-    });
-    setIsSellingFormOpen(false);
-    setSellingFormData({
-      name: '',
-      price: '',
-      description: '',
-      contact: '',
-      condition: 'used',
-      model: '',
-      brand: '',
-      images: ['', '', ''],
-      location: '',
-    });
+    
+    if (!sellingFormData.name || !sellingFormData.price || !sellingFormData.contact) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      const productData = {
+        name: sellingFormData.name,
+        brand: sellingFormData.brand || 'Generic',
+        description: sellingFormData.description,
+        price: Number(sellingFormData.price),
+        category: 'sale',
+        condition: sellingFormData.condition,
+        images: sellingFormData.images.filter(img => img.trim() !== ''),
+        contact_info: sellingFormData.contact,
+        location: sellingFormData.location,
+        status: 'active'
+      };
+
+      const { error } = await supabase
+        .from('ac_products')
+        .insert([productData]);
+
+      if (error) throw error;
+
+      toast({
+        title: "AC Listed Successfully",
+        description: "Your AC has been listed for sale. Our team will review it shortly.",
+      });
+
+      setIsSellingFormOpen(false);
+      setSellingFormData({
+        name: '',
+        price: '',
+        description: '',
+        contact: '',
+        condition: 'used',
+        model: '',
+        brand: '',
+        images: ['', '', ''],
+        location: '',
+      });
+
+      // Refresh the products list
+      fetchACProducts();
+    } catch (error) {
+      console.error('Error submitting AC listing:', error);
+      toast({
+        title: "Error",
+        description: "Failed to submit your AC listing. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleContactBuyer = (): void => {
@@ -112,6 +227,19 @@ const AcBuyAndSale: React.FC = () => {
     });
     handleCloseGallery();
   };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col min-h-screen pt-20">
+        <div className="flex items-center justify-center py-20">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#8843F2] mx-auto mb-4"></div>
+            <p className="text-lg text-gray-600">Loading AC products...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen pt-20">

@@ -1,11 +1,11 @@
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Star, Eye, MessageSquare, ArrowRight, AirVent, ShoppingCart, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ACUnit {
   id: string;
@@ -22,62 +22,54 @@ interface ACUnit {
   energyRating: string;
 }
 
-const featuredACs: ACUnit[] = [
-  {
-    id: '1',
-    name: 'Inverter Split AC',
-    brand: 'Samsung',
-    price: 135000,
-    originalPrice: 150000,
-    rating: 4.9,
-    image: 'https://images.unsplash.com/photo-1625961332071-f1673bcbcda4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    condition: 'new',
-    features: ['Energy Efficient', 'Smart WiFi Control', 'Fast Cooling', '5 Year Warranty'],
-    discount: 10,
-    tonnage: '1.5 Ton',
-    energyRating: '5 Star'
-  },
-  {
-    id: '2',
-    name: 'Eco Inverter AC',
-    brand: 'LG',
-    price: 115000,
-    rating: 4.8,
-    image: 'https://images.unsplash.com/photo-1580595999172-787970a962d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    condition: 'new',
-    features: ['Low Power Consumption', 'Dual Protection', 'WiFi Enabled', '3 Year Warranty'],
-    tonnage: '1 Ton',
-    energyRating: '4 Star'
-  },
-  {
-    id: '3',
-    name: 'Ultra Cool AC',
-    brand: 'Haier',
-    price: 175000,
-    originalPrice: 190000,
-    rating: 4.9,
-    image: 'https://images.unsplash.com/photo-1581275326027-70a6b944649a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    condition: 'new',
-    features: ['Heavy Duty Cooling', 'Turbo Mode', 'Self Cleaning', '7 Year Warranty'],
-    discount: 8,
-    tonnage: '2 Ton',
-    energyRating: '5 Star'
-  },
-  {
-    id: '4',
-    name: 'Standard Window AC',
-    brand: 'Gree',
-    price: 95000,
-    rating: 4.6,
-    image: 'https://images.unsplash.com/photo-1563351672-62b74891a28a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    condition: 'used',
-    features: ['Good Condition', 'Regular Service Done', 'Affordable Price', '1 Year Warranty'],
-    tonnage: '1.5 Ton',
-    energyRating: '3 Star'
-  }
-];
-
 const ACBuyAndSale = () => {
+  const [featuredACs, setFeaturedACs] = useState<ACUnit[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchFeaturedACs();
+  }, []);
+
+  const fetchFeaturedACs = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('ac_products')
+        .select('*')
+        .eq('status', 'active')
+        .eq('category', 'sale')
+        .limit(4)
+        .order('featured', { ascending: false })
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      const convertedData: ACUnit[] = (data || []).map(product => ({
+        id: product.id,
+        name: product.name,
+        brand: product.brand,
+        price: Number(product.price),
+        originalPrice: product.original_price ? Number(product.original_price) : undefined,
+        rating: 4.8, // Default rating
+        image: product.images?.[0] || 'https://images.unsplash.com/photo-1625961332071-f1673bcbcda4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        condition: product.condition as 'new' | 'used',
+        features: product.features?.slice(0, 4) || [],
+        discount: product.original_price 
+          ? Math.round(((Number(product.original_price) - Number(product.price)) / Number(product.original_price)) * 100)
+          : undefined,
+        tonnage: product.tonnage || '1.5 Ton',
+        energyRating: product.energy_rating || '5 Star'
+      }));
+
+      setFeaturedACs(convertedData);
+    } catch (error) {
+      console.error('Error fetching featured ACs:', error);
+      // Fallback to empty array if there's an error
+      setFeaturedACs([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const formatPrice = (price: number) => `PKR ${price.toLocaleString()}`;
 
   const handleWhatsAppInquiry = (ac: ACUnit) => {
@@ -97,6 +89,19 @@ Please provide more details and confirm availability. Thank you!`;
     const whatsappUrl = `https://wa.me/923125242182?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
+
+  if (loading) {
+    return (
+      <section className="py-20 bg-gradient-to-br from-gray-50 via-blue-50/30 to-white relative overflow-hidden">
+        <div className="container mx-auto px-4">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-lg text-gray-600">Loading featured ACs...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-20 bg-gradient-to-br from-gray-50 via-blue-50/30 to-white relative overflow-hidden">
@@ -159,141 +164,152 @@ Please provide more details and confirm availability. Thank you!`;
         </motion.div>
 
         {/* Featured AC Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-          {featuredACs.map((ac, index) => (
-            <motion.div
-              key={ac.id}
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ 
-                duration: 0.6, 
-                delay: 0.2 * index,
-                type: "spring",
-                stiffness: 100
-              }}
-              whileHover={{ y: -10 }}
-              className="group"
-            >
-              <Card className="overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 bg-white/80 backdrop-blur-sm">
-                <div className="relative overflow-hidden h-48">
-                  <img 
-                    src={ac.image} 
-                    alt={ac.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
-                  
-                  {/* Overlays */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  
-                  {/* Badges */}
-                  <div className="absolute top-3 left-3 flex flex-col gap-2">
-                    {ac.discount && (
-                      <Badge className="bg-red-500 hover:bg-red-600 text-white font-semibold">
-                        {ac.discount}% OFF
-                      </Badge>
-                    )}
-                    <Badge className={`font-semibold ${ac.condition === 'new' ? 'bg-green-500 hover:bg-green-600' : 'bg-orange-500 hover:bg-orange-600'} text-white`}>
-                      {ac.condition === 'new' ? 'Brand New' : 'Used'}
-                    </Badge>
-                  </div>
-                  
-                  <div className="absolute top-3 right-3">
-                    <Badge variant="outline" className="bg-white/90 text-blue-700 border-blue-200 font-semibold">
-                      {ac.brand}
-                    </Badge>
-                  </div>
-
-                  {/* Quick View Button */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <Button 
-                      className="bg-white/20 backdrop-blur-md text-white border border-white/30 hover:bg-white/30"
-                      onClick={() => handleWhatsAppInquiry(ac)}
-                    >
-                      <Eye className="h-4 w-4 mr-2" />
-                      Quick View
-                    </Button>
-                  </div>
-                </div>
-                
-                <CardContent className="p-6">
-                  <div className="mb-4">
-                    <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-1 group-hover:text-blue-600 transition-colors">
-                      {ac.name}
-                    </h3>
+        {featuredACs.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+            {featuredACs.map((ac, index) => (
+              <motion.div
+                key={ac.id}
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ 
+                  duration: 0.6, 
+                  delay: 0.2 * index,
+                  type: "spring",
+                  stiffness: 100
+                }}
+                whileHover={{ y: -10 }}
+                className="group"
+              >
+                <Card className="overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 bg-white/80 backdrop-blur-sm">
+                  <div className="relative overflow-hidden h-48">
+                    <img 
+                      src={ac.image} 
+                      alt={ac.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    />
                     
-                    {/* Rating */}
-                    <div className="flex items-center mb-3">
-                      <div className="flex mr-2">
-                        {[...Array(5)].map((_, i) => (
-                          <Star 
-                            key={i} 
-                            className={`h-4 w-4 ${i < Math.floor(ac.rating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
-                          />
+                    {/* Overlays */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    
+                    {/* Badges */}
+                    <div className="absolute top-3 left-3 flex flex-col gap-2">
+                      {ac.discount && (
+                        <Badge className="bg-red-500 hover:bg-red-600 text-white font-semibold">
+                          {ac.discount}% OFF
+                        </Badge>
+                      )}
+                      <Badge className={`font-semibold ${ac.condition === 'new' ? 'bg-green-500 hover:bg-green-600' : 'bg-orange-500 hover:bg-orange-600'} text-white`}>
+                        {ac.condition === 'new' ? 'Brand New' : 'Used'}
+                      </Badge>
+                    </div>
+                    
+                    <div className="absolute top-3 right-3">
+                      <Badge variant="outline" className="bg-white/90 text-blue-700 border-blue-200 font-semibold">
+                        {ac.brand}
+                      </Badge>
+                    </div>
+
+                    {/* Quick View Button */}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <Button 
+                        className="bg-white/20 backdrop-blur-md text-white border border-white/30 hover:bg-white/30"
+                        onClick={() => handleWhatsAppInquiry(ac)}
+                      >
+                        <Eye className="h-4 w-4 mr-2" />
+                        Quick View
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <CardContent className="p-6">
+                    <div className="mb-4">
+                      <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-1 group-hover:text-blue-600 transition-colors">
+                        {ac.name}
+                      </h3>
+                      
+                      {/* Rating */}
+                      <div className="flex items-center mb-3">
+                        <div className="flex mr-2">
+                          {[...Array(5)].map((_, i) => (
+                            <Star 
+                              key={i} 
+                              className={`h-4 w-4 ${i < Math.floor(ac.rating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-sm font-medium text-gray-600">{ac.rating}</span>
+                      </div>
+
+                      {/* Specifications */}
+                      <div className="flex items-center gap-4 mb-3 text-sm text-gray-600">
+                        <div className="flex items-center">
+                          <Zap className="h-3 w-3 mr-1 text-green-600" />
+                          {ac.energyRating}
+                        </div>
+                        <div className="flex items-center">
+                          <AirVent className="h-3 w-3 mr-1 text-blue-600" />
+                          {ac.tonnage}
+                        </div>
+                      </div>
+                      
+                      {/* Price */}
+                      <div className="mb-4">
+                        {ac.originalPrice ? (
+                          <div className="flex items-center gap-2">
+                            <span className="text-2xl font-bold text-blue-600">{formatPrice(ac.price)}</span>
+                            <span className="text-sm text-gray-500 line-through">{formatPrice(ac.originalPrice)}</span>
+                          </div>
+                        ) : (
+                          <span className="text-2xl font-bold text-blue-600">{formatPrice(ac.price)}</span>
+                        )}
+                      </div>
+                      
+                      {/* Features */}
+                      <div className="space-y-1 mb-4">
+                        {ac.features.slice(0, 2).map((feature, idx) => (
+                          <div key={idx} className="text-xs text-gray-600 flex items-center">
+                            <div className="w-1.5 h-1.5 bg-blue-600 rounded-full mr-2"></div>
+                            {feature}
+                          </div>
                         ))}
                       </div>
-                      <span className="text-sm font-medium text-gray-600">{ac.rating}</span>
-                    </div>
-
-                    {/* Specifications */}
-                    <div className="flex items-center gap-4 mb-3 text-sm text-gray-600">
-                      <div className="flex items-center">
-                        <Zap className="h-3 w-3 mr-1 text-green-600" />
-                        {ac.energyRating}
-                      </div>
-                      <div className="flex items-center">
-                        <AirVent className="h-3 w-3 mr-1 text-blue-600" />
-                        {ac.tonnage}
-                      </div>
                     </div>
                     
-                    {/* Price */}
-                    <div className="mb-4">
-                      {ac.originalPrice ? (
-                        <div className="flex items-center gap-2">
-                          <span className="text-2xl font-bold text-blue-600">{formatPrice(ac.price)}</span>
-                          <span className="text-sm text-gray-500 line-through">{formatPrice(ac.originalPrice)}</span>
-                        </div>
-                      ) : (
-                        <span className="text-2xl font-bold text-blue-600">{formatPrice(ac.price)}</span>
-                      )}
+                    {/* Action Buttons */}
+                    <div className="space-y-2">
+                      <Button 
+                        className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white group"
+                        onClick={() => handleWhatsAppInquiry(ac)}
+                      >
+                        <ShoppingCart className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform" />
+                        Buy This AC
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        className="w-full border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white group"
+                        asChild
+                      >
+                        <Link to={`/ac-buy-and-sale?ac=${ac.id}`}>
+                          <MessageSquare className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform" />
+                          Get Details
+                        </Link>
+                      </Button>
                     </div>
-                    
-                    {/* Features */}
-                    <div className="space-y-1 mb-4">
-                      {ac.features.slice(0, 2).map((feature, idx) => (
-                        <div key={idx} className="text-xs text-gray-600 flex items-center">
-                          <div className="w-1.5 h-1.5 bg-blue-600 rounded-full mr-2"></div>
-                          {feature}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  {/* Action Buttons */}
-                  <div className="space-y-2">
-                    <Button 
-                      className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white group"
-                      onClick={() => handleWhatsAppInquiry(ac)}
-                    >
-                      <ShoppingCart className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform" />
-                      Buy This AC
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="w-full border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white group"
-                      asChild
-                    >
-                      <Link to={`/ac-buy-and-sale?ac=${ac.id}`}>
-                        <MessageSquare className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform" />
-                        Get Details
-                      </Link>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-lg text-gray-600 mb-4">No AC products available at the moment.</p>
+            <Button asChild>
+              <Link to="/ac-buy-and-sale">
+                View All Products
+              </Link>
+            </Button>
+          </div>
+        )}
 
         {/* Call to Action Section */}
         <motion.div
