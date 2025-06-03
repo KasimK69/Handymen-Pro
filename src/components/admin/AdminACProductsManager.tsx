@@ -72,23 +72,32 @@ const AdminACProductsManager = () => {
   });
 
   useEffect(() => {
+    console.log('🔄 AdminACProductsManager: Initial load - fetching products');
     fetchProducts();
   }, []);
 
   const fetchProducts = async () => {
     try {
+      console.log('📡 Fetching AC products from Supabase...');
+      setLoading(true);
+      
       const { data, error } = await supabase
         .from('ac_products')
         .select('*')
         .order('created_at', { ascending: false });
       
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Supabase fetch error:', error);
+        throw error;
+      }
+
+      console.log(`✅ Successfully fetched ${data?.length || 0} products:`, data);
       setProducts(data || []);
     } catch (error) {
-      console.error('Error fetching AC products:', error);
+      console.error('❌ Error fetching AC products:', error);
       toast({
         title: "Error",
-        description: "Failed to fetch AC products",
+        description: "Failed to fetch AC products. Check console for details.",
         variant: "destructive"
       });
     } finally {
@@ -97,6 +106,7 @@ const AdminACProductsManager = () => {
   };
 
   const handleInputChange = (field: keyof ACProduct, value: any) => {
+    console.log(`📝 Form field changed: ${field} = ${value}`);
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -104,21 +114,25 @@ const AdminACProductsManager = () => {
     const array = formData[field] as string[];
     const newArray = [...array];
     newArray[index] = value;
+    console.log(`📝 Array field changed: ${field}[${index}] = ${value}`);
     setFormData(prev => ({ ...prev, [field]: newArray }));
   };
 
   const addArrayItem = (field: 'features' | 'images') => {
     const array = formData[field] as string[];
+    console.log(`➕ Adding new ${field} item`);
     setFormData(prev => ({ ...prev, [field]: [...array, ''] }));
   };
 
   const removeArrayItem = (field: 'features' | 'images', index: number) => {
     const array = formData[field] as string[];
     const newArray = array.filter((_, i) => i !== index);
+    console.log(`➖ Removing ${field} item at index ${index}`);
     setFormData(prev => ({ ...prev, [field]: newArray }));
   };
 
   const openCreateDialog = () => {
+    console.log('🆕 Opening create product dialog');
     setEditingProduct(null);
     setFormData({
       name: '',
@@ -141,11 +155,24 @@ const AdminACProductsManager = () => {
   };
 
   const openEditDialog = (product: ACProduct) => {
+    console.log('✏️ Opening edit dialog for product:', product.id);
     setEditingProduct(product);
     setFormData({
-      ...product,
+      name: product.name,
+      brand: product.brand,
+      description: product.description,
+      price: product.price,
+      original_price: product.original_price,
+      category: product.category,
+      condition: product.condition,
+      tonnage: product.tonnage,
+      energy_rating: product.energy_rating,
       features: product.features || [''],
-      images: product.images || ['']
+      images: product.images || [''],
+      contact_info: product.contact_info,
+      location: product.location,
+      status: product.status,
+      featured: product.featured || false
     });
     setIsDialogOpen(true);
   };
@@ -153,129 +180,167 @@ const AdminACProductsManager = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.brand || !formData.price) {
+    console.log('💾 Submitting form with data:', formData);
+    
+    // Validation
+    if (!formData.name?.trim() || !formData.brand?.trim() || !formData.price) {
+      console.error('❌ Validation failed: Missing required fields');
       toast({
-        title: "Error",
-        description: "Please fill in all required fields",
+        title: "Validation Error",
+        description: "Please fill in all required fields (Name, Brand, Price)",
         variant: "destructive"
       });
       return;
     }
 
-    const productData = {
-      name: formData.name!,
-      brand: formData.brand!,
-      description: formData.description || null,
-      price: Number(formData.price),
-      original_price: formData.original_price ? Number(formData.original_price) : null,
-      category: formData.category || 'sale',
-      condition: formData.condition || 'used',
-      tonnage: formData.tonnage || null,
-      energy_rating: formData.energy_rating || null,
-      features: (formData.features || []).filter(f => f.trim() !== ''),
-      images: (formData.images || []).filter(i => i.trim() !== ''),
-      contact_info: formData.contact_info || null,
-      location: formData.location || null,
-      status: formData.status || 'active',
-      featured: formData.featured || false
-    };
-
     try {
+      const productData = {
+        name: formData.name!.trim(),
+        brand: formData.brand!.trim(),
+        description: formData.description?.trim() || null,
+        price: Number(formData.price),
+        original_price: formData.original_price ? Number(formData.original_price) : null,
+        category: formData.category || 'sale',
+        condition: formData.condition || 'used',
+        tonnage: formData.tonnage?.trim() || null,
+        energy_rating: formData.energy_rating?.trim() || null,
+        features: (formData.features || []).filter(f => f.trim() !== ''),
+        images: (formData.images || []).filter(img => img.trim() !== ''),
+        contact_info: formData.contact_info?.trim() || null,
+        location: formData.location?.trim() || null,
+        status: formData.status || 'active',
+        featured: formData.featured || false
+      };
+
+      console.log('📤 Prepared data for Supabase:', productData);
+
       if (editingProduct) {
-        const { error } = await supabase
+        console.log(`🔄 Updating existing product: ${editingProduct.id}`);
+        
+        const { data, error } = await supabase
           .from('ac_products')
           .update(productData)
-          .eq('id', editingProduct.id);
+          .eq('id', editingProduct.id)
+          .select();
+          
+        if (error) {
+          console.error('❌ Supabase update error:', error);
+          throw error;
+        }
         
-        if (error) throw error;
-        
+        console.log('✅ Product updated successfully:', data);
         toast({
           title: "Success",
-          description: "AC product updated successfully"
+          description: `${productData.name} updated successfully!`,
         });
       } else {
-        const { error } = await supabase
+        console.log('🆕 Creating new product');
+        
+        const { data, error } = await supabase
           .from('ac_products')
-          .insert([productData]);
+          .insert([productData])
+          .select();
+          
+        if (error) {
+          console.error('❌ Supabase insert error:', error);
+          throw error;
+        }
         
-        if (error) throw error;
-        
+        console.log('✅ Product created successfully:', data);
         toast({
           title: "Success",
-          description: "New AC product added successfully"
+          description: `${productData.name} created successfully!`,
         });
       }
-
-      fetchProducts();
+      
       setIsDialogOpen(false);
-    } catch (error) {
-      console.error('Error saving AC product:', error);
+      await fetchProducts(); // Refresh the products list
+      
+    } catch (error: any) {
+      console.error('❌ Error saving product:', error);
       toast({
         title: "Error",
-        description: "Failed to save AC product",
+        description: `Failed to save product: ${error.message || 'Unknown error'}`,
         variant: "destructive"
       });
     }
   };
 
-  const deleteProduct = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this AC product?')) return;
-
+  const handleDelete = async (product: ACProduct) => {
+    if (!confirm(`Are you sure you want to delete "${product.name}"?`)) {
+      return;
+    }
+    
     try {
+      console.log(`🗑️ Deleting product: ${product.id}`);
+      
       const { error } = await supabase
         .from('ac_products')
         .delete()
-        .eq('id', id);
+        .eq('id', product.id);
+        
+      if (error) {
+        console.error('❌ Supabase delete error:', error);
+        throw error;
+      }
       
-      if (error) throw error;
-      
+      console.log('✅ Product deleted successfully');
       toast({
-        title: "Success",
-        description: "AC product deleted successfully"
+        title: "Deleted",
+        description: `${product.name} has been deleted.`,
+        variant: "destructive"
       });
       
-      fetchProducts();
-    } catch (error) {
-      console.error('Error deleting AC product:', error);
+      await fetchProducts(); // Refresh the products list
+    } catch (error: any) {
+      console.error('❌ Error deleting product:', error);
       toast({
         title: "Error",
-        description: "Failed to delete AC product",
+        description: `Failed to delete product: ${error.message || 'Unknown error'}`,
         variant: "destructive"
       });
     }
   };
 
-  const toggleProductStatus = async (id: string, status: string) => {
+  const toggleStatus = async (product: ACProduct) => {
     try {
+      const newStatus = product.status === 'active' ? 'inactive' : 'active';
+      console.log(`🔄 Toggling product status: ${product.id} -> ${newStatus}`);
+      
       const { error } = await supabase
         .from('ac_products')
-        .update({ status })
-        .eq('id', id);
+        .update({ status: newStatus })
+        .eq('id', product.id);
+        
+      if (error) {
+        console.error('❌ Supabase status update error:', error);
+        throw error;
+      }
       
-      if (error) throw error;
-      
+      console.log('✅ Product status updated successfully');
       toast({
-        title: "Success",
-        description: `Product ${status === 'active' ? 'activated' : 'deactivated'} successfully`
+        title: "Status Updated",
+        description: `${product.name} is now ${newStatus}.`,
       });
       
-      fetchProducts();
-    } catch (error) {
-      console.error('Error updating product status:', error);
+      await fetchProducts(); // Refresh the products list
+    } catch (error: any) {
+      console.error('❌ Error updating product status:', error);
       toast({
         title: "Error",
-        description: "Failed to update product status",
+        description: `Failed to update status: ${error.message || 'Unknown error'}`,
         variant: "destructive"
       });
     }
   };
-
-  const formatPrice = (price: number) => `PKR ${price.toLocaleString()}`;
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-lg">Loading AC products...</div>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-lg text-gray-600">Loading AC products...</p>
+        </div>
       </div>
     );
   }
@@ -284,105 +349,92 @@ const AdminACProductsManager = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-bold text-[#2D3559]">AC Products Management</h2>
-          <p className="text-gray-600">Manage your AC marketplace listings</p>
+          <h1 className="text-3xl font-bold text-gray-900">AC Products Management</h1>
+          <p className="text-gray-600 mt-2">Manage air conditioner listings for buy & sale</p>
         </div>
-        <Button onClick={openCreateDialog} className="bg-gradient-to-r from-[#8843F2] to-[#FF467E]">
-          <Plus className="mr-2 h-5 w-5" />
-          Add New AC Product
+        <Button onClick={openCreateDialog} className="bg-blue-600 hover:bg-blue-700">
+          <Plus className="mr-2 h-4 w-4" />
+          Add New Product
         </Button>
       </div>
 
-      {/* Products Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {products.map((product) => (
-          <Card key={product.id} className="overflow-hidden">
-            <div className="aspect-video bg-gray-100 relative">
-              {product.images && product.images[0] ? (
-                <img 
-                  src={product.images[0]} 
-                  alt={product.name}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="flex items-center justify-center h-full text-gray-400">
-                  No Image
+      <Card>
+        <CardHeader>
+          <CardTitle>Products ({products.length})</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {products.map((product) => (
+              <div key={product.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <h3 className="text-lg font-semibold">{product.name}</h3>
+                      <Badge variant={product.status === 'active' ? 'default' : 'secondary'}>
+                        {product.status}
+                      </Badge>
+                      {product.featured && <Badge variant="outline">Featured</Badge>}
+                      <Badge variant="outline">{product.category}</Badge>
+                    </div>
+                    
+                    <div className="text-sm text-gray-600 space-y-1">
+                      <p><strong>Brand:</strong> {product.brand}</p>
+                      <p><strong>Price:</strong> PKR {product.price.toLocaleString()}</p>
+                      {product.original_price && (
+                        <p><strong>Original Price:</strong> PKR {product.original_price.toLocaleString()}</p>
+                      )}
+                      {product.description && (
+                        <p><strong>Description:</strong> {product.description.substring(0, 100)}...</p>
+                      )}
+                      {product.tonnage && <p><strong>Tonnage:</strong> {product.tonnage}</p>}
+                      {product.energy_rating && <p><strong>Energy Rating:</strong> {product.energy_rating}</p>}
+                      {product.views && <p><strong>Views:</strong> {product.views}</p>}
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <Switch
+                      checked={product.status === 'active'}
+                      onCheckedChange={() => toggleStatus(product)}
+                    />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => openEditDialog(product)}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleDelete(product)}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
-              )}
-              <div className="absolute top-2 right-2 flex gap-2">
-                {product.featured && (
-                  <Badge className="bg-green-500">Featured</Badge>
-                )}
-                <Badge variant={product.status === 'active' ? "default" : "secondary"}>
-                  {product.status}
-                </Badge>
-                <Badge variant={product.category === 'sale' ? "default" : "outline"}>
-                  {product.category}
-                </Badge>
               </div>
-            </div>
-            <CardContent className="p-4">
-              <h3 className="font-semibold text-lg mb-2">{product.name}</h3>
-              <div className="space-y-1 text-sm text-gray-600 mb-3">
-                <p>{product.brand} - {product.condition}</p>
-                <p>{product.tonnage} | {product.energy_rating}</p>
-                <p className="font-semibold text-[#8843F2]">{formatPrice(product.price)}</p>
-                {product.location && <p>📍 {product.location}</p>}
+            ))}
+            
+            {products.length === 0 && (
+              <div className="text-center py-8 text-gray-500">
+                <p>No products found. Add your first AC product!</p>
               </div>
-              <div className="flex gap-2 mb-3">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => openEditDialog(product)}
-                  className="flex-1"
-                >
-                  <Edit className="h-4 w-4 mr-1" />
-                  Edit
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => deleteProduct(product.id)}
-                  className="text-red-500 border-red-500 hover:bg-red-50"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-              <div className="flex items-center justify-between">
-                <Label htmlFor={`active-${product.id}`} className="text-sm">
-                  Active
-                </Label>
-                <Switch
-                  id={`active-${product.id}`}
-                  checked={product.status === 'active'}
-                  onCheckedChange={(checked) => 
-                    toggleProductStatus(product.id, checked ? 'active' : 'inactive')
-                  }
-                />
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {products.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">No AC products found.</p>
-          <Button onClick={openCreateDialog} className="mt-4">
-            Add your first AC product
-          </Button>
-        </div>
-      )}
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Add/Edit Product Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-2xl">
+            <DialogTitle>
               {editingProduct ? 'Edit AC Product' : 'Add New AC Product'}
             </DialogTitle>
             <DialogDescription>
-              Fill in the details for the AC product listing
+              Fill in the product details below
             </DialogDescription>
           </DialogHeader>
           
@@ -394,7 +446,7 @@ const AdminACProductsManager = () => {
                   id="name"
                   value={formData.name || ''}
                   onChange={(e) => handleInputChange('name', e.target.value)}
-                  placeholder="e.g., Samsung Digital Inverter AC"
+                  placeholder="e.g., Samsung Digital Inverter AC 1.5 Ton"
                   required
                 />
               </div>
@@ -404,54 +456,9 @@ const AdminACProductsManager = () => {
                   id="brand"
                   value={formData.brand || ''}
                   onChange={(e) => handleInputChange('brand', e.target.value)}
-                  placeholder="e.g., Samsung"
+                  placeholder="e.g., Samsung, LG, Haier"
                   required
                 />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <Label htmlFor="tonnage">Tonnage</Label>
-                <Select value={formData.tonnage || ''} onValueChange={(value) => handleInputChange('tonnage', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select tonnage" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="0.75 Ton">0.75 Ton</SelectItem>
-                    <SelectItem value="1 Ton">1 Ton</SelectItem>
-                    <SelectItem value="1.5 Ton">1.5 Ton</SelectItem>
-                    <SelectItem value="2 Ton">2 Ton</SelectItem>
-                    <SelectItem value="2.5 Ton">2.5 Ton</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="energyRating">Energy Rating</Label>
-                <Select value={formData.energy_rating || ''} onValueChange={(value) => handleInputChange('energy_rating', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select rating" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1 Star">1 Star</SelectItem>
-                    <SelectItem value="2 Star">2 Star</SelectItem>
-                    <SelectItem value="3 Star">3 Star</SelectItem>
-                    <SelectItem value="4 Star">4 Star</SelectItem>
-                    <SelectItem value="5 Star">5 Star</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="condition">Condition</Label>
-                <Select value={formData.condition || 'used'} onValueChange={(value) => handleInputChange('condition', value)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="new">Brand New</SelectItem>
-                    <SelectItem value="used">Used</SelectItem>
-                  </SelectContent>
-                </Select>
               </div>
             </div>
 
@@ -463,26 +470,29 @@ const AdminACProductsManager = () => {
                   type="number"
                   value={formData.price || ''}
                   onChange={(e) => handleInputChange('price', e.target.value)}
-                  placeholder="135000"
+                  placeholder="e.g., 85000"
                   required
                 />
               </div>
               <div>
-                <Label htmlFor="originalPrice">Original Price (if discounted)</Label>
+                <Label htmlFor="original_price">Original Price (if discounted)</Label>
                 <Input
-                  id="originalPrice"
+                  id="original_price"
                   type="number"
                   value={formData.original_price || ''}
                   onChange={(e) => handleInputChange('original_price', e.target.value)}
-                  placeholder="150000"
+                  placeholder="e.g., 95000"
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <Label htmlFor="category">Category</Label>
-                <Select value={formData.category || 'sale'} onValueChange={(value) => handleInputChange('category', value)}>
+                <Select
+                  value={formData.category || 'sale'}
+                  onValueChange={(value) => handleInputChange('category', value)}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -493,12 +503,54 @@ const AdminACProductsManager = () => {
                 </Select>
               </div>
               <div>
-                <Label htmlFor="location">Location</Label>
+                <Label htmlFor="condition">Condition</Label>
+                <Select
+                  value={formData.condition || 'used'}
+                  onValueChange={(value) => handleInputChange('condition', value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="new">New</SelectItem>
+                    <SelectItem value="used">Used</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="status">Status</Label>
+                <Select
+                  value={formData.status || 'active'}
+                  onValueChange={(value) => handleInputChange('status', value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="inactive">Inactive</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <Label htmlFor="tonnage">Tonnage</Label>
                 <Input
-                  id="location"
-                  value={formData.location || ''}
-                  onChange={(e) => handleInputChange('location', e.target.value)}
-                  placeholder="e.g., Islamabad"
+                  id="tonnage"
+                  value={formData.tonnage || ''}
+                  onChange={(e) => handleInputChange('tonnage', e.target.value)}
+                  placeholder="e.g., 1.5 Ton"
+                />
+              </div>
+              <div>
+                <Label htmlFor="energy_rating">Energy Rating</Label>
+                <Input
+                  id="energy_rating"
+                  value={formData.energy_rating || ''}
+                  onChange={(e) => handleInputChange('energy_rating', e.target.value)}
+                  placeholder="e.g., 5 Star"
                 />
               </div>
             </div>
@@ -509,19 +561,30 @@ const AdminACProductsManager = () => {
                 id="description"
                 value={formData.description || ''}
                 onChange={(e) => handleInputChange('description', e.target.value)}
-                placeholder="Detailed description of the AC unit"
+                placeholder="Detailed product description..."
                 rows={3}
               />
             </div>
 
-            <div>
-              <Label htmlFor="contactInfo">Contact Information</Label>
-              <Input
-                id="contactInfo"
-                value={formData.contact_info || ''}
-                onChange={(e) => handleInputChange('contact_info', e.target.value)}
-                placeholder="+92 300 1234567"
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <Label htmlFor="contact_info">Contact Information</Label>
+                <Input
+                  id="contact_info"
+                  value={formData.contact_info || ''}
+                  onChange={(e) => handleInputChange('contact_info', e.target.value)}
+                  placeholder="Phone number or email"
+                />
+              </div>
+              <div>
+                <Label htmlFor="location">Location</Label>
+                <Input
+                  id="location"
+                  value={formData.location || ''}
+                  onChange={(e) => handleInputChange('location', e.target.value)}
+                  placeholder="City or area"
+                />
+              </div>
             </div>
 
             {/* Features */}
@@ -558,7 +621,7 @@ const AdminACProductsManager = () => {
             {/* Images */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <Label>Product Images (URLs)</Label>
+                <Label>Image URLs</Label>
                 <Button type="button" size="sm" variant="outline" onClick={() => addArrayItem('images')}>
                   Add Image
                 </Button>
@@ -586,32 +649,22 @@ const AdminACProductsManager = () => {
               </div>
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="isActive"
-                  checked={formData.status === 'active'}
-                  onCheckedChange={(checked) => handleInputChange('status', checked ? 'active' : 'inactive')}
-                />
-                <Label htmlFor="isActive">Active (visible on website)</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="featured"
-                  checked={formData.featured || false}
-                  onCheckedChange={(checked) => handleInputChange('featured', checked)}
-                />
-                <Label htmlFor="featured">Featured Product</Label>
-              </div>
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="featured"
+                checked={formData.featured || false}
+                onCheckedChange={(checked) => handleInputChange('featured', checked)}
+              />
+              <Label htmlFor="featured">Featured Product</Label>
             </div>
             
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" className="bg-gradient-to-r from-[#8843F2] to-[#FF467E]">
+              <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
                 <Save className="mr-2 h-4 w-4" />
-                {editingProduct ? 'Update Product' : 'Add Product'}
+                {editingProduct ? 'Update Product' : 'Create Product'}
               </Button>
             </DialogFooter>
           </form>

@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Star, Eye, MessageSquare, ArrowRight, AirVent, ShoppingCart, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { supabase } from '@/integrations/supabase/client';
+import { useACProducts } from '@/hooks/useACProducts';
 
 interface ACUnit {
   id: string;
@@ -23,52 +24,28 @@ interface ACUnit {
 }
 
 const ACBuyAndSale = () => {
-  const [featuredACs, setFeaturedACs] = useState<ACUnit[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { products, loading } = useACProducts();
 
-  useEffect(() => {
-    fetchFeaturedACs();
-  }, []);
-
-  const fetchFeaturedACs = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('ac_products')
-        .select('*')
-        .eq('status', 'active')
-        .eq('category', 'sale')
-        .limit(4)
-        .order('featured', { ascending: false })
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-
-      const convertedData: ACUnit[] = (data || []).map(product => ({
-        id: product.id,
-        name: product.name,
-        brand: product.brand,
-        price: Number(product.price),
-        originalPrice: product.original_price ? Number(product.original_price) : undefined,
-        rating: 4.8, // Default rating
-        image: product.images?.[0] || 'https://images.unsplash.com/photo-1625961332071-f1673bcbcda4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-        condition: product.condition as 'new' | 'used',
-        features: product.features?.slice(0, 4) || [],
-        discount: product.original_price 
-          ? Math.round(((Number(product.original_price) - Number(product.price)) / Number(product.original_price)) * 100)
-          : undefined,
-        tonnage: product.tonnage || '1.5 Ton',
-        energyRating: product.energy_rating || '5 Star'
-      }));
-
-      setFeaturedACs(convertedData);
-    } catch (error) {
-      console.error('Error fetching featured ACs:', error);
-      // Fallback to empty array if there's an error
-      setFeaturedACs([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Convert products to featured ACs format
+  const featuredACs: ACUnit[] = products
+    .filter(product => product.category === 'sale' && (product.featured || false))
+    .slice(0, 4)
+    .map(product => ({
+      id: product.id,
+      name: product.name,
+      brand: product.brand,
+      price: Number(product.price),
+      originalPrice: product.original_price ? Number(product.original_price) : undefined,
+      rating: 4.8, // Default rating
+      image: product.images?.[0] || 'https://images.unsplash.com/photo-1625961332071-f1673bcbcda4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      condition: product.condition as 'new' | 'used',
+      features: product.features?.slice(0, 4) || [],
+      discount: product.original_price 
+        ? Math.round(((Number(product.original_price) - Number(product.price)) / Number(product.original_price)) * 100)
+        : undefined,
+      tonnage: product.tonnage || '1.5 Ton',
+      energyRating: product.energy_rating || '5 Star'
+    }));
 
   const formatPrice = (price: number) => `PKR ${price.toLocaleString()}`;
 
@@ -302,7 +279,7 @@ Please provide more details and confirm availability. Thank you!`;
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-lg text-gray-600 mb-4">No AC products available at the moment.</p>
+            <p className="text-lg text-gray-600 mb-4">No featured AC products available at the moment.</p>
             <Button asChild>
               <Link to="/ac-buy-and-sale">
                 View All Products

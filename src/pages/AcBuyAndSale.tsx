@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ACUnit } from '@/types/acUnit';
+import { useACProducts } from '@/hooks/useACProducts';
 import HeroSection from '@/components/ac-buy-sale/HeroSection';
 import FeaturesSection from '@/components/ac-buy-sale/FeaturesSection';
 import ProductsSection from '@/components/ac-buy-sale/ProductsSection';
@@ -18,7 +19,6 @@ const AcBuyAndSale: React.FC = () => {
   const [isSellingFormOpen, setIsSellingFormOpen] = useState(false);
   const [acUnitsForSale, setAcUnitsForSale] = useState<ACUnit[]>([]);
   const [acUnitsWanted, setAcUnitsWanted] = useState<ACUnit[]>([]);
-  const [loading, setLoading] = useState(true);
   const [sellingFormData, setSellingFormData] = useState({
     name: '',
     price: '',
@@ -31,23 +31,13 @@ const AcBuyAndSale: React.FC = () => {
     location: '',
   });
 
+  const { products, loading, refreshProducts } = useACProducts();
+
   useEffect(() => {
-    fetchACProducts();
-  }, []);
-
-  const fetchACProducts = async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('ac_products')
-        .select('*')
-        .eq('status', 'active')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-
+    console.log('🔄 AcBuyAndSale: Processing products data...');
+    if (products.length > 0) {
       // Convert database records to ACUnit format
-      const convertedData: ACUnit[] = (data || []).map(product => ({
+      const convertedData: ACUnit[] = products.map(product => ({
         id: product.id,
         name: product.name,
         brand: product.brand,
@@ -68,26 +58,18 @@ const AcBuyAndSale: React.FC = () => {
         availability: 'in-stock' as const,
         featured: product.featured || false,
         rating: 4.5, // Default rating since not in DB yet
-        category: product.category as 'for-sale' | 'wanted',
+        category: product.category === 'sale' ? 'for-sale' as const : 'wanted' as const,
       }));
 
       // Separate products by category
-      const forSale = convertedData.filter(product => product.category === 'for-sale' || product.category === undefined);
+      const forSale = convertedData.filter(product => product.category === 'for-sale');
       const wanted = convertedData.filter(product => product.category === 'wanted');
 
+      console.log(`✅ Processed ${forSale.length} for-sale and ${wanted.length} wanted products`);
       setAcUnitsForSale(forSale);
       setAcUnitsWanted(wanted);
-    } catch (error) {
-      console.error('Error fetching AC products:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load AC products. Please try again.",
-        variant: "destructive"
-      });
-    } finally {
-      setLoading(false);
     }
-  };
+  }, [products]);
   
   const formatPrice = (price: number): string => {
     return `PKR ${price.toLocaleString()}`;
@@ -179,6 +161,8 @@ const AcBuyAndSale: React.FC = () => {
   const handleSubmitSelling = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     
+    console.log('💾 Submitting selling form:', sellingFormData);
+    
     if (!sellingFormData.name || !sellingFormData.price || !sellingFormData.contact) {
       toast({
         title: "Missing Information",
@@ -202,11 +186,19 @@ const AcBuyAndSale: React.FC = () => {
         status: 'active'
       };
 
-      const { error } = await supabase
-        .from('ac_products')
-        .insert([productData]);
+      console.log('📤 Submitting product data to Supabase:', productData);
 
-      if (error) throw error;
+      const { data, error } = await supabase
+        .from('ac_products')
+        .insert([productData])
+        .select();
+
+      if (error) {
+        console.error('❌ Supabase insert error:', error);
+        throw error;
+      }
+
+      console.log('✅ Product submitted successfully:', data);
 
       toast({
         title: "AC Listed Successfully",
@@ -227,12 +219,12 @@ const AcBuyAndSale: React.FC = () => {
       });
 
       // Refresh the products list
-      fetchACProducts();
-    } catch (error) {
-      console.error('Error submitting AC listing:', error);
+      refreshProducts();
+    } catch (error: any) {
+      console.error('❌ Error submitting AC listing:', error);
       toast({
         title: "Error",
-        description: "Failed to submit your AC listing. Please try again.",
+        description: `Failed to submit your AC listing: ${error.message || 'Unknown error'}`,
         variant: "destructive"
       });
     }
