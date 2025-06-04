@@ -67,10 +67,11 @@ export const useACProducts = () => {
     fetchProducts();
   }, [fetchProducts]);
 
-  // Set up real-time subscription with improved error handling
+  // Set up real-time subscription
   useEffect(() => {
     fetchProducts();
 
+    // Set up real-time listener for changes
     console.log('🔄 Setting up real-time subscription for ac_products...');
     const subscription = supabase
       .channel('ac-products-changes')
@@ -86,21 +87,17 @@ export const useACProducts = () => {
           
           if (payload.eventType === 'INSERT') {
             console.log('➕ New product added:', payload.new);
-            const newProduct = payload.new as ACProduct;
-            if (newProduct.status === 'active') {
-              setProducts(prev => [newProduct, ...prev]);
-              toast({
-                title: "New AC Product Added",
-                description: `${newProduct.name} has been added to the catalog.`,
-              });
-            }
+            setProducts(prev => [payload.new as ACProduct, ...prev]);
+            toast({
+              title: "New Product Added",
+              description: `${(payload.new as ACProduct).name} has been added to the catalog.`,
+            });
           } else if (payload.eventType === 'UPDATE') {
             console.log('📝 Product updated:', payload.new);
-            const updatedProduct = payload.new as ACProduct;
             setProducts(prev => 
               prev.map(product => 
-                product.id === updatedProduct.id ? updatedProduct : product
-              ).filter(product => product.status === 'active')
+                product.id === payload.new.id ? payload.new as ACProduct : product
+              )
             );
           } else if (payload.eventType === 'DELETE') {
             console.log('🗑️ Product deleted:', payload.old);
@@ -116,11 +113,6 @@ export const useACProducts = () => {
       )
       .subscribe((status) => {
         console.log('📡 Real-time subscription status:', status);
-        if (status === 'SUBSCRIBED') {
-          console.log('✅ Successfully subscribed to real-time updates');
-        } else if (status === 'CLOSED') {
-          console.log('❌ Real-time subscription closed');
-        }
       });
 
     return () => {

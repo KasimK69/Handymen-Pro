@@ -7,8 +7,8 @@ import Home from '@/pages/Home';
 import About from '@/pages/About';
 import Services from '@/pages/Services';
 import AcBuyAndSale from '@/pages/AcBuyAndSale';
-import BlogsPage from '@/pages/blogs';
-import BlogDetail from '@/pages/blogs/[slug]';
+import Blogs from '@/pages/Blogs';
+import BlogDetail from '@/pages/BlogDetail';
 import Contact from '@/pages/Contact';
 import ServiceDetail from '@/pages/ServiceDetail';
 import AdminProducts from '@/pages/admin/AdminProducts';
@@ -25,7 +25,7 @@ function App() {
             <Route path="/services" element={<Services />} />
             <Route path="/services/:slug" element={<ServiceDetail />} />
             <Route path="/ac-buy-and-sale" element={<AcBuyAndSale />} />
-            <Route path="/blogs" element={<BlogsPage />} />
+            <Route path="/blogs" element={<Blogs />} />
             <Route path="/blogs/:slug" element={<BlogDetail />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/admin/products" element={<AdminProducts />} />
