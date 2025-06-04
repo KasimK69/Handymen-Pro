@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -142,7 +142,7 @@ const BlogsPage = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.4 + (index * 0.1) }}
                 >
-                  <Link href={`/blogs/${blog.slug}`}>
+                  <Link to={`/blogs/${blog.slug}`}>
                     <Card className="group overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer border-0 shadow-lg">
                       <div className="aspect-video overflow-hidden">
                         <img 
@@ -207,7 +207,7 @@ const BlogsPage = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.6 + (index * 0.1) }}
                 >
-                  <Link href={`/blogs/${blog.slug}`}>
+                  <Link to={`/blogs/${blog.slug}`}>
                     <Card className="group overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer border-0 shadow-lg h-full">
                       <div className="aspect-video overflow-hidden">
                         <img 
@@ -286,8 +286,8 @@ const BlogsPage = () => {
           <p className="text-xl mb-8 opacity-90">
             Get expert AC installation, maintenance, and repair services in Pakistan
           </p>
-          <Button asChild size="lg" className="bg-white text-blue-600 hover:bg-gray-100 font-bold text-lg px-8 py-4">
-            <Link href="/contact">
+          <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 font-bold text-lg px-8 py-4">
+            <Link to="/contact">
               Contact Our Experts
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>

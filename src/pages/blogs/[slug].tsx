@@ -1,11 +1,11 @@
 
-import React from 'react';
-import { GetServerSideProps } from 'next';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Calendar, User, Clock } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 
 interface BlogPost {
@@ -28,15 +28,62 @@ interface BlogDetailProps {
   error?: string;
 }
 
-const BlogDetail: React.FC<BlogDetailProps> = ({ blog, error }) => {
+const BlogDetail: React.FC = () => {
+  const { slug } = useParams<{ slug: string }>();
+  const [blog, setBlog] = useState<BlogPost | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (slug) {
+      fetchBlog(slug);
+    }
+  }, [slug]);
+
+  const fetchBlog = async (blogSlug: string) => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('blogs')
+        .select('*')
+        .eq('slug', blogSlug)
+        .eq('status', 'active')
+        .single();
+
+      if (error) {
+        console.error('Error fetching blog:', error);
+        setError('Blog post not found');
+        return;
+      }
+
+      setBlog(data);
+    } catch (error) {
+      console.error('Error in fetchBlog:', error);
+      setError('Failed to load blog post');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center pt-20">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-lg text-gray-600">Loading blog post...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (error || !blog) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Blog Post Not Found</h1>
           <p className="text-gray-600 mb-8">{error || 'The blog post you are looking for does not exist.'}</p>
-          <Button asChild>
-            <Link href="/blogs">
+          <Button>
+            <Link to="/blogs">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Blogs
             </Link>
@@ -51,8 +98,8 @@ const BlogDetail: React.FC<BlogDetailProps> = ({ blog, error }) => {
       <div className="container mx-auto px-4 py-12">
         {/* Back Button */}
         <div className="mb-8">
-          <Button variant="outline" asChild>
-            <Link href="/blogs">
+          <Button variant="outline">
+            <Link to="/blogs">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Blogs
             </Link>
@@ -122,13 +169,13 @@ const BlogDetail: React.FC<BlogDetailProps> = ({ blog, error }) => {
         <div className="mt-12 text-center">
           <h3 className="text-2xl font-bold mb-4">Found this helpful?</h3>
           <div className="flex justify-center gap-4">
-            <Button asChild>
-              <Link href="/contact">
+            <Button>
+              <Link to="/contact">
                 Get AC Services
               </Link>
             </Button>
-            <Button variant="outline" asChild>
-              <Link href="/blogs">
+            <Button variant="outline">
+              <Link to="/blogs">
                 Read More Blogs
               </Link>
             </Button>
@@ -137,52 +184,6 @@ const BlogDetail: React.FC<BlogDetailProps> = ({ blog, error }) => {
       </div>
     </div>
   );
-};
-
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  try {
-    const slug = params?.slug as string;
-    
-    if (!slug) {
-      return {
-        props: {
-          blog: null,
-          error: 'No blog slug provided'
-        }
-      };
-    }
-
-    const { data, error } = await supabase
-      .from('blogs')
-      .select('*')
-      .eq('slug', slug)
-      .eq('status', 'active')
-      .single();
-
-    if (error) {
-      console.error('Error fetching blog:', error);
-      return {
-        props: {
-          blog: null,
-          error: 'Blog post not found'
-        }
-      };
-    }
-
-    return {
-      props: {
-        blog: data
-      }
-    };
-  } catch (error) {
-    console.error('Error in getServerSideProps:', error);
-    return {
-      props: {
-        blog: null,
-        error: 'Failed to load blog post'
-      }
-    };
-  }
 };
 
 export default BlogDetail;
