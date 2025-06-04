@@ -1,73 +1,41 @@
 
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AdminAuthProvider } from "./context/AdminAuthContext";
-import { SessionContextProvider } from '@supabase/auth-helpers-react';
-import { supabase } from "./integrations/supabase/client";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import Index from "./pages/Index";
-import Services from "./pages/Services";
-import ServiceDetail from "./pages/ServiceDetail";
-import Blog from "./pages/Blog";
-import BlogPost from "./pages/BlogPost";
-import AcBuyAndSale from "./pages/AcBuyAndSale";
-import Contact from "./pages/Contact";
-import GetQuote from "./pages/GetQuote";
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import Home from '@/pages/Home';
+import About from '@/pages/About';
+import Services from '@/pages/Services';
+import AcBuyAndSale from '@/pages/AcBuyAndSale';
+import Blogs from '@/pages/Blogs';
+import BlogDetail from '@/pages/BlogDetail';
+import Contact from '@/pages/Contact';
+import ServiceDetail from '@/pages/ServiceDetail';
+import AdminProducts from '@/pages/admin/AdminProducts';
 
-// Admin Pages
-import AdminLogin from "./pages/admin/AdminLogin";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminBlogs from "./pages/admin/AdminBlogs";
-import AdminServices from "./pages/admin/Services";
-import ProductsAdmin from "./pages/admin/ProductsAdmin";
-
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <SessionContextProvider supabaseClient={supabase}>
-      <TooltipProvider>
+function App() {
+  return (
+    <Router>
+      <div className="min-h-screen bg-background flex flex-col">
+        <Navbar />
+        <main className="flex-1">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/services/:slug" element={<ServiceDetail />} />
+            <Route path="/ac-buy-and-sale" element={<AcBuyAndSale />} />
+            <Route path="/blogs" element={<Blogs />} />
+            <Route path="/blogs/:slug" element={<BlogDetail />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/admin/products" element={<AdminProducts />} />
+          </Routes>
+        </main>
+        <Footer />
         <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <AdminAuthProvider>
-            <Routes>
-              {/* Admin Routes */}
-              <Route path="/admin/login" element={<AdminLogin />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/admin/blogs" element={<AdminBlogs />} />
-              <Route path="/admin/services" element={<AdminServices />} />
-              <Route path="/admin/products" element={<ProductsAdmin />} />
-              
-              {/* Main Routes */}
-              <Route path="/*" element={
-                <div className="min-h-screen flex flex-col">
-                  <Header />
-                  <main className="flex-grow">
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/services" element={<Services />} />
-                      <Route path="/services/:slug" element={<ServiceDetail />} />
-                      <Route path="/blog" element={<Blog />} />
-                      <Route path="/blog/:slug" element={<BlogPost />} />
-                      <Route path="/ac-buy-and-sale" element={<AcBuyAndSale />} />
-                      <Route path="/contact" element={<Contact />} />
-                      <Route path="/get-quote" element={<GetQuote />} />
-                    </Routes>
-                  </main>
-                  <Footer />
-                </div>
-              } />
-            </Routes>
-          </AdminAuthProvider>
-        </BrowserRouter>
-      </TooltipProvider>
-    </SessionContextProvider>
-  </QueryClientProvider>
-);
+      </div>
+    </Router>
+  );
+}
 
 export default App;

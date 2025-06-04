@@ -125,13 +125,13 @@ Please provide more details and confirm availability. Thank you!`;
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild size="lg" className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white shadow-lg group">
+            <Button asChild size="lg" className="bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white shadow-lg group rounded-2xl px-8 py-4">
               <Link to="/ac-buy-and-sale">
                 <Eye className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
                 Browse All ACs
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white group">
+            <Button asChild variant="outline" size="lg" className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white group rounded-2xl px-8 py-4">
               <Link to="/contact">
                 <MessageSquare className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
                 Sell Your AC
@@ -255,7 +255,7 @@ Please provide more details and confirm availability. Thank you!`;
                     {/* Action Buttons */}
                     <div className="space-y-2">
                       <Button 
-                        className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white group"
+                        className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white group rounded-xl"
                         onClick={() => handleWhatsAppInquiry(ac)}
                       >
                         <ShoppingCart className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform" />
@@ -263,7 +263,7 @@ Please provide more details and confirm availability. Thank you!`;
                       </Button>
                       <Button 
                         variant="outline" 
-                        className="w-full border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white group"
+                        className="w-full border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white group rounded-xl"
                         asChild
                       >
                         <Link to={`/ac-buy-and-sale?ac=${ac.id}`}>
@@ -279,8 +279,8 @@ Please provide more details and confirm availability. Thank you!`;
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-lg text-gray-600 mb-4">No featured AC products available at the moment.</p>
-            <Button asChild>
+            <p className="text-lg text-gray-600 mb-4">No AC products available at the moment.</p>
+            <Button asChild className="rounded-2xl">
               <Link to="/ac-buy-and-sale">
                 View All Products
               </Link>
@@ -320,7 +320,7 @@ Please provide more details and confirm availability. Thank you!`;
               <Button 
                 asChild 
                 size="lg" 
-                className="bg-white text-blue-600 hover:bg-gray-100 font-semibold text-lg px-8 py-3 group"
+                className="bg-white text-blue-600 hover:bg-gray-100 font-semibold text-lg px-8 py-3 group rounded-2xl"
               >
                 <Link to="/ac-buy-and-sale">
                   View Complete AC Collection

@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ACUnit } from '@/types/acUnit';
@@ -17,8 +17,6 @@ const AcBuyAndSale: React.FC = () => {
   const [selectedUnit, setSelectedUnit] = useState<ACUnit | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isSellingFormOpen, setIsSellingFormOpen] = useState(false);
-  const [acUnitsForSale, setAcUnitsForSale] = useState<ACUnit[]>([]);
-  const [acUnitsWanted, setAcUnitsWanted] = useState<ACUnit[]>([]);
   const [sellingFormData, setSellingFormData] = useState({
     name: '',
     price: '',
@@ -33,47 +31,34 @@ const AcBuyAndSale: React.FC = () => {
 
   const { products, loading, refreshProducts } = useACProducts();
 
-  useEffect(() => {
-    console.log('🔄 AcBuyAndSale: Processing products data...');
-    if (products.length > 0) {
-      // Convert database records to ACUnit format
-      const convertedData: ACUnit[] = products.map(product => ({
-        id: product.id,
-        name: product.name,
-        brand: product.brand,
-        description: product.description || '',
-        price: Number(product.price),
-        originalPrice: product.original_price ? Number(product.original_price) : undefined,
-        images: product.images || [],
-        features: product.features || [],
-        specifications: {
-          tonnage: product.tonnage || '',
-          energyRating: product.energy_rating || '',
-        },
-        condition: product.condition as 'new' | 'used',
-        discounted: product.original_price ? Number(product.original_price) > Number(product.price) : false,
-        discountPercentage: product.original_price 
-          ? Math.round(((Number(product.original_price) - Number(product.price)) / Number(product.original_price)) * 100)
-          : undefined,
-        availability: 'in-stock' as const,
-        featured: product.featured || false,
-        rating: 4.5, // Default rating since not in DB yet
-        category: product.category === 'sale' ? 'for-sale' as const : 'wanted' as const,
-      }));
+  // Convert database products to ACUnit format
+  const convertedData: ACUnit[] = products.map(product => ({
+    id: product.id,
+    name: product.name,
+    brand: product.brand,
+    description: product.description || '',
+    price: Number(product.price),
+    originalPrice: product.original_price ? Number(product.original_price) : undefined,
+    images: product.images || [],
+    features: product.features || [],
+    specifications: {
+      tonnage: product.tonnage || '',
+      energyRating: product.energy_rating || '',
+    },
+    condition: product.condition as 'new' | 'used',
+    discounted: product.original_price ? Number(product.original_price) > Number(product.price) : false,
+    discountPercentage: product.original_price 
+      ? Math.round(((Number(product.original_price) - Number(product.price)) / Number(product.original_price)) * 100)
+      : undefined,
+    availability: 'in-stock' as const,
+    featured: product.featured || false,
+    rating: 4.5, // Default rating since not in DB yet
+    category: product.category === 'sale' ? 'for-sale' as const : 'wanted' as const,
+  }));
 
-      // Separate products by category
-      const forSale = convertedData.filter(product => product.category === 'for-sale');
-      const wanted = convertedData.filter(product => product.category === 'wanted');
-
-      console.log(`✅ Processed ${forSale.length} for-sale and ${wanted.length} wanted products`);
-      setAcUnitsForSale(forSale);
-      setAcUnitsWanted(wanted);
-    } else {
-      console.log('📝 No products available, setting empty arrays');
-      setAcUnitsForSale([]);
-      setAcUnitsWanted([]);
-    }
-  }, [products]);
+  // Separate products by category
+  const acUnitsForSale = convertedData.filter(product => product.category === 'for-sale');
+  const acUnitsWanted = convertedData.filter(product => product.category === 'wanted');
   
   const formatPrice = (price: number): string => {
     return `PKR ${price.toLocaleString()}`;
@@ -227,7 +212,7 @@ const AcBuyAndSale: React.FC = () => {
         location: '',
       });
 
-      // Refresh the products list
+      // Refresh the products list (though real-time should handle this)
       console.log('🔄 Refreshing products after successful submission...');
       refreshProducts();
     } catch (error: any) {
