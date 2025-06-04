@@ -68,6 +68,10 @@ const AcBuyAndSale: React.FC = () => {
       console.log(`✅ Processed ${forSale.length} for-sale and ${wanted.length} wanted products`);
       setAcUnitsForSale(forSale);
       setAcUnitsWanted(wanted);
+    } else {
+      console.log('📝 No products available, setting empty arrays');
+      setAcUnitsForSale([]);
+      setAcUnitsWanted([]);
     }
   }, [products]);
   
@@ -97,6 +101,7 @@ const AcBuyAndSale: React.FC = () => {
 
   const updateViewCount = async (productId: string) => {
     try {
+      console.log(`👁️ Updating view count for product: ${productId}`);
       // First get the current view count, then increment it
       const { data: currentData, error: fetchError } = await supabase
         .from('ac_products')
@@ -105,7 +110,7 @@ const AcBuyAndSale: React.FC = () => {
         .single();
 
       if (fetchError) {
-        console.error('Error fetching current view count:', fetchError);
+        console.error('❌ Error fetching current view count:', fetchError);
         return;
       }
 
@@ -116,9 +121,13 @@ const AcBuyAndSale: React.FC = () => {
         .update({ views: currentViews + 1 })
         .eq('id', productId);
       
-      if (error) console.error('Error updating view count:', error);
+      if (error) {
+        console.error('❌ Error updating view count:', error);
+      } else {
+        console.log(`✅ View count updated successfully: ${currentViews + 1}`);
+      }
     } catch (error) {
-      console.error('Error updating view count:', error);
+      console.error('❌ Error updating view count:', error);
     }
   };
 
@@ -219,6 +228,7 @@ const AcBuyAndSale: React.FC = () => {
       });
 
       // Refresh the products list
+      console.log('🔄 Refreshing products after successful submission...');
       refreshProducts();
     } catch (error: any) {
       console.error('❌ Error submitting AC listing:', error);

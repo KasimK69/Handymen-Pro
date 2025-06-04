@@ -47,14 +47,14 @@ export const useACProducts = () => {
         throw error;
       }
 
-      console.log(`✅ Successfully fetched ${data?.length || 0} products`);
+      console.log(`✅ Successfully fetched ${data?.length || 0} products from database:`, data);
       setProducts(data || []);
     } catch (err: any) {
       console.error('❌ Error in useACProducts:', err);
       setError(err.message || 'Failed to fetch products');
       toast({
         title: "Error",
-        description: "Failed to load AC products. Please try again.",
+        description: "Failed to load AC products. Please check console for details.",
         variant: "destructive"
       });
     } finally {
