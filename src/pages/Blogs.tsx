@@ -86,6 +86,21 @@ const BlogsPage = () => {
           featured: false,
           created_at: '2024-01-10T10:00:00Z',
           updated_at: '2024-01-10T10:00:00Z'
+        },
+        {
+          id: '3',
+          title: 'Energy Efficient AC Solutions for Pakistani Homes',
+          slug: 'energy-efficient-ac-solutions-pakistan',
+          excerpt: 'Discover how to reduce your electricity bills with energy-efficient air conditioning solutions designed for Pakistani climate.',
+          content: 'Full blog content here...',
+          image_url: 'https://images.unsplash.com/photo-1580595999172-787970a962d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+          author: 'Energy Experts',
+          category: 'Energy Efficiency',
+          tags: ['Energy Saving', 'Cost Reduction', 'Smart AC'],
+          read_time: 10,
+          featured: true,
+          created_at: '2024-01-08T10:00:00Z',
+          updated_at: '2024-01-08T10:00:00Z'
         }
       ];
       setBlogs(mockBlogs);
@@ -116,7 +131,7 @@ const BlogsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-white pt-20">
       <div className="container mx-auto px-4 py-12">
         {/* Header */}
         <motion.div 
@@ -125,38 +140,42 @@ const BlogsPage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-            AC <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Expert</span> Blog
+          <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6">
+            AC <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800">Expert</span> Blog
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Expert tips, maintenance guides, and industry insights for your air conditioning needs
           </p>
         </motion.div>
 
         {/* Search and Filter */}
         <motion.div 
-          className="bg-white rounded-2xl shadow-lg p-6 mb-12"
+          className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-2xl p-8 mb-12 border border-gray-100"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col md:flex-row gap-6">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+              <Search className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
               <Input
                 placeholder="Search blogs..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 py-3 text-lg"
+                className="pl-12 py-4 text-lg border-2 border-gray-200 focus:border-blue-500 rounded-2xl bg-white/50"
               />
             </div>
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex gap-3 flex-wrap">
               {categories.map(category => (
                 <Button
                   key={category}
                   variant={selectedCategory === category ? 'default' : 'outline'}
                   onClick={() => setSelectedCategory(category)}
-                  className="capitalize"
+                  className={`capitalize rounded-2xl px-6 py-3 font-semibold ${
+                    selectedCategory === category 
+                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg' 
+                      : 'border-2 border-gray-300 hover:border-blue-500'
+                  }`}
                 >
                   {category}
                 </Button>
@@ -173,7 +192,7 @@ const BlogsPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <h2 className="text-3xl font-bold text-gray-900 mb-8">Featured Articles</h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-8 text-center">Featured Articles</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {featuredBlogs.slice(0, 3).map((blog, index) => (
                 <motion.div
@@ -181,22 +200,24 @@ const BlogsPage = () => {
                   initial={{ opacity: 0, y: 50 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.4 + (index * 0.1) }}
+                  whileHover={{ y: -10, scale: 1.02 }}
+                  className="transform transition-all duration-300"
                 >
-                  <Link to={`/blogs/${blog.slug}`}>
-                    <Card className="group overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer border-0 shadow-lg">
+                  <Link to={`/blogs/${blog.slug}`} className="block h-full">
+                    <Card className="group overflow-hidden hover:shadow-2xl transition-all duration-500 cursor-pointer border-0 shadow-lg h-full bg-white/80 backdrop-blur-sm">
                       <div className="aspect-video overflow-hidden">
                         <img 
                           src={blog.image_url} 
                           alt={blog.title}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                         />
                       </div>
                       <CardContent className="p-6">
                         <div className="flex gap-2 mb-3">
-                          <Badge className="bg-yellow-500 text-white">Featured</Badge>
-                          <Badge variant="outline">{blog.category}</Badge>
+                          <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-semibold">Featured</Badge>
+                          <Badge variant="outline" className="border-blue-200 text-blue-700">{blog.category}</Badge>
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
+                        <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors line-clamp-2">
                           {blog.title}
                         </h3>
                         <p className="text-gray-600 mb-4 line-clamp-3">
@@ -233,7 +254,7 @@ const BlogsPage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
         >
-          <h2 className="text-3xl font-bold text-gray-900 mb-8">
+          <h2 className="text-4xl font-bold text-gray-900 mb-8 text-center">
             {selectedCategory === 'all' ? 'All Articles' : `${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} Articles`}
             <span className="text-lg font-normal text-gray-500 ml-3">({filteredBlogs.length})</span>
           </h2>
@@ -246,19 +267,21 @@ const BlogsPage = () => {
                   initial={{ opacity: 0, y: 50 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.6 + (index * 0.1) }}
+                  whileHover={{ y: -10, scale: 1.02 }}
+                  className="transform transition-all duration-300"
                 >
-                  <Link to={`/blogs/${blog.slug}`}>
-                    <Card className="group overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer border-0 shadow-lg h-full">
+                  <Link to={`/blogs/${blog.slug}`} className="block h-full">
+                    <Card className="group overflow-hidden hover:shadow-2xl transition-all duration-500 cursor-pointer border-0 shadow-lg h-full bg-white/80 backdrop-blur-sm">
                       <div className="aspect-video overflow-hidden">
                         <img 
                           src={blog.image_url} 
                           alt={blog.title}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                         />
                       </div>
                       <CardContent className="p-6 flex flex-col h-full">
                         <div className="flex gap-2 mb-3">
-                          <Badge variant="outline">{blog.category}</Badge>
+                          <Badge variant="outline" className="border-blue-200 text-blue-700">{blog.category}</Badge>
                           {blog.tags?.slice(0, 2).map(tag => (
                             <Badge key={tag} variant="secondary" className="text-xs">
                               {tag}
@@ -298,16 +321,18 @@ const BlogsPage = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-16">
-              <div className="text-6xl mb-4">📝</div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">No Blog Posts Found</h3>
-              <p className="text-gray-600 mb-8">Try adjusting your search terms or browse all categories.</p>
+            <div className="text-center py-20">
+              <div className="text-8xl mb-6">📝</div>
+              <h3 className="text-3xl font-bold text-gray-900 mb-4">No Blog Posts Found</h3>
+              <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                Try adjusting your search terms or browse all categories.
+              </p>
               <Button 
                 onClick={() => {
                   setSearchTerm('');
                   setSelectedCategory('all');
                 }}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg rounded-2xl"
               >
                 Show All Blogs
               </Button>
@@ -317,16 +342,16 @@ const BlogsPage = () => {
 
         {/* Call to Action */}
         <motion.div 
-          className="text-center mt-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-12 text-white"
+          className="text-center mt-20 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 rounded-3xl p-12 text-white"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.8 }}
         >
-          <h3 className="text-3xl font-bold mb-4">Need Professional AC Services?</h3>
-          <p className="text-xl mb-8 opacity-90">
+          <h3 className="text-4xl font-bold mb-4">Need Professional AC Services?</h3>
+          <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
             Get expert AC installation, maintenance, and repair services in Pakistan
           </p>
-          <Button asChild size="lg" className="bg-white text-blue-600 hover:bg-gray-100 font-bold text-lg px-8 py-4">
+          <Button asChild size="lg" className="bg-white text-blue-600 hover:bg-gray-100 font-bold text-lg px-12 py-4 rounded-2xl transform hover:scale-105 transition-all duration-300">
             <Link to="/contact">
               Contact Our Experts
               <ArrowRight className="ml-2 h-5 w-5" />
