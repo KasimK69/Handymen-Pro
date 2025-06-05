@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, Phone, Calendar, Star, X, MessageCircle, WhatsApp } from 'lucide-react';
+import { CheckCircle, Phone, Calendar, Star, X, MessageCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface Service {
@@ -293,7 +292,7 @@ Looking forward to your response!`;
                   variant="outline"
                   className="border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white px-8 py-4 text-lg rounded-2xl font-semibold transform hover:scale-105 transition-all duration-300"
                 >
-                  <WhatsApp className="mr-2 h-5 w-5" />
+                  <MessageCircle className="mr-2 h-5 w-5" />
                   Get Quote on WhatsApp
                 </Button>
               </div>
