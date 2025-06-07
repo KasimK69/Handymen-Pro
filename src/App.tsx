@@ -9,12 +9,14 @@ import Services from '@/pages/Services';
 import AcBuyAndSale from '@/pages/AcBuyAndSale';
 import Blogs from '@/pages/Blogs';
 import BlogDetail from '@/pages/BlogDetail';
+import Blog from '@/pages/Blog';
 import Contact from '@/pages/Contact';
 import ServiceDetail from '@/pages/ServiceDetail';
 import Admin from '@/pages/Admin';
 import AdminProducts from '@/pages/admin/AdminProducts';
 import AdminBlogs from '@/pages/admin/AdminBlogs';
 import AdminServices from '@/pages/admin/Services';
+import GetQuote from '@/pages/GetQuote';
 
 function App() {
   return (
@@ -28,9 +30,11 @@ function App() {
             <Route path="/services" element={<Services />} />
             <Route path="/services/:slug" element={<ServiceDetail />} />
             <Route path="/ac-buy-and-sale" element={<AcBuyAndSale />} />
+            <Route path="/blog" element={<Blog />} />
             <Route path="/blogs" element={<Blogs />} />
             <Route path="/blogs/:slug" element={<BlogDetail />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/get-quote" element={<GetQuote />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/products" element={<AdminProducts />} />
             <Route path="/admin/blogs" element={<AdminBlogs />} />
