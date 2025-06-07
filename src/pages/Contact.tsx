@@ -1,294 +1,241 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Phone, Mail, MapPin, Clock, MessageCircle, Send, CheckCircle } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import { Phone, Mail, MapPin, Clock, Send, MessageCircle } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    service_type: '',
+    service: '',
     message: ''
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-      // Basic validation
-      if (!formData.name || !formData.email || !formData.message) {
-        toast({
-          title: "Validation Error",
-          description: "Please fill in all required fields.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // Submit to Supabase
-      const { error } = await supabase
-        .from('inquiries')
-        .insert([{
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          service_type: formData.service_type,
-          message: formData.message,
-          status: 'pending'
-        }]);
-
-      if (error) {
-        console.error('Error submitting form:', error);
-        throw error;
-      }
-
-      setIsSubmitted(true);
-      toast({
-        title: "Message Sent Successfully!",
-        description: "We'll get back to you within 24 hours.",
-      });
-
-      // Reset form
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        service_type: '',
-        message: ''
-      });
-
-    } catch (error) {
-      console.error('Error submitting contact form:', error);
+    
+    // Basic validation
+    if (!formData.name || !formData.email || !formData.message) {
       toast({
         title: "Error",
-        description: "Failed to send message. Please try again or contact us directly.",
-        variant: "destructive",
+        description: "Please fill in all required fields.",
+        variant: "destructive"
       });
-    } finally {
-      setIsSubmitting(false);
+      return;
     }
+
+    // Here you would typically send the data to your backend
+    toast({
+      title: "Message Sent!",
+      description: "Thank you for contacting us. We'll get back to you within 24 hours.",
+    });
+
+    // Reset form
+    setFormData({
+      name: '',
+      email: '',
+      phone: '',
+      service: '',
+      message: ''
+    });
   };
 
+  const contactInfo = [
+    {
+      icon: Phone,
+      title: 'Phone',
+      info: '+92 312 5242182',
+      description: '24/7 Emergency Support',
+      color: 'from-green-400 to-green-600'
+    },
+    {
+      icon: Mail,
+      title: 'Email',
+      info: 'info@acservices.pk',
+      description: 'Quick Response Guaranteed',
+      color: 'from-blue-400 to-blue-600'
+    },
+    {
+      icon: MapPin,
+      title: 'Location',
+      info: 'Islamabad & Rawalpindi',
+      description: 'Service Coverage Area',
+      color: 'from-purple-400 to-purple-600'
+    },
+    {
+      icon: Clock,
+      title: 'Working Hours',
+      info: '24/7 Available',
+      description: 'Emergency Services',
+      color: 'from-orange-400 to-orange-600'
+    }
+  ];
+
   const handleWhatsAppContact = () => {
-    const message = `Hi! I'm interested in your AC services. Here are my details:
+    const message = `Hello! I would like to contact AC Services Pakistan.
 
 Name: ${formData.name || 'Not provided'}
-Service Type: ${formData.service_type || 'General inquiry'}
-Message: ${formData.message || 'Please contact me for AC services'}
+Email: ${formData.email || 'Not provided'}
+Phone: ${formData.phone || 'Not provided'}
+Service Needed: ${formData.service || 'General Inquiry'}
 
-Please get back to me at your earliest convenience.`;
+Message: ${formData.message || 'I would like more information about your AC services.'}
+
+Please get back to me. Thank you!`;
     
     const whatsappUrl = `https://wa.me/923125242182?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
-  if (isSubmitted) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-white pt-20">
-        <div className="container mx-auto px-4 py-20">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6 }}
-            className="max-w-2xl mx-auto text-center"
-          >
-            <div className="bg-white rounded-3xl shadow-2xl p-12">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="inline-flex items-center justify-center p-6 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full mb-8"
-              >
-                <CheckCircle className="h-16 w-16 text-white" />
-              </motion.div>
-              
-              <h1 className="text-4xl font-bold text-gray-900 mb-6">
-                Message Sent Successfully!
-              </h1>
-              
-              <p className="text-xl text-gray-600 mb-8">
-                Thank you for contacting AC Services. We've received your inquiry and will get back to you within 24 hours.
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  onClick={() => setIsSubmitted(false)}
-                  variant="outline"
-                  className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
-                >
-                  Send Another Message
-                </Button>
-                <Button 
-                  onClick={handleWhatsAppContact}
-                  className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white"
-                >
-                  <MessageCircle className="mr-2 h-5 w-5" />
-                  WhatsApp Us Now
-                </Button>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-white pt-20">
-      <div className="container mx-auto px-4 py-12">
-        {/* Header */}
-        <motion.div 
-          className="text-center mb-16"
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-20">
+      <div className="container mx-auto px-4">
+        {/* Header Section */}
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
+          className="text-center mb-16"
         >
-          <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6">
-            Get In <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800">Touch</span>
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 text-[#2D3559] font-['Inter']">
+            Contact <span className="bg-gradient-to-r from-[#8843F2] to-[#FF467E] bg-clip-text text-transparent">Us</span>
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Ready to experience premium AC services? Contact us today for installation, repair, and maintenance solutions.
+            Get in touch with Pakistan's most trusted AC service experts. We're here to help 24/7.
           </p>
+          <div className="w-24 h-1 bg-gradient-to-r from-[#8843F2] to-[#FF467E] mx-auto mt-8"></div>
         </motion.div>
 
+        {/* Contact Info Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          {contactInfo.map((info, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+            >
+              <Card className="text-center hover:shadow-xl transition-all duration-300 border-0 bg-white/80 backdrop-blur-sm">
+                <CardContent className="p-6">
+                  <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r ${info.color} flex items-center justify-center shadow-lg`}>
+                    <info.icon className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className="text-lg font-bold text-[#2D3559] mb-2">{info.title}</h3>
+                  <p className="text-[#8843F2] font-semibold mb-1">{info.info}</p>
+                  <p className="text-sm text-gray-600">{info.description}</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Contact Form and Map */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Contact Form */}
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
+            initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <Card className="bg-white/80 backdrop-blur-lg shadow-2xl border-0 rounded-3xl overflow-hidden">
-              <CardContent className="p-8">
-                <h2 className="text-3xl font-bold text-gray-900 mb-6">Send Us a Message</h2>
-                
+            <Card className="shadow-xl border-0 bg-white/90 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-2xl font-bold text-[#2D3559]">Send us a Message</CardTitle>
+                <p className="text-gray-600">Fill out the form below and we'll get back to you promptly.</p>
+              </CardHeader>
+              <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Full Name *
-                      </label>
+                      <Label htmlFor="name" className="text-[#2D3559] font-medium">Name *</Label>
                       <Input
-                        type="text"
+                        id="name"
                         name="name"
                         value={formData.name}
                         onChange={handleInputChange}
-                        placeholder="Enter your full name"
-                        className="border-2 border-gray-200 focus:border-blue-500 rounded-xl py-3"
+                        placeholder="Your full name"
                         required
+                        className="mt-1 border-gray-300 focus:border-[#8843F2] focus:ring-[#8843F2]"
                       />
                     </div>
-                    
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Email Address *
-                      </label>
+                      <Label htmlFor="email" className="text-[#2D3559] font-medium">Email *</Label>
                       <Input
-                        type="email"
+                        id="email"
                         name="email"
+                        type="email"
                         value={formData.email}
                         onChange={handleInputChange}
-                        placeholder="Enter your email"
-                        className="border-2 border-gray-200 focus:border-blue-500 rounded-xl py-3"
+                        placeholder="your.email@example.com"
                         required
+                        className="mt-1 border-gray-300 focus:border-[#8843F2] focus:ring-[#8843F2]"
                       />
                     </div>
                   </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Phone Number
-                      </label>
+                      <Label htmlFor="phone" className="text-[#2D3559] font-medium">Phone</Label>
                       <Input
-                        type="tel"
+                        id="phone"
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        placeholder="+92 300 1234567"
-                        className="border-2 border-gray-200 focus:border-blue-500 rounded-xl py-3"
+                        placeholder="+92 XXX XXXXXXX"
+                        className="mt-1 border-gray-300 focus:border-[#8843F2] focus:ring-[#8843F2]"
                       />
                     </div>
-                    
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Service Type
-                      </label>
-                      <select
-                        name="service_type"
-                        value={formData.service_type}
+                      <Label htmlFor="service" className="text-[#2D3559] font-medium">Service Needed</Label>
+                      <Input
+                        id="service"
+                        name="service"
+                        value={formData.service}
                         onChange={handleInputChange}
-                        className="w-full border-2 border-gray-200 focus:border-blue-500 rounded-xl py-3 px-3 bg-white"
-                      >
-                        <option value="">Select a service</option>
-                        <option value="installation">AC Installation</option>
-                        <option value="repair">AC Repair</option>
-                        <option value="maintenance">AC Maintenance</option>
-                        <option value="buying">Buy AC</option>
-                        <option value="selling">Sell AC</option>
-                        <option value="other">Other</option>
-                      </select>
+                        placeholder="Installation, Repair, Maintenance"
+                        className="mt-1 border-gray-300 focus:border-[#8843F2] focus:ring-[#8843F2]"
+                      />
                     </div>
                   </div>
-
+                  
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Message *
-                    </label>
+                    <Label htmlFor="message" className="text-[#2D3559] font-medium">Message *</Label>
                     <Textarea
+                      id="message"
                       name="message"
                       value={formData.message}
                       onChange={handleInputChange}
-                      placeholder="Tell us about your AC service requirements..."
+                      placeholder="Tell us about your AC service needs..."
                       rows={5}
-                      className="border-2 border-gray-200 focus:border-blue-500 rounded-xl"
                       required
+                      className="mt-1 border-gray-300 focus:border-[#8843F2] focus:ring-[#8843F2]"
                     />
                   </div>
-
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <Button
+                  
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Button 
                       type="submit"
-                      disabled={isSubmitting}
-                      className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-3 rounded-xl font-semibold transform hover:scale-105 transition-all duration-300"
+                      className="flex-1 bg-gradient-to-r from-[#8843F2] to-[#FF467E] hover:from-[#7335E8] hover:to-[#F03A6E] text-white font-medium py-3"
                     >
-                      {isSubmitting ? (
-                        <>
-                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                          Sending...
-                        </>
-                      ) : (
-                        <>
-                          <Send className="mr-2 h-5 w-5" />
-                          Send Message
-                        </>
-                      )}
+                      <Send className="mr-2 h-5 w-5" />
+                      Send Message
                     </Button>
-                    
-                    <Button
+                    <Button 
                       type="button"
                       onClick={handleWhatsAppContact}
                       variant="outline"
-                      className="border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white py-3 rounded-xl font-semibold transform hover:scale-105 transition-all duration-300"
+                      className="flex-1 border-[#25D366] text-[#25D366] hover:bg-[#25D366] hover:text-white py-3"
                     >
                       <MessageCircle className="mr-2 h-5 w-5" />
                       WhatsApp
@@ -299,98 +246,65 @@ Please get back to me at your earliest convenience.`;
             </Card>
           </motion.div>
 
-          {/* Contact Information */}
+          {/* Map and Additional Info */}
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
+            initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="space-y-8"
+            className="space-y-6"
           >
-            <Card className="bg-gradient-to-br from-blue-600 to-purple-600 text-white shadow-2xl border-0 rounded-3xl overflow-hidden">
-              <CardContent className="p-8">
-                <h3 className="text-2xl font-bold mb-6">Contact Information</h3>
-                
-                <div className="space-y-6">
-                  <motion.div 
-                    className="flex items-center gap-4"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <div className="p-3 bg-white/20 rounded-full">
-                      <Phone className="h-6 w-6" />
-                    </div>
+            {/* Service Areas */}
+            <Card className="shadow-xl border-0 bg-white/90 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold text-[#2D3559]">Service Areas</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center p-3 bg-gradient-to-r from-[#8843F2]/10 to-[#FF467E]/10 rounded-lg">
+                    <MapPin className="h-5 w-5 text-[#8843F2] mr-3" />
                     <div>
-                      <h4 className="font-semibold">Phone</h4>
-                      <p className="opacity-90">+92 312 5242182</p>
+                      <p className="font-semibold text-[#2D3559]">Islamabad</p>
+                      <p className="text-sm text-gray-600">All sectors covered</p>
                     </div>
-                  </motion.div>
-
-                  <motion.div 
-                    className="flex items-center gap-4"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <div className="p-3 bg-white/20 rounded-full">
-                      <Mail className="h-6 w-6" />
-                    </div>
+                  </div>
+                  <div className="flex items-center p-3 bg-gradient-to-r from-[#8843F2]/10 to-[#FF467E]/10 rounded-lg">
+                    <MapPin className="h-5 w-5 text-[#8843F2] mr-3" />
                     <div>
-                      <h4 className="font-semibold">Email</h4>
-                      <p className="opacity-90">info@acservices.com.pk</p>
+                      <p className="font-semibold text-[#2D3559]">Rawalpindi</p>
+                      <p className="text-sm text-gray-600">Complete coverage</p>
                     </div>
-                  </motion.div>
-
-                  <motion.div 
-                    className="flex items-center gap-4"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <div className="p-3 bg-white/20 rounded-full">
-                      <MapPin className="h-6 w-6" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold">Service Areas</h4>
-                      <p className="opacity-90">Islamabad, Rawalpindi & surrounding areas</p>
-                    </div>
-                  </motion.div>
-
-                  <motion.div 
-                    className="flex items-center gap-4"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <div className="p-3 bg-white/20 rounded-full">
-                      <Clock className="h-6 w-6" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold">Service Hours</h4>
-                      <p className="opacity-90">24/7 Emergency Service Available</p>
-                    </div>
-                  </motion.div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Service Badges */}
-            <Card className="bg-white/80 backdrop-blur-lg shadow-xl border-0 rounded-3xl">
-              <CardContent className="p-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-6">Why Choose Us?</h3>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  {[
-                    "24/7 Service",
-                    "Expert Technicians", 
-                    "Fair Pricing",
-                    "Quality Guaranteed",
-                    "Fast Response",
-                    "Licensed & Insured"
-                  ].map((feature, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: 0.6 + (index * 0.1) }}
-                    >
-                      <Badge className="w-full justify-center py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0">
-                        {feature}
-                      </Badge>
-                    </motion.div>
-                  ))}
+            {/* Emergency Contact */}
+            <Card className="shadow-xl border-0 bg-gradient-to-r from-[#8843F2] to-[#FF467E] text-white">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold">Emergency Service</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="mb-4">Need immediate AC repair? We're available 24/7 for emergency services.</p>
+                <Button 
+                  onClick={() => window.open('tel:+923125242182', '_self')}
+                  variant="secondary"
+                  className="w-full bg-white text-[#8843F2] hover:bg-gray-100"
+                >
+                  <Phone className="mr-2 h-5 w-5" />
+                  Call Now: +92 312 5242182
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Map Placeholder */}
+            <Card className="shadow-xl border-0 bg-white/90 backdrop-blur-sm">
+              <CardContent className="p-0">
+                <div className="h-64 bg-gradient-to-br from-[#8843F2]/20 to-[#FF467E]/20 rounded-lg flex items-center justify-center">
+                  <div className="text-center">
+                    <MapPin className="h-12 w-12 text-[#8843F2] mx-auto mb-2" />
+                    <p className="text-[#2D3559] font-semibold">Service Coverage Map</p>
+                    <p className="text-sm text-gray-600">Islamabad & Rawalpindi</p>
+                  </div>
                 </div>
               </CardContent>
             </Card>

@@ -60,7 +60,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onTabChange, onOpenSellingFor
           >
             <Button
               onClick={() => onTabChange('for-sale')}
-              className="relative overflow-hidden bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 hover:from-emerald-600 hover:via-green-600 hover:to-emerald-700 text-white border-0 shadow-2xl px-12 py-8 text-xl font-bold rounded-3xl min-w-[280px] h-auto"
+              className="relative overflow-hidden bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 hover:from-emerald-600 hover:via-green-600 hover:to-emerald-700 text-white border-0 shadow-2xl px-12 py-8 text-xl font-bold rounded-3xl transition-all duration-500 min-w-[280px] h-auto"
             >
               {/* Background Animation */}
               <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-green-400 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -104,7 +104,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onTabChange, onOpenSellingFor
           >
             <Button
               onClick={() => onTabChange('wanted')}
-              className="relative overflow-hidden bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:via-orange-600 hover:to-amber-700 text-white border-0 shadow-2xl px-12 py-8 text-xl font-bold rounded-3xl min-w-[280px] h-auto"
+              className="relative overflow-hidden bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:via-orange-600 hover:to-amber-700 text-white border-0 shadow-2xl px-12 py-8 text-xl font-bold rounded-3xl transition-all duration-500 min-w-[280px] h-auto"
             >
               {/* Background Animation */}
               <div className="absolute inset-0 bg-gradient-to-r from-amber-400 to-orange-400 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -144,7 +144,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onTabChange, onOpenSellingFor
             <Button
               onClick={onOpenSellingForm}
               variant="outline"
-              className="relative overflow-hidden bg-white/10 border-2 border-white/30 text-white hover:bg-white hover:text-blue-600 backdrop-blur-sm px-10 py-6 text-lg font-semibold rounded-2xl group"
+              className="relative overflow-hidden bg-white/10 border-2 border-white/30 text-white hover:bg-white hover:text-blue-600 backdrop-blur-sm px-10 py-6 text-lg font-semibold rounded-2xl transition-all duration-500 group"
             >
               {/* Hover Background */}
               <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -183,6 +183,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onTabChange, onOpenSellingFor
               transition={{ duration: 0.3 }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.9 + (index * 0.1) }}
             >
               <motion.div
                 className="inline-flex items-center justify-center p-4 bg-white/10 rounded-2xl mb-3 backdrop-blur-sm group-hover:bg-white/20 transition-colors"
