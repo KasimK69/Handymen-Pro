@@ -11,7 +11,10 @@ import Blogs from '@/pages/Blogs';
 import BlogDetail from '@/pages/BlogDetail';
 import Contact from '@/pages/Contact';
 import ServiceDetail from '@/pages/ServiceDetail';
+import Admin from '@/pages/Admin';
 import AdminProducts from '@/pages/admin/AdminProducts';
+import AdminBlogs from '@/pages/admin/AdminBlogs';
+import AdminServices from '@/pages/admin/Services';
 
 function App() {
   return (
@@ -28,7 +31,10 @@ function App() {
             <Route path="/blogs" element={<Blogs />} />
             <Route path="/blogs/:slug" element={<BlogDetail />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/admin" element={<Admin />} />
             <Route path="/admin/products" element={<AdminProducts />} />
+            <Route path="/admin/blogs" element={<AdminBlogs />} />
+            <Route path="/admin/services" element={<AdminServices />} />
           </Routes>
         </main>
         <Footer />
