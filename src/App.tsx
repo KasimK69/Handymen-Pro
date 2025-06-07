@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from "@/components/ui/toaster";
 import Header from '@/components/Header';
@@ -15,6 +14,7 @@ import Admin from '@/pages/Admin';
 import AdminProducts from '@/pages/admin/AdminProducts';
 import AdminBlogs from '@/pages/admin/AdminBlogs';
 import AdminServices from '@/pages/admin/Services';
+import BlogPost from '@/pages/BlogPost';
 
 function App() {
   return (
@@ -30,6 +30,7 @@ function App() {
             <Route path="/ac-buy-and-sale" element={<AcBuyAndSale />} />
             <Route path="/blogs" element={<Blogs />} />
             <Route path="/blogs/:slug" element={<BlogDetail />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/admin/products" element={<AdminProducts />} />
