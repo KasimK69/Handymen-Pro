@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
@@ -8,24 +7,9 @@ import { Input } from '@/components/ui/input';
 import { Search, Clock, User, ArrowRight, Calendar, Eye, MessageCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
+import { Database } from '@/integrations/supabase/types';
 
-interface BlogPost {
-  id: string;
-  title: string;
-  slug: string;
-  excerpt: string;
-  content: string;
-  image_url: string | null;
-  author: string;
-  category: string;
-  tags: string[];
-  read_time: number;
-  views: number;
-  likes: number;
-  status: string;
-  featured: boolean;
-  created_at: string;
-}
+type BlogPost = Database['public']['Tables']['blogs']['Row'];
 
 const BlogsPage = () => {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
@@ -41,9 +25,9 @@ const BlogsPage = () => {
     try {
       console.log('🔄 Fetching blogs from Supabase...');
       const { data, error } = await supabase
-        .from('blog_posts')
+        .from('blogs')
         .select('*')
-        .eq('status', 'published')
+        .eq('status', 'active')
         .order('featured', { ascending: false })
         .order('created_at', { ascending: false });
 
@@ -69,11 +53,10 @@ const BlogsPage = () => {
           category: 'Maintenance',
           tags: ['AC Maintenance', 'Summer Tips', 'Energy Saving', 'Pakistan'],
           read_time: 8,
-          views: 1524,
-          likes: 89,
-          status: 'published',
+          status: 'active',
           featured: true,
-          created_at: '2024-01-15T10:00:00Z'
+          created_at: '2024-01-15T10:00:00Z',
+          updated_at: '2024-01-15T10:00:00Z'
         },
         {
           id: '2',
@@ -86,11 +69,10 @@ const BlogsPage = () => {
           category: 'Reviews',
           tags: ['AC Brands', 'Reviews', 'Buying Guide'],
           read_time: 6,
-          views: 932,
-          likes: 45,
-          status: 'published',
+          status: 'active',
           featured: false,
-          created_at: '2024-01-10T10:00:00Z'
+          created_at: '2024-01-10T10:00:00Z',
+          updated_at: '2024-01-10T10:00:00Z'
         },
         {
           id: '3',
@@ -103,11 +85,10 @@ const BlogsPage = () => {
           category: 'Tips',
           tags: ['Energy Saving', 'Cost Reduction', 'Efficiency'],
           read_time: 5,
-          views: 2103,
-          likes: 156,
-          status: 'published',
+          status: 'active',
           featured: true,
-          created_at: '2024-01-08T10:00:00Z'
+          created_at: '2024-01-08T10:00:00Z',
+          updated_at: '2024-01-08T10:00:00Z'
         }
       ];
       setBlogs(mockBlogs);
@@ -118,7 +99,7 @@ const BlogsPage = () => {
 
   const filteredBlogs = blogs.filter(blog => {
     const matchesSearch = blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         blog.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
+                         (blog.excerpt && blog.excerpt.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesCategory = selectedCategory === 'all' || blog.category.toLowerCase() === selectedCategory;
     return matchesSearch && matchesCategory;
   });
@@ -258,14 +239,8 @@ const BlogsPage = () => {
                         </div>
 
                         <div className="flex items-center justify-between text-sm text-gray-500 mb-6">
-                          <div className="flex items-center">
-                            <Eye className="h-4 w-4 mr-1" />
-                            <span>{blog.views.toLocaleString()} views</span>
-                          </div>
-                          <div className="flex items-center">
-                            <Calendar className="h-4 w-4 mr-1" />
-                            <span>{new Date(blog.created_at).toLocaleDateString()}</span>
-                          </div>
+                          <Calendar className="h-4 w-4 mr-1" />
+                          <span>{new Date(blog.created_at).toLocaleDateString()}</span>
                         </div>
                         
                         <Button 
@@ -349,14 +324,8 @@ const BlogsPage = () => {
                         </div>
 
                         <div className="flex items-center justify-between text-sm text-gray-500 mb-6">
-                          <div className="flex items-center">
-                            <Eye className="h-4 w-4 mr-1" />
-                            <span>{blog.views.toLocaleString()}</span>
-                          </div>
-                          <div className="flex items-center">
-                            <Calendar className="h-4 w-4 mr-1" />
-                            <span>{new Date(blog.created_at).toLocaleDateString()}</span>
-                          </div>
+                          <Calendar className="h-4 w-4 mr-1" />
+                          <span>{new Date(blog.created_at).toLocaleDateString()}</span>
                         </div>
                         
                         <Button 
