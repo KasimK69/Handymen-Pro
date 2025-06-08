@@ -4,7 +4,12 @@ import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { ShoppingCart, Heart, Star, TrendingUp } from 'lucide-react';
 
-const HeroSection = () => {
+interface HeroSectionProps {
+  onTabChange: (tab: 'for-sale' | 'wanted') => void;
+  onOpenSellingForm: () => void;
+}
+
+const HeroSection: React.FC<HeroSectionProps> = ({ onTabChange, onOpenSellingForm }) => {
   return (
     <section className="relative bg-gradient-to-br from-blue-50 to-indigo-100 py-20">
       <div className="container mx-auto px-4">
@@ -71,6 +76,7 @@ const HeroSection = () => {
                 </div>
                 
                 <Button 
+                  onClick={() => onTabChange('for-sale')}
                   className="w-full bg-white text-blue-700 hover:bg-blue-50 font-bold py-4 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105"
                 >
                   Browse ACs for Sale
@@ -123,6 +129,7 @@ const HeroSection = () => {
                 </div>
                 
                 <Button 
+                  onClick={onOpenSellingForm}
                   className="w-full bg-white text-purple-700 hover:bg-purple-50 font-bold py-4 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105"
                 >
                   Sell Your AC
