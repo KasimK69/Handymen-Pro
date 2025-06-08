@@ -1,6 +1,7 @@
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from "@/components/ui/toaster";
+import { AdminAuthProvider } from '@/context/AdminAuthContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Home from '@/pages/Index';
@@ -20,31 +21,33 @@ import GetQuote from '@/pages/GetQuote';
 
 function App() {
   return (
-    <Router>
-      <div className="min-h-screen bg-background flex flex-col">
-        <Header />
-        <main className="flex-1">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/services/:slug" element={<ServiceDetail />} />
-            <Route path="/ac-buy-and-sale" element={<AcBuyAndSale />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blogs" element={<Blogs />} />
-            <Route path="/blogs/:slug" element={<BlogDetail />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/get-quote" element={<GetQuote />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/admin/products" element={<AdminProducts />} />
-            <Route path="/admin/blogs" element={<AdminBlogs />} />
-            <Route path="/admin/services" element={<AdminServices />} />
-          </Routes>
-        </main>
-        <Footer />
-        <Toaster />
-      </div>
-    </Router>
+    <AdminAuthProvider>
+      <Router>
+        <div className="min-h-screen bg-background flex flex-col">
+          <Header />
+          <main className="flex-1">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/services" element={<Services />} />
+              <Route path="/services/:slug" element={<ServiceDetail />} />
+              <Route path="/ac-buy-and-sale" element={<AcBuyAndSale />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blogs" element={<Blogs />} />
+              <Route path="/blogs/:slug" element={<BlogDetail />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/get-quote" element={<GetQuote />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/admin/products" element={<AdminProducts />} />
+              <Route path="/admin/blogs" element={<AdminBlogs />} />
+              <Route path="/admin/services" element={<AdminServices />} />
+            </Routes>
+          </main>
+          <Footer />
+          <Toaster />
+        </div>
+      </Router>
+    </AdminAuthProvider>
   );
 }
 
