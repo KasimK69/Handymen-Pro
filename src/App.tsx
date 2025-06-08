@@ -14,6 +14,7 @@ import Blog from '@/pages/Blog';
 import Contact from '@/pages/Contact';
 import ServiceDetail from '@/pages/ServiceDetail';
 import Admin from '@/pages/Admin';
+import Dashboard from '@/pages/admin/Dashboard';
 import AdminProducts from '@/pages/admin/AdminProducts';
 import AdminBlogs from '@/pages/admin/AdminBlogs';
 import AdminServices from '@/pages/admin/Services';
@@ -38,6 +39,8 @@ function App() {
               <Route path="/contact" element={<Contact />} />
               <Route path="/get-quote" element={<GetQuote />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/admin/login" element={<Admin />} />
+              <Route path="/admin/dashboard" element={<Dashboard />} />
               <Route path="/admin/products" element={<AdminProducts />} />
               <Route path="/admin/blogs" element={<AdminBlogs />} />
               <Route path="/admin/services" element={<AdminServices />} />

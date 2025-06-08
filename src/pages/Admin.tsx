@@ -8,7 +8,7 @@ import { Loader2, Lock, AirVent } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Admin = () => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const { login, isLoading, isAuthenticated } = useAdminAuth();
@@ -23,7 +23,7 @@ const Admin = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const success = await login(email, password);
+    const success = await login(username, password);
     if (success) {
       navigate('/admin/dashboard');
     }
@@ -58,15 +58,15 @@ const Admin = () => {
             
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium mb-2">
-                  Email
+                <label htmlFor="username" className="block text-sm font-medium mb-2">
+                  Username
                 </label>
                 <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@example.com"
+                  id="username"
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Enter username"
                   disabled={isLoading}
                   required
                   className="border-gray-300"
@@ -128,7 +128,7 @@ const Admin = () => {
             
             <div className="mt-6">
               <p className="text-center text-sm text-gray-600 dark:text-gray-400">
-                Demo credentials: admin@example.com / admin123
+                Demo credentials: kasim69 / Madmaxfury@12345
               </p>
             </div>
           </div>

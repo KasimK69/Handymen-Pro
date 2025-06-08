@@ -1,9 +1,10 @@
+
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, Phone, Calendar, Star, X, MessageCircle } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { X, Star, MessageCircle, Phone, CheckCircle, Clock, Shield, Award } from 'lucide-react';
 
 interface Service {
   id: string;
@@ -29,278 +30,201 @@ interface ServiceDetailModalProps {
 const ServiceDetailModal: React.FC<ServiceDetailModalProps> = ({ service, isOpen, onClose }) => {
   if (!service) return null;
 
-  const handleWhatsAppContact = () => {
-    const message = `Hi! I'm interested in your ${service.name}. Can you provide more details and pricing? 
+  const handleGetQuote = () => {
+    const message = `Hi! I'm interested in your ${service.name} service.
 
 Service Details:
-📋 Service: ${service.name}
-📍 Category: ${service.category}
-${service.price_range ? `💰 Price Range: ${service.price_range}` : ''}
+- Category: ${service.category}
+- Price Range: ${service.price_range || 'Please provide quote'}
 
-Please let me know your availability and next steps. Thank you!`;
-    
-    const whatsappUrl = `https://wa.me/923125242182?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
-  };
+Please provide detailed information about:
+1. Service charges
+2. Available time slots
+3. What's included in the service
+4. Any additional requirements
 
-  const handleBookService = () => {
-    const message = `Hi! I would like to book your ${service.name} service. 
-
-📋 Service: ${service.name}
-📍 Category: ${service.category}
-${service.price_range ? `💰 Price Range: ${service.price_range}` : ''}
-
-Please let me know:
-1. Available time slots
-2. Service duration
-3. Any preparation required
-4. Final pricing
-
-Looking forward to your response!`;
+Thank you!`;
     
     const whatsappUrl = `https://wa.me/923125242182?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
   const handleCallNow = () => {
-    window.location.href = 'tel:+923125242182';
+    window.open('tel:+923125242182', '_self');
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-5xl max-h-[95vh] overflow-y-auto p-0 bg-white rounded-3xl border-0 shadow-2xl">
-        <motion.div 
-          className="relative"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3 }}
-        >
-          {/* Close Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute top-4 right-4 z-10 bg-white/90 backdrop-blur-sm hover:bg-white/95 rounded-full shadow-lg border border-gray-200"
-            onClick={onClose}
-          >
-            <X className="h-5 w-5" />
-          </Button>
-
-          {/* Service Image */}
-          {service.image_url && (
-            <div className="aspect-[16/9] w-full bg-gradient-to-br from-blue-50 to-purple-50 relative overflow-hidden rounded-t-3xl">
-              <img 
-                src={service.image_url} 
-                alt={service.name}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-            </div>
-          )}
-          
-          <div className="p-8 md:p-12">
-            <DialogHeader className="mb-8">
-              <div className="flex flex-wrap gap-3 mb-6">
-                <Badge variant="outline" className="text-blue-600 border-blue-600 px-4 py-2 text-sm font-semibold rounded-full">
-                  {service.category}
-                </Badge>
-                {service.featured && (
-                  <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-4 py-2 text-sm font-semibold rounded-full">
-                    <Star className="h-4 w-4 mr-1" />
-                    Featured Service
-                  </Badge>
-                )}
-              </div>
-              
-              <DialogTitle className="text-4xl md:text-5xl font-bold text-gray-900 text-left mb-6 leading-tight">
-                {service.name}
-              </DialogTitle>
-              
-              <DialogDescription className="text-xl text-gray-600 leading-relaxed text-left">
-                {service.short_description || service.description}
-              </DialogDescription>
-            </DialogHeader>
-            
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
-              {/* Service Details */}
-              <div className="space-y-8">
-                {/* Description */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  <h3 className="text-2xl font-semibold mb-4 text-gray-900">Service Overview</h3>
-                  <div className="bg-gray-50 rounded-2xl p-6">
-                    <p className="text-gray-700 leading-relaxed text-lg">
-                      {service.description}
-                    </p>
+    <AnimatePresence>
+      {isOpen && (
+        <Dialog open={isOpen} onOpenChange={onClose}>
+          <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden p-0 bg-white/95 backdrop-blur-xl border-0 shadow-2xl">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.3 }}
+              className="relative"
+            >
+              {/* Header */}
+              <div className="relative">
+                {service.image_url && (
+                  <div className="h-48 overflow-hidden">
+                    <img
+                      src={service.image_url}
+                      alt={service.name}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   </div>
-                </motion.div>
+                )}
                 
+                <div className="absolute top-4 right-4">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={onClose}
+                    className="rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white"
+                  >
+                    <X className="h-5 w-5" />
+                  </Button>
+                </div>
+
+                <DialogHeader className={`p-6 ${service.image_url ? 'absolute bottom-0 left-0 right-0 text-white' : ''}`}>
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <DialogTitle className="text-3xl font-bold mb-2">
+                        {service.name}
+                      </DialogTitle>
+                      <div className="flex gap-2 mb-2">
+                        {service.featured && (
+                          <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white">
+                            Featured Service
+                          </Badge>
+                        )}
+                        <Badge variant="secondary" className={`${service.image_url ? 'bg-white/20 text-white' : 'bg-blue-100 text-blue-800'}`}>
+                          {service.category}
+                        </Badge>
+                      </div>
+                      {service.price_range && (
+                        <div className={`text-xl font-semibold ${service.image_url ? 'text-yellow-300' : 'text-blue-600'}`}>
+                          {service.price_range}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </DialogHeader>
+              </div>
+
+              <div className="p-6 max-h-[60vh] overflow-y-auto">
+                {/* Service Overview */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                  <div className="text-center p-4 bg-blue-50 rounded-xl">
+                    <Clock className="h-8 w-8 mx-auto mb-2 text-blue-600" />
+                    <div className="font-semibold text-gray-900">Quick Service</div>
+                    <div className="text-sm text-gray-600">Same day available</div>
+                  </div>
+                  <div className="text-center p-4 bg-green-50 rounded-xl">
+                    <Shield className="h-8 w-8 mx-auto mb-2 text-green-600" />
+                    <div className="font-semibold text-gray-900">Warranty</div>
+                    <div className="text-sm text-gray-600">Service guarantee</div>
+                  </div>
+                  <div className="text-center p-4 bg-purple-50 rounded-xl">
+                    <Award className="h-8 w-8 mx-auto mb-2 text-purple-600" />
+                    <div className="font-semibold text-gray-900">Certified</div>
+                    <div className="text-sm text-gray-600">Expert technicians</div>
+                  </div>
+                </div>
+
+                {/* Description */}
+                <div className="mb-8">
+                  <h3 className="text-xl font-bold mb-4 text-gray-900">Service Description</h3>
+                  <p className="text-gray-700 leading-relaxed text-lg">
+                    {service.description}
+                  </p>
+                </div>
+
                 {/* Features */}
                 {service.features && service.features.length > 0 && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                  >
-                    <h3 className="text-2xl font-semibold mb-6 text-gray-900">What's Included</h3>
-                    <div className="bg-green-50 rounded-2xl p-6">
-                      <div className="space-y-4">
-                        {service.features.map((feature, index) => (
-                          <motion.div 
-                            key={index} 
-                            className="flex items-start gap-4"
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.4 + (index * 0.1) }}
-                          >
-                            <CheckCircle className="h-6 w-6 text-green-600 mt-0.5 flex-shrink-0" />
-                            <span className="text-gray-700 text-lg">{feature}</span>
-                          </motion.div>
+                  <div className="mb-8">
+                    <h3 className="text-xl font-bold mb-4 text-gray-900">What's Included</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {service.features.map((feature, index) => (
+                        <div key={index} className="flex items-center text-gray-700">
+                          <CheckCircle className="h-5 w-5 text-green-600 mr-3 flex-shrink-0" />
+                          <span>{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Service Process */}
+                <div className="mb-8">
+                  <h3 className="text-xl font-bold mb-4 text-gray-900">How It Works</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="text-center p-4 border border-gray-200 rounded-xl">
+                      <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-2 font-bold">1</div>
+                      <div className="font-semibold mb-1">Book Service</div>
+                      <div className="text-sm text-gray-600">Contact us via WhatsApp or call</div>
+                    </div>
+                    <div className="text-center p-4 border border-gray-200 rounded-xl">
+                      <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-2 font-bold">2</div>
+                      <div className="font-semibold mb-1">Schedule Visit</div>
+                      <div className="text-sm text-gray-600">We'll arrange a convenient time</div>
+                    </div>
+                    <div className="text-center p-4 border border-gray-200 rounded-xl">
+                      <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-2 font-bold">3</div>
+                      <div className="font-semibold mb-1">Service Done</div>
+                      <div className="text-sm text-gray-600">Professional service completed</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Customer Rating */}
+                <div className="bg-gray-50 rounded-xl p-6 mb-8">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-xl font-bold text-gray-900">Customer Rating</h3>
+                    <div className="flex items-center gap-2">
+                      <div className="flex">
+                        {[...Array(5)].map((_, i) => (
+                          <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
                         ))}
                       </div>
+                      <span className="text-xl font-bold">4.9</span>
                     </div>
-                  </motion.div>
-                )}
-              </div>
-              
-              {/* Pricing & Action */}
-              <div className="space-y-8">
-                {/* Price */}
-                {service.price_range && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
-                  >
-                    <div className="bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-100 p-8 rounded-3xl">
-                      <h3 className="font-semibold text-blue-900 mb-3 text-xl">Service Investment</h3>
-                      <p className="text-4xl font-bold text-blue-600 mb-4">{service.price_range}</p>
-                      <p className="text-sm text-blue-700 leading-relaxed">
-                        *Final pricing may vary based on specific requirements and service scope. 
-                        Free consultation and detailed quote available upon request.
-                      </p>
-                    </div>
-                  </motion.div>
-                )}
-                
-                {/* Action Buttons */}
-                <motion.div 
-                  className="space-y-4"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 }}
-                >
-                  <Button 
-                    className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-6 text-lg font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-                    onClick={handleBookService}
-                  >
-                    <Calendar className="mr-3 h-6 w-6" />
-                    Book This Service Now
-                  </Button>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <Button 
-                      variant="outline" 
-                      className="border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white py-4 text-lg font-semibold rounded-2xl transition-all duration-300"
-                      onClick={handleWhatsAppContact}
-                    >
-                      <MessageCircle className="mr-2 h-5 w-5" />
-                      WhatsApp
-                    </Button>
-                    
-                    <Button 
-                      variant="outline" 
-                      className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white py-4 text-lg font-semibold rounded-2xl transition-all duration-300"
-                      onClick={handleCallNow}
-                    >
-                      <Phone className="mr-2 h-5 w-5" />
-                      Call Now
-                    </Button>
                   </div>
-                  
-                  <div className="text-center pt-6 border-t border-gray-200">
-                    <p className="text-sm text-gray-500 mb-3">
-                      Need immediate assistance?
-                    </p>
-                    <a 
-                      href="tel:+923125242182" 
-                      className="text-blue-600 hover:text-blue-700 font-semibold text-xl flex items-center justify-center gap-2 transition-colors"
-                    >
-                      <Phone className="h-5 w-5" />
-                      +92 312 5242182
-                    </a>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>Quality: ⭐⭐⭐⭐⭐</div>
+                    <div>Punctuality: ⭐⭐⭐⭐⭐</div>
+                    <div>Professionalism: ⭐⭐⭐⭐⭐</div>
+                    <div>Value for Money: ⭐⭐⭐⭐⭐</div>
                   </div>
-                </motion.div>
-                
-                {/* Additional Info */}
-                <motion.div 
-                  className="bg-gradient-to-br from-gray-50 to-blue-50 p-8 rounded-3xl border border-gray-100"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6 }}
-                >
-                  <h4 className="font-semibold text-gray-900 mb-4 text-xl">Why Choose Us?</h4>
-                  <div className="space-y-3">
-                    {[
-                      "24/7 Emergency Service Available",
-                      "Certified & Experienced Technicians", 
-                      "100% Satisfaction Guarantee",
-                      "Free Consultation & Estimates",
-                      "Same-Day Service Available",
-                      "Competitive Pricing & Quality Work"
-                    ].map((benefit, index) => (
-                      <motion.div 
-                        key={index}
-                        className="flex items-center gap-3"
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.7 + (index * 0.1) }}
-                      >
-                        <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
-                        <span className="text-gray-700">{benefit}</span>
-                      </motion.div>
-                    ))}
-                  </div>
-                </motion.div>
-              </div>
-            </div>
+                </div>
 
-            {/* Bottom CTA */}
-            <motion.div 
-              className="mt-12 pt-8 border-t border-gray-200 text-center"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 }}
-            >
-              <h4 className="text-2xl font-bold text-gray-900 mb-4">Ready to Get Started?</h4>
-              <p className="text-gray-600 mb-6 text-lg max-w-2xl mx-auto">
-                Join thousands of satisfied customers who trust us with their AC needs. 
-                Book your service today and experience the difference.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  onClick={handleBookService}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg rounded-2xl font-semibold transform hover:scale-105 transition-all duration-300"
-                >
-                  <Calendar className="mr-2 h-5 w-5" />
-                  Book Service Now
-                </Button>
-                <Button 
-                  onClick={handleWhatsAppContact}
-                  variant="outline"
-                  className="border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white px-8 py-4 text-lg rounded-2xl font-semibold transform hover:scale-105 transition-all duration-300"
-                >
-                  <MessageCircle className="mr-2 h-5 w-5" />
-                  Get Quote on WhatsApp
-                </Button>
+                {/* Action Buttons */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Button 
+                    className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-4 text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300"
+                    onClick={handleGetQuote}
+                  >
+                    <MessageCircle className="mr-3 h-5 w-5" />
+                    Get Quote on WhatsApp
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="w-full border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white hover:border-blue-600 py-4 text-lg font-bold transition-all duration-300"
+                    onClick={handleCallNow}
+                  >
+                    <Phone className="mr-3 h-5 w-5" />
+                    Call Now
+                  </Button>
+                </div>
               </div>
             </motion.div>
-          </div>
-        </motion.div>
-      </DialogContent>
-    </Dialog>
+          </DialogContent>
+        </Dialog>
+      )}
+    </AnimatePresence>
   );
 };
 

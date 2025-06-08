@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Star, ShoppingCart, Eye, Heart, ArrowRight, Zap, Snowflake, Wind } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
+import ProductDetailModal from './ProductDetailModal';
 
 interface ACProduct {
   id: string;
@@ -34,6 +35,8 @@ const PremiumACCollection = () => {
   const [products, setProducts] = useState<ACProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [favorites, setFavorites] = useState<string[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<ACProduct | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchProducts();
@@ -61,11 +64,25 @@ const PremiumACCollection = () => {
       setProducts(data || []);
     } catch (error) {
       console.error('❌ Error in fetchProducts:', error);
-      // Fallback to demo data if Supabase fails
       setProducts([]);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleViewDetails = async (product: ACProduct) => {
+    // Update view count
+    try {
+      await supabase
+        .from('ac_products')
+        .update({ views: (product.views || 0) + 1 })
+        .eq('id', product.id);
+    } catch (error) {
+      console.error('Error updating view count:', error);
+    }
+
+    setSelectedProduct(product);
+    setIsModalOpen(true);
   };
 
   const toggleFavorite = (productId: string) => {
@@ -157,7 +174,11 @@ const PremiumACCollection = () => {
                         >
                           <Heart className={`h-4 w-4 ${favorites.includes(product.id) ? 'fill-current' : ''}`} />
                         </Button>
-                        <Button size="sm" className="rounded-full bg-white/20 hover:bg-white/30 text-white border-white/20">
+                        <Button 
+                          size="sm" 
+                          className="rounded-full bg-white/20 hover:bg-white/30 text-white border-white/20"
+                          onClick={() => handleViewDetails(product)}
+                        >
                           <Eye className="h-4 w-4" />
                         </Button>
                       </div>
@@ -251,7 +272,10 @@ const PremiumACCollection = () => {
                     )}
 
                     {/* Action Button */}
-                    <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium">
+                    <Button 
+                      className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium"
+                      onClick={() => handleViewDetails(product)}
+                    >
                       <ShoppingCart className="mr-2 h-4 w-4" />
                       View Details
                     </Button>
@@ -285,6 +309,16 @@ const PremiumACCollection = () => {
           </Button>
         </motion.div>
       </div>
+
+      {/* Product Detail Modal */}
+      <ProductDetailModal
+        product={selectedProduct}
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedProduct(null);
+        }}
+      />
     </section>
   );
 };

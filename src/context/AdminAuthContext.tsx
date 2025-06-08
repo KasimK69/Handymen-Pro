@@ -31,9 +31,9 @@ export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({ children }
     setIsLoading(true);
     
     try {
-      // Demo credentials for now - in production this should be proper authentication
-      if (email === 'admin@example.com' && password === 'admin123') {
-        localStorage.setItem('adminToken', 'demo-admin-token');
+      // Updated credentials as requested
+      if (email === 'kasim69' && password === 'Madmaxfury@12345') {
+        localStorage.setItem('adminToken', 'admin-token-kasim69');
         setIsAuthenticated(true);
         toast({
           title: "Login Successful",
@@ -43,7 +43,7 @@ export const AdminAuthProvider: React.FC<AdminAuthProviderProps> = ({ children }
       } else {
         toast({
           title: "Login Failed", 
-          description: "Invalid email or password",
+          description: "Invalid username or password",
           variant: "destructive"
         });
         return false;
