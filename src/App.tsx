@@ -1,56 +1,110 @@
 
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from "@/components/ui/toaster";
-import { AdminAuthProvider } from '@/context/AdminAuthContext';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import Home from '@/pages/Index';
-import About from '@/pages/About';
-import Services from '@/pages/Services';
-import AcBuyAndSale from '@/pages/AcBuyAndSale';
-import Blogs from '@/pages/Blogs';
-import BlogDetail from '@/pages/BlogDetail';
-import Blog from '@/pages/Blog';
-import Contact from '@/pages/Contact';
-import ServiceDetail from '@/pages/ServiceDetail';
-import Admin from '@/pages/Admin';
-import Dashboard from '@/pages/admin/Dashboard';
-import AdminProducts from '@/pages/admin/AdminProducts';
-import AdminBlogs from '@/pages/admin/AdminBlogs';
-import AdminServices from '@/pages/admin/Services';
-import GetQuote from '@/pages/GetQuote';
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AdminAuthProvider } from "@/context/AdminAuthContext";
+import Index from "./pages/Index";
+import About from "./pages/About";
+import Services from "./pages/Services";
+import Contact from "./pages/Contact";
+import Blog from "./pages/Blog";
+import BlogDetail from "./pages/BlogDetail";
+import ACBuyAndSale from "./pages/ACBuyAndSale";
+import AdminLogin from "./pages/Admin";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import BlogAdminPage from "./pages/admin/Blog";
+import ServicesAdminPage from "./pages/admin/Services";
+import ACProductsAdminPage from "./pages/admin/ACProducts";
+import InquiriesAdminPage from "./pages/admin/Inquiries";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import ProtectedRoute from "./components/ProtectedRoute";
+
+const queryClient = new QueryClient();
 
 function App() {
   return (
-    <AdminAuthProvider>
-      <Router>
-        <div className="min-h-screen bg-background flex flex-col">
-          <Header />
-          <main className="flex-1">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/services/:slug" element={<ServiceDetail />} />
-              <Route path="/ac-buy-and-sale" element={<AcBuyAndSale />} />
-              <Route path="/blog" element={<Blog />} />
-              <Route path="/blogs" element={<Blogs />} />
-              <Route path="/blogs/:slug" element={<BlogDetail />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/get-quote" element={<GetQuote />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/admin/login" element={<Admin />} />
-              <Route path="/admin/dashboard" element={<Dashboard />} />
-              <Route path="/admin/products" element={<AdminProducts />} />
-              <Route path="/admin/blogs" element={<AdminBlogs />} />
-              <Route path="/admin/services" element={<AdminServices />} />
-            </Routes>
-          </main>
-          <Footer />
+    <QueryClientProvider client={queryClient}>
+      <AdminAuthProvider>
+        <TooltipProvider>
           <Toaster />
-        </div>
-      </Router>
-    </AdminAuthProvider>
+          <Sonner />
+          <BrowserRouter>
+            <div className="min-h-screen flex flex-col">
+              <Routes>
+                {/* Admin Routes */}
+                <Route path="/admin" element={<AdminLogin />} />
+                <Route path="/admin/login" element={<AdminLogin />} />
+                <Route 
+                  path="/admin/dashboard" 
+                  element={
+                    <ProtectedRoute>
+                      <AdminDashboard />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/admin/blogs" 
+                  element={
+                    <ProtectedRoute>
+                      <BlogAdminPage />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/admin/services" 
+                  element={
+                    <ProtectedRoute>
+                      <ServicesAdminPage />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/admin/products" 
+                  element={
+                    <ProtectedRoute>
+                      <ACProductsAdminPage />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/admin/inquiries" 
+                  element={
+                    <ProtectedRoute>
+                      <InquiriesAdminPage />
+                    </ProtectedRoute>
+                  } 
+                />
+                
+                {/* Public Routes */}
+                <Route 
+                  path="/*" 
+                  element={
+                    <>
+                      <Navbar />
+                      <main className="flex-1">
+                        <Routes>
+                          <Route path="/" element={<Index />} />
+                          <Route path="/about" element={<About />} />
+                          <Route path="/services" element={<Services />} />
+                          <Route path="/contact" element={<Contact />} />
+                          <Route path="/blog" element={<Blog />} />
+                          <Route path="/blog/:slug" element={<BlogDetail />} />
+                          <Route path="/ac-buy-and-sale" element={<ACBuyAndSale />} />
+                        </Routes>
+                      </main>
+                      <Footer />
+                    </>
+                  } 
+                />
+              </Routes>
+            </div>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AdminAuthProvider>
+    </QueryClientProvider>
   );
 }
 
