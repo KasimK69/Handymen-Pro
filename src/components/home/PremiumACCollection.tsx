@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Star, ShoppingCart, Eye, Heart, ArrowRight, Zap, Snowflake, Wind, Phone, MessageCircle } from 'lucide-react';
+import { Star, ShoppingCart, Eye, Heart, ArrowRight, Zap, Snowflake, Wind, Phone, MessageCircle, Shield, Wrench } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
 import {
