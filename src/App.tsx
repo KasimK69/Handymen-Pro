@@ -17,6 +17,7 @@ import AdminLogin from "./pages/Admin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import BlogAdminPage from "./pages/admin/Blog";
 import ServicesAdminPage from "./pages/admin/Services";
+import AdminProducts from "./pages/admin/AdminProducts";
 import ModernHeader from "./components/ModernHeader";
 import Footer from "./components/Footer";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
@@ -57,6 +58,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <ServicesAdminPage />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/admin/products" 
+                  element={
+                    <ProtectedRoute>
+                      <AdminProducts />
                     </ProtectedRoute>
                   } 
                 />
