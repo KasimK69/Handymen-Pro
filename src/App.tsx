@@ -11,16 +11,14 @@ import Services from "./pages/Services";
 import Contact from "./pages/Contact";
 import Blog from "./pages/Blog";
 import BlogDetail from "./pages/BlogDetail";
-import ACBuyAndSale from "./pages/ACBuyAndSale";
+import AcBuyAndSale from "./pages/AcBuyAndSale";
 import AdminLogin from "./pages/Admin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import BlogAdminPage from "./pages/admin/Blog";
 import ServicesAdminPage from "./pages/admin/Services";
-import ACProductsAdminPage from "./pages/admin/ACProducts";
-import InquiriesAdminPage from "./pages/admin/Inquiries";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./components/admin/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -61,22 +59,6 @@ function App() {
                     </ProtectedRoute>
                   } 
                 />
-                <Route 
-                  path="/admin/products" 
-                  element={
-                    <ProtectedRoute>
-                      <ACProductsAdminPage />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/admin/inquiries" 
-                  element={
-                    <ProtectedRoute>
-                      <InquiriesAdminPage />
-                    </ProtectedRoute>
-                  } 
-                />
                 
                 {/* Public Routes */}
                 <Route 
@@ -92,7 +74,7 @@ function App() {
                           <Route path="/contact" element={<Contact />} />
                           <Route path="/blog" element={<Blog />} />
                           <Route path="/blog/:slug" element={<BlogDetail />} />
-                          <Route path="/ac-buy-and-sale" element={<ACBuyAndSale />} />
+                          <Route path="/ac-buy-and-sale" element={<AcBuyAndSale />} />
                         </Routes>
                       </main>
                       <Footer />
