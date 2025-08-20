@@ -281,6 +281,23 @@ const Footer = () => {
           </div>
         </div>
 
+        {/* Newsletter */}
+        <div className="border-t border-white/10">
+          <div className="container mx-auto px-4 py-10">
+            <div className="max-w-4xl mx-auto text-center">
+              <h4 className="text-2xl font-bold mb-2">Subscribe for AC tips & offers</h4>
+              <p className="text-gray-300 mb-6">Get maintenance tips, seasonal deals, and new product alerts.</p>
+              <form onSubmit={(e) => e.preventDefault()} className="flex flex-col sm:flex-row gap-3 items-center justify-center">
+                <input type="email" required placeholder="Enter your email"
+                  className="w-full sm:w-auto flex-1 rounded-xl px-4 py-3 bg-white/10 text-white placeholder-white/70 border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                <button className="rounded-xl px-6 py-3 bg-blue-600 hover:bg-blue-500 transition-colors font-semibold">
+                  Subscribe
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
         {/* CTA Section */}
         <div className="border-t border-white/10">
           <div className="container mx-auto px-4 py-12">

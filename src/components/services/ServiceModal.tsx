@@ -113,12 +113,6 @@ const ServiceModal: React.FC<ServiceModalProps> = ({ isOpen, onClose, service })
         
         <DialogFooter className="p-6 pt-0">
           <Button 
-            variant="outline" 
-            onClick={onClose}
-          >
-            Close
-          </Button>
-          <Button 
             className="bg-brand-red hover:bg-brand-red/90"
             asChild
           >

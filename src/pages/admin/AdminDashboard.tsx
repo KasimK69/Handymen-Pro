@@ -19,10 +19,13 @@ import {
   Star
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useToast } from '@/hooks/use-toast';
+import { addSampleACProducts, addSampleServices, addSampleBlogs } from '@/utils/sampleData';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const { logout, isAuthenticated } = useAdminAuth();
+  const { toast } = useToast();
 
   React.useEffect(() => {
     if (!isAuthenticated) {
@@ -35,6 +38,17 @@ const AdminDashboard = () => {
     navigate('/admin/login');
   };
 
+  const handleSeedDemo = async () => {
+    try {
+      await addSampleACProducts();
+      await addSampleServices();
+      await addSampleBlogs();
+      toast({ title: 'Demo data added', description: 'Sample products, services and blogs have been created.' });
+    } catch (e) {
+      console.error(e);
+      toast({ title: 'Failed to add demo data', variant: 'destructive' });
+    }
+  };
   const dashboardCards = [
     {
       title: 'Blog Posts',
@@ -218,7 +232,7 @@ const AdminDashboard = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 <Button 
                   onClick={() => navigate('/admin/blogs')}
                   className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-4 h-auto flex-col gap-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
@@ -241,6 +255,14 @@ const AdminDashboard = () => {
                 >
                   <Settings className="h-6 w-6" />
                   <span className="font-semibold">Add New Service</span>
+                </Button>
+                <Button 
+                  onClick={handleSeedDemo}
+                  variant="outline"
+                  className="border-2 border-blue-200 text-blue-700 hover:bg-blue-50 hover:border-blue-300 py-4 h-auto flex-col gap-2 rounded-xl transition-all duration-300"
+                >
+                  <TrendingUp className="h-6 w-6" />
+                  <span className="font-semibold">Add Demo Data</span>
                 </Button>
               </div>
             </CardContent>
