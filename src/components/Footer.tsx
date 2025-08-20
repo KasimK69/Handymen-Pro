@@ -1,8 +1,71 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AirVent, Phone, Mail, MapPin, Clock, Star, MessageCircle, CheckCircle2, Wrench, Shield, Zap, ArrowRight, Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from '@/hooks/use-toast';
+
+const NewsletterForm = () => {
+  const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+
+    setIsSubmitting(true);
+    try {
+      const { error } = await supabase
+        .from('inquiries')
+        .insert([{
+          name: 'Newsletter Subscriber',
+          email: email,
+          phone: null,
+          service_type: 'newsletter',
+          message: 'Newsletter subscription request'
+        }]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Subscribed!",
+        description: "You'll receive AC tips and exclusive offers.",
+      });
+      setEmail('');
+    } catch (error) {
+      console.error('Newsletter subscription error:', error);
+      toast({
+        title: "Subscription failed",
+        description: "Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-3 items-center justify-center">
+      <input 
+        type="email" 
+        required 
+        placeholder="Enter your email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        disabled={isSubmitting}
+        className="w-full sm:w-auto flex-1 rounded-xl px-4 py-3 bg-white/10 text-white placeholder-white/70 border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50" 
+      />
+      <button 
+        type="submit"
+        disabled={isSubmitting}
+        className="rounded-xl px-6 py-3 bg-blue-600 hover:bg-blue-500 transition-colors font-semibold disabled:opacity-50"
+      >
+        {isSubmitting ? 'Subscribing...' : 'Subscribe'}
+      </button>
+    </form>
+  );
+};
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -285,15 +348,15 @@ const Footer = () => {
         <div className="border-t border-white/10">
           <div className="container mx-auto px-4 py-10">
             <div className="max-w-4xl mx-auto text-center">
-              <h4 className="text-2xl font-bold mb-2">Subscribe for AC tips & offers</h4>
-              <p className="text-gray-300 mb-6">Get maintenance tips, seasonal deals, and new product alerts.</p>
-              <form onSubmit={(e) => e.preventDefault()} className="flex flex-col sm:flex-row gap-3 items-center justify-center">
-                <input type="email" required placeholder="Enter your email"
-                  className="w-full sm:w-auto flex-1 rounded-xl px-4 py-3 bg-white/10 text-white placeholder-white/70 border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-400" />
-                <button className="rounded-xl px-6 py-3 bg-blue-600 hover:bg-blue-500 transition-colors font-semibold">
-                  Subscribe
-                </button>
-              </form>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <h4 className="text-2xl font-bold mb-2">Subscribe for AC tips & offers</h4>
+                <p className="text-gray-300 mb-6">Get maintenance tips, seasonal deals, and new product alerts.</p>
+                <NewsletterForm />
+              </motion.div>
             </div>
           </div>
         </div>

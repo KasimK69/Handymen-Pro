@@ -269,7 +269,7 @@ const AdminDashboard = () => {
           </Card>
         </motion.div>
 
-        {/* Recent Activity */}
+        {/* SEO Tools */}
         <motion.div
           className="mt-8"
           initial={{ opacity: 0, y: 30 }}
@@ -280,6 +280,55 @@ const AdminDashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-2xl">
                 <div className="p-2 bg-gradient-to-r from-green-600 to-blue-600 rounded-lg">
+                  <TrendingUp className="h-6 w-6 text-white" />
+                </div>
+                SEO & Marketing Tools
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Button 
+                  onClick={() => navigate('/admin/seo-optimizer')}
+                  variant="outline"
+                  className="p-6 h-auto flex-col gap-3 border-2 border-green-200 hover:bg-green-50 hover:border-green-300 transition-all duration-300"
+                >
+                  <div className="p-3 bg-green-100 rounded-full">
+                    <TrendingUp className="h-6 w-6 text-green-600" />
+                  </div>
+                  <div className="text-center">
+                    <div className="font-semibold text-green-700">SEO Optimizer</div>
+                    <div className="text-sm text-gray-600">Analyze & improve content</div>
+                  </div>
+                </Button>
+                <Button 
+                  onClick={() => window.open('https://analytics.google.com', '_blank')}
+                  variant="outline"
+                  className="p-6 h-auto flex-col gap-3 border-2 border-blue-200 hover:bg-blue-50 hover:border-blue-300 transition-all duration-300"
+                >
+                  <div className="p-3 bg-blue-100 rounded-full">
+                    <BarChart3 className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <div className="text-center">
+                    <div className="font-semibold text-blue-700">Analytics</div>
+                    <div className="text-sm text-gray-600">View website performance</div>
+                  </div>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Recent Activity */}
+        <motion.div
+          className="mt-8"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+        >
+          <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-3 text-2xl">
+                <div className="p-2 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg">
                   <Calendar className="h-6 w-6 text-white" />
                 </div>
                 Recent Activity

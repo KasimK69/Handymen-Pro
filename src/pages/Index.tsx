@@ -8,6 +8,7 @@ import Testimonials from '@/components/home/Testimonials';
 import CTA from '@/components/home/CTA';
 import InquiryForm from '@/components/InquiryForm';
 import MapLocation from '@/components/MapLocation';
+import SEOHead from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
 import { MessageSquare } from 'lucide-react';
 import AIChatAgent from '@/components/AIChatAgent';
@@ -33,6 +34,11 @@ const Home = () => {
   
   return (
     <>
+      <SEOHead 
+        title="AC Services & Repairs Pakistan | Professional AC Installation, Repair & Sales"
+        description="Professional AC services in Islamabad & Rawalpindi. Expert AC installation, repair, maintenance, and premium air conditioner sales. 24/7 emergency service available."
+        keywords="ac service, ac repair, ac installation, air conditioner, islamabad, rawalpindi, ac maintenance, ac gas filling, ac sale"
+      />
       <Hero />
       <SmartAdport />
       <PremiumACCollection />

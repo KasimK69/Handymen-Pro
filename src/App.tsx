@@ -18,6 +18,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import BlogAdminPage from "./pages/admin/Blog";
 import ServicesAdminPage from "./pages/admin/Services";
 import AdminProducts from "./pages/admin/AdminProducts";
+import SEOOptimizerPage from "./pages/admin/SEOOptimizer";
 import ModernHeader from "./components/ModernHeader";
 import Footer from "./components/Footer";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
@@ -66,6 +67,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <AdminProducts />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/admin/seo-optimizer" 
+                  element={
+                    <ProtectedRoute>
+                      <SEOOptimizerPage />
                     </ProtectedRoute>
                   } 
                 />

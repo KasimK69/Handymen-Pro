@@ -485,7 +485,7 @@ const AdminBlogsManager = () => {
                     <Button
                       variant="outline"
                       size="icon"
-                      onClick={() => window.open(`/blogs/${blog.slug}`, '_blank')}
+                      onClick={() => window.open(`/blog/${blog.slug}`, '_blank')}
                       title="Preview"
                     >
                       <Eye className="h-4 w-4" />
